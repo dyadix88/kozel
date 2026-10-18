@@ -18,6 +18,8 @@ const AFTER_VERDICT = 5500;     // пауза на окно проверки
 const ROOM_TTL = 3 * 3600 * 1000;
 const CHARS = { lysy: 'Лысый', zema: 'Зёма', dantl: 'Дантл', vitaha: 'Витаха', elvis: 'Элвис', oleg: 'Олег' };
 const charOk = (c) => (CHARS[c] ? c : 'oleg');
+const xpOk = (x) => Math.max(0, Math.min(1e7, Math.floor(Number(x) || 0)));
+const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны'];
 
 const rooms = new Map();
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
@@ -39,13 +41,13 @@ const token = () => crypto.randomBytes(16).toString('hex');
 const humans = (room) => room.seats.filter((s) => s && !s.bot);
 const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
-function createRoom(name, mode, ch) {
+function createRoom(name, mode, ch, xp) {
   const code = newCode();
-  const room = { code, mode: mode === 'lite' ? 'lite' : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
+  const room = { code, mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
-  room.seats[0] = { token: tok, name: clean(name) || CHARS[charOk(ch)], char: charOk(ch), bot: false, conns: new Set() };
+  room.seats[0] = { token: tok, name: clean(name) || CHARS[charOk(ch)], char: charOk(ch), xp: xpOk(xp), bot: false, conns: new Set() };
   return { room, tok, seat: 0 };
 }
 const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
@@ -58,11 +60,11 @@ function viewFor(room, my) {
   const t = my % 2;
   const v = {
     code: room.code, phase: room.phase, mode: room.mode, host: R(room.host), now: Date.now(),
-    seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, online: s.bot || s.conns.size > 0 } : null)),
+    seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0 } : null)),
   };
   if (room.match) {
     const m = room.match;
-    v.match = { penalties: [m.penalties[t], m.penalties[1 - t]], eggs: [m.eggs[t], m.eggs[1 - t]], praise: rot(m.praise),
+    v.match = { penalties: [m.penalties[t], m.penalties[1 - t]], eggs: [m.eggs[t], m.eggs[1 - t]], praise: rot(m.praise), limit: m.limit || 12,
       loser: K.matchLoser(m) === null ? null : (K.matchLoser(m) - t + 2) % 2 };
   }
   if (room.round) {
@@ -72,7 +74,7 @@ function viewFor(room, my) {
       trick: r.trick.map((e) => ({ seat: R(e.seat), card: e.card, trickNo: e.trickNo })),
       log: r.log.map((e) => ({ seat: R(e.seat), card: e.card, trickNo: e.trickNo, checked: e.checked })),
       hvalSeat: R(r.hvalSeat), trump: r.trump, turn: R(r.turn), over: r.over,
-      taken: room.mode === 'lite' || r.over ? [r.taken[t], r.taken[1 - t]] : [0, 0],
+      taken: room.mode !== 'hard' || r.over ? [r.taken[t], r.taken[1 - t]] : [0, 0],
       end: r.end ? Object.assign({}, r.end, r.end.team !== undefined ? { team: (r.end.team - t + 2) % 2 } : {}, r.end.accused !== undefined ? { accused: R(r.end.accused) } : {}) : null,
       deadline: room.deadline,
     };
@@ -97,8 +99,8 @@ function broadcast(room, events) {
 // ---------- Ход игры ----------
 function startMatch(room) {
   const free = Object.keys(CHARS).filter((c) => !room.seats.some((s) => s && s.char === c)).sort(() => Math.random() - .5);
-  room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(Object.keys(CHARS)); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, bot: true, conns: new Set() }; } });
-  room.match = K.newMatch();
+  room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(Object.keys(CHARS)); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 8000), bot: true, conns: new Set() }; } });
+  room.match = K.newMatch(room.mode === 'turbo' ? 6 : 12);
   startRound(room);
 }
 function startRound(room) {
@@ -108,8 +110,8 @@ function startRound(room) {
   const evs = [{ type: 'deal' }];
   const h = room.round.hvalSeat;
   if (room.seats[h].bot && Math.random() < .6) evs.push({ type: 'talk', seat: h, text: pick(LINES.hval) });
-  broadcast(room, evs);
   schedule(room, 1600);
+  broadcast(room, evs);
 }
 
 function schedule(room, delay) {
@@ -118,7 +120,7 @@ function schedule(room, delay) {
   if (room.phase !== 'playing' || !r || r.over) { room.deadline = 0; return; }
   const s = room.seats[r.turn];
   if (s.bot) { room.deadline = 0; room.timer = setTimeout(() => botAct(room), delay + BOT_DELAY); return; }
-  const limit = s.conns.size ? TURN_MS : AWAY_TURN_MS;
+  const limit = s.conns.size ? (room.mode === 'turbo' ? 45000 : TURN_MS) : AWAY_TURN_MS;
   room.deadline = Date.now() + delay + limit;
   room.timer = setTimeout(() => timeoutAct(room), delay + limit);
 }
@@ -148,16 +150,16 @@ function doPlay(room, seat, cardId) {
     }
   }
   if (!r.over && res.trickDone) {
-    evs.push({ type: 'trick', winner: res.winner, points: room.mode === 'lite' ? res.points : null });
+    evs.push({ type: 'trick', winner: res.winner, points: room.mode !== 'hard' ? res.points : null });
     chatter(room, evs, res);
     delay = Math.max(delay, AFTER_TRICK);
   } else if (r.over && res.trickDone && r.end.type === 'cards') {
-    evs.push({ type: 'trick', winner: res.winner, points: room.mode === 'lite' ? res.points : null });
+    evs.push({ type: 'trick', winner: res.winner, points: room.mode !== 'hard' ? res.points : null });
     chatter(room, evs, res);
   }
   if (r.over) evs.push(endRound(room));
-  broadcast(room, evs);
   schedule(room, delay);
+  broadcast(room, evs);
 }
 
 // Реплики после взятки (за всех, включая живых: это дворовой юмор)
@@ -256,8 +258,8 @@ function act(room, seat, body) {
       const ev = verdictEvent(room, seat, Number(body.trickNo), abs(body.seat), null);
       const evs = [ev];
       if (room.round.over || K.matchLoser(room.match) !== null) { room.round.over = true; if (!room.round.end) room.round.end = { type: 'penalty' }; evs.push(endRound(room)); }
-      broadcast(room, evs);
       schedule(room, AFTER_VERDICT);
+      broadcast(room, evs);
       return;
     }
     case 'next':
@@ -266,9 +268,22 @@ function act(room, seat, body) {
       return;
     case 'rematch':
       if (room.phase !== 'matchEnd') return;
-      room.match = K.newMatch();
+      room.match = K.newMatch(room.mode === 'turbo' ? 6 : 12);
       startRound(room);
       return;
+    case 'xp':
+      s.xp = xpOk(body.xp);
+      broadcast(room, []);
+      return;
+    case 'emote': {
+      const i = Number(body.i);
+      if (!EMOTES[i]) throw new Error('Нет такой эмоции');
+      const now = Date.now();
+      if (s.lastEmote && now - s.lastEmote < 1500) return;
+      s.lastEmote = now;
+      broadcast(room, [{ type: 'talk', seat, text: EMOTES[i] }]);
+      return;
+    }
     case 'leave':
       if (room.phase === 'lobby') {
         room.seats[seat] = null;
@@ -308,7 +323,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname === '/api/ping') return json(res, 200, { ok: true, rooms: rooms.size });
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
-      const { room, tok, seat } = createRoom(b.name, b.mode, b.char);
+      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, b.xp);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {
@@ -320,7 +335,7 @@ const server = http.createServer(async (req, res) => {
       if (i < 0 && room.phase !== 'lobby') i = room.seats.findIndex((s) => s && s.bot);
       if (i < 0) return json(res, 409, { error: 'Стол занят, мест нет' });
       const tok = token();
-      room.seats[i] = { token: tok, name: clean(b.name) || CHARS[charOk(b.char)], char: charOk(b.char), bot: false, conns: new Set() };
+      room.seats[i] = { token: tok, name: clean(b.name) || CHARS[charOk(b.char)], char: charOk(b.char), xp: xpOk(b.xp), bot: false, conns: new Set() };
       broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat: i, text: '<i>*подсел за стол*</i>' }]);
       return json(res, 200, { code: room.code, token: tok, seat: i });
     }

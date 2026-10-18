@@ -43,8 +43,8 @@
   const holderOf = (hands, id) => hands.findIndex((h) => h.some((c) => c.id === id));
 
   // Состояние матча: постоянные масти хвала, штрафы до 12, яйца.
-  function newMatch() {
-    return { praise: [null, null, null, null], penalties: [0, 0], eggs: [0, 0] };
+  function newMatch(limit) {
+    return { praise: [null, null, null, null], penalties: [0, 0], eggs: [0, 0], limit: limit || 12 };
   }
 
   // Кому первому в матче достался J♣: он крести, напарник пики.
@@ -171,7 +171,7 @@
     return { guilty, team };
   }
 
-  const matchLoser = (m) => (m.penalties[0] >= 12 ? 0 : m.penalties[1] >= 12 ? 1 : null);
+  const matchLoser = (m) => { const L = m.limit || 12; return m.penalties[0] >= L ? 0 : m.penalties[1] >= L ? 1 : null; };
 
   const api = { SUITS, SUIT_SYMBOL, RANKS, POINTS, opposite, teamOf, createDeck, shuffle,
     dealHands, holderOf, newMatch, assignPraise, startRound, roundPenalties, applyRound, matchLoser,
