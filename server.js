@@ -380,9 +380,9 @@ setInterval(() => {
   const now = Date.now();
   for (const room of rooms.values()) {
     if (room.phase !== 'playing' || !room.round || room.round.over) continue;
-    if (!room.nextBanter) room.nextBanter = now + 15000 + Math.random() * 15000;
+    if (!room.nextBanter) room.nextBanter = now + 28000 + Math.random() * 20000;
     if (now < room.nextBanter) continue;
-    room.nextBanter = now + 15000 + Math.random() * 15000;
+    room.nextBanter = now + 28000 + Math.random() * 20000;
     const seats = room.seats.map((s) => (s ? { char: s.char, name: s.name.replace(' (бот)', '') } : null));
     const evs = KL.banter(seats).map((c) => ({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0 }));
     if (evs.length) broadcast(room, evs);
