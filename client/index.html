@@ -6,7 +6,7 @@
 <title>KOZEL: стол во дворе</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Russo+One&family=PT+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --page:#0d0b09;--red:#b3241c;--red-hi:#cc3326;--red-dk:#6f140f;--cream:#f2e7c9;--paper:#e6d7b1;--ink:#2a2018;--ink-soft:#5e4e3b;
@@ -68,7 +68,7 @@ button{font:inherit;color:inherit}
 .me{cursor:pointer}
 .me.turn img.av{border-color:var(--amber);box-shadow:0 0 0 .18em var(--amber),0 0 1.4em .3em rgba(255,179,59,.85);animation:avglow 1.2s ease-in-out infinite}
 @keyframes avglow{0%,100%{box-shadow:0 0 0 .18em var(--amber),0 0 .8em .1em rgba(255,179,59,.6)}50%{box-shadow:0 0 0 .22em #ffd27a,0 0 1.8em .5em rgba(255,179,59,.95)}}
-.emoq{position:absolute;left:1em;z-index:3;font-size:1.6em;padding:.15em .4em;cursor:pointer;background:var(--cream);border:.1em solid var(--red-dk);border-radius:.4em;box-shadow:0 .2em .5em rgba(0,0,0,.4)}
+.emoq{position:absolute;left:1em;z-index:3;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:1.8em;padding:.15em .4em;cursor:pointer;background:var(--cream);border:.1em solid var(--red-dk);border-radius:.4em;box-shadow:0 .2em .5em rgba(0,0,0,.4)}
 .achs{display:grid;grid-template-columns:1fr 1fr;gap:.35em;text-align:left;margin:0 0 1em;max-height:15em;overflow:auto}
 .achs div{display:flex;gap:.45em;align-items:center;padding:.3em .4em;border-radius:.2em;background:rgba(255,255,255,.4);border:.1em solid rgba(111,20,15,.2);font-size:.88em;line-height:1.2}
 .achs div.off{opacity:.42;filter:grayscale(1)}.achs i{font-style:normal;font-size:1.6em}.achs small{display:block;color:var(--ink-soft)}.achs em{font-style:normal;color:var(--good);font-weight:700}
@@ -178,6 +178,8 @@ button{font:inherit;color:inherit}
 .logp .beat{color:var(--red);font-weight:700}
 .logp .won{color:var(--good);font-weight:700}
 #figs{position:absolute;inset:0;pointer-events:none}
+.fig{pointer-events:auto;cursor:pointer}
+.seat{cursor:pointer}
 .fig{position:absolute;transform:translateX(-50%);transform-origin:50% 100%;filter:drop-shadow(0 .4em .9em rgba(40,20,5,.55)) drop-shadow(0 0 .15em rgba(255,170,80,.25));transition:filter .3s}
 .fig .body{transform-origin:50% 100%;animation:breathe 3.8s ease-in-out infinite}
 .fig img{display:block;width:100%;filter:brightness(.93) saturate(.9) sepia(.12) contrast(1.02)}
@@ -196,13 +198,16 @@ button{font:inherit;color:inherit}
 .hand .card{touch-action:none}
 .hand .card.dragging{z-index:6;transition:none;cursor:grabbing;box-shadow:0 .8em 1.6em rgba(0,0,0,.55)}
 .rk{font-size:.78em;color:var(--red-dk);font-family:'Russo One',sans-serif;letter-spacing:.02em}
-.emo{position:absolute;right:1em;top:4.4em;z-index:5;display:none;grid-template-columns:repeat(4,auto);gap:.35em;padding:.6em}
+.emo{position:absolute;left:5.4em;top:16em;z-index:5;display:none;grid-template-columns:repeat(4,4.2em);gap:.4em;padding:.7em}
 .emo.open{display:grid}
-.emo button{font:inherit;cursor:pointer;background:rgba(255,255,255,.5);border:.1em solid rgba(111,20,15,.35);border-radius:.25em;padding:.3em .45em;color:var(--ink)}
-.emo button.e{font-size:1.6em;padding:.1em .3em}
+.emo button{font:inherit;cursor:pointer;background:linear-gradient(170deg,#fffaf0,#efe1bd);border:.1em solid rgba(111,20,15,.35);border-radius:.5em;padding:.3em .45em;color:var(--ink);box-shadow:0 .15em .3em rgba(0,0,0,.18),inset 0 .1em 0 #fff;transition:transform .12s}
+.emo button.e{font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:2.1em;padding:.08em 0;line-height:1.25}
+.emo button:hover{transform:translateY(-.1em) scale(1.08)}
 .emo button:hover,.emo button:focus-visible{background:rgba(179,36,28,.15);outline:none}
-.emo .ph{grid-column:span 2}
-.talk.big{font-size:2.4em;padding:.1em .35em;border-radius:.4em}
+.emo .ph{grid-column:span 2;font-size:.95em}
+.talk.big{font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:3.6em;padding:0;background:none;border:none;box-shadow:none;filter:drop-shadow(0 .08em .12em rgba(0,0,0,.55));animation:stick .7s cubic-bezier(.2,1.6,.4,1) both}
+.talk.big::after{display:none}
+@keyframes stick{0%{opacity:0;scale:.2;rotate:-25deg}60%{opacity:1;scale:1.25;rotate:8deg}100%{scale:1;rotate:0deg}}
 .myrank{margin:-.2em 0 .5em;font-size:.95em}
 .myrank b{color:var(--red-dk);font-family:'Russo One',sans-serif;font-weight:400}
 .xpbar{width:80%;height:.35em;margin:.2em auto .15em;background:rgba(111,20,15,.18);border-radius:1em;overflow:hidden}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ochre),var(--amber))}
@@ -254,7 +259,6 @@ button{font:inherit;color:inherit}
   </div>
   <div class="hints plate" id="hints" hidden></div>
   <div class="btns">
-    <button class="btn alt" id="emoBtn" hidden>Эмоции</button>
     <button class="btn alt" id="logBtn" hidden>Журнал</button>
     <button class="btn" id="checkBtn">Предъявить</button>
     <button class="btn alt" id="menuBtn">Меню</button>
@@ -293,7 +297,7 @@ button{font:inherit;color:inherit}
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate">
-      <div class="head"><h1 class="ty">KOZEL</h1><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.3</div></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.4</div></div>
       <div class="in">
         <div class="modes">
           <button class="mode" data-mode="hard" aria-pressed="true"><b>Хардкор</b><span>Вся инфа в твоей бошке, говяжей</span></button>
@@ -306,6 +310,7 @@ button{font:inherit;color:inherit}
         <p class="myrank" data-myrank></p>
         <button class="btn wide" id="playBots">Раскинуть с ботами</button>
         <button class="btn wide" id="playNet" disabled>Позвать пацанов (на сайте игры)</button>
+        <button class="btn wide alt" id="profBtn">Мой профиль</button>
         <button class="btn wide alt" data-open="rules">Понятия</button>
         <div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="music"></button><button class="btn alt" data-toggle="amb"></button></div>
       </div>
@@ -563,6 +568,78 @@ button{font:inherit;color:inherit}
     jack: ['Валетом по столу!', 'Валет решает', 'Валетик, родной', 'Вот где валет зарыт'],
   };
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  // Персонажи: описание, свои фразы, подколы (кому: {n}), ответы на подколы
+  const CHAR = {
+    lysy: {
+      name: 'Лысый',
+      desc: 'Коренастый, как дворф. Интеллигентное быдло, образованный бык. Без рэпа за стол не садится.',
+      lines: ['Как говорил Кант... а, хрен с ним, бей', 'Тактическая взятка, если позволите', 'Мозги и кулаки, всё при мне', 'Качает, как хороший бит', 'Я бы объяснил, но вы не поймёте',
+        'Читаю вас, как баттл', '<i>*качает головой под бит*</i>', 'Это не везение, это эрудиция', 'Панчлайн: взятка моя', 'Ницше бы одобрил', 'Флоу пошёл, держитесь', 'Интеллект, бля, не пропьёшь'],
+      tease: ['{n}, у тебя рифма хуже, чем карта', '{n}, ты книжку последний раз в школе открывал?', 'Слышь, {n}, тут думать надо, а не на мать надеяться', '{n}, я тебя разнесу, как на баттле',
+        '{n}, ходи, интеллигенция ждёт', '{n}, ты играешь, как бит без баса'],
+    },
+    zema: {
+      name: 'Зёма',
+      desc: 'Бывший баскетболист, до сих пор кидает трёхочковые бумажкой в урну. Вечно отходит хапнуть, а возвращается с козырями.',
+      lines: ['Трёхочковый!', 'Блок-шот, детка', 'Данк в вашу корзину', 'Щас, хапну и вернусь', 'Пацаны, кто со мной покурить?', 'Сверху всё видно, у меня рост',
+        'Свисток, фол, мой мяч', 'Как в лучшие годы на площадке', '<i>*кидает фантик в урну, попадает*</i>', 'Это был alley-oop', 'Скамейка, на выход', 'Майкл Джордан нервно курит'],
+      tease: ['{n}, у тебя бросок как у бабки', '{n}, сядь на скамейку запасных', 'Эй, {n}, мяч у меня, ты в защите', '{n}, ты даже в урну не попадёшь',
+        '{n}, иди лучше покури, отпусти игру', '{n}, это тебе не дворовой футбол, тут думать надо'],
+    },
+    dantl: {
+      name: 'Дантл',
+      desc: 'Раньше хорошо боксировал, удар и голова на месте. Наглый мудак, за словом в карман не лезет, но пацан ровный, без говна.',
+      lines: ['А чё такого?', 'Ну я ж красавчик, признай', 'Сами виноваты', 'Двоечка и в нокаут', 'Я так и задумывал', 'Чисто по-братски: соснули',
+        '<i>*нагло ухмыляется*</i>', 'Апперкот по вашим картам', 'Не нравится, не играй', 'Работаю на опережение', 'Три раунда, и вы на полу', 'Голова тоже кулак, если думать'],
+      tease: ['{n}, ты в нокдауне, считаю до трёх', '{n}, чё, обиделся? Ну и хер с тобой', 'Слышь, {n}, держи защиту, а то прилетит', '{n}, ты бьёшь, как девочка',
+        '{n}, я тебя на ринге за раунд сложу', '{n}, не борзей, а то по-соседски объясню'],
+    },
+    vitaha: {
+      name: 'Витаха',
+      desc: 'Весёлый, угарный и добрый. С ним даже люся не обидная.',
+      lines: ['Ахаха, ну вы даёте!', 'Пацаны, я вас всех люблю', 'Не плачь, на конфетку', 'Главное не победа... шучу, победа', 'Ору с вас', '<i>*ржёт до слёз*</i>',
+        'Ну вы клоуны, конечно', 'Обнимашки после игры', 'Да ладно, это ж весело!', 'Я сегодня добрый, но взятку заберу', 'Кто грустит, тому пиво', 'Ржу, не могу'],
+      tease: ['{n}, ты такой серьёзный, аж смешно', '{n}, улыбнись, ебать, игра же', '{n}, давай обнимемся, пока ты не проиграл', '{n}, ты сегодня наш клоун, без обид',
+        'Ахаха, {n}, ну ты и лох, люблю тебя', '{n}, не плачь, я тебе пряник куплю'],
+    },
+    elvis: {
+      name: 'Элвис',
+      desc: 'Конкретный: разложит любую раздачу по фактам. А смеётся так заразительно, что ржёт весь двор: ГАААА-ГАААА!',
+      lines: ['ГАААА-ГАААА!', 'Конкретно забрал', 'Без базара, чисто моё', 'Разложу по фактам: вы в жопе', 'По факту, пацаны', 'ГААА-ГААА, ну вы даёте',
+        'Чётко, по делу', '<i>*поправляет кок*</i>', 'Факт первый: взятка моя. Факт второй: смотри факт первый', 'Элвис покинул ваши карты', 'ГАААААА!', 'Всё по полочкам, родной'],
+      tease: ['{n}, по фактам: ты лох. ГАААА-ГАААА!', '{n}, давай разберём, где ты обосрался', 'Конкретно, {n}: ты сегодня не в форме', '{n}, факт: так играть нельзя',
+        'ГААА-ГААА, {n}, ну ты и пельмень', '{n}, скажи честно, ты карты первый раз видишь?'],
+    },
+    oleg: {
+      name: 'Олег',
+      desc: 'Создатель игры и главный по понятиям. Очки не для красоты: видит, кто полез на трояк, ещё до того, как тот полез. Проиграл? Значит, баг.',
+      lines: ['Я эту игру написал, мне виднее', 'По понятиям всё, я проверял', 'Это не баг, это фича', 'Админ всегда прав', 'Ваши руки для меня открытый код', '<i>*поправляет очки*</i>',
+        'Щас патч выкачу, и всё', 'Так и задумано разработчиком', 'Где-то тут баг, я чувствую', 'В следующей версии вас понерфлю', 'Логи не врут, пацаны', 'Перезагрузите себе мозг'],
+      tease: ['{n}, я тебе в следующей версии статы порежу', '{n}, ты баг, тебя надо пофиксить', '{n}, я вижу твои карты, шучу... или нет', '{n}, бан за тупость выдать?',
+        '{n}, тебя в бета-тест не взяли бы', 'Слышь, {n}, я тут автор, не борзей'],
+    },
+  };
+  const REPLY = ['Чё сказал?', 'Сам такой', 'Пошёл ты', 'Ну ты и мудак, конечно', 'Ага, щас', 'Иди нахер, родной', 'Ой, всё', 'Базар фильтруй',
+    'Договоришься сейчас', 'Ты ща огребёшь', '<i>*показывает фак под столом*</i>', 'Хорошо, что я добрый', 'Смешно. Нет', 'За базар ответишь'];
+  const GENERIC_TEASE = ['{n}, ты чё, ахуел?', 'Ну ты и жук, {n}', '{n}, ходи давай, черепаха', '{n}, с такими картами только в дурака', '{n}, ты сегодня козёл, смирись',
+    '{n}, пиздец ты медленный', 'Эй, {n}, проснись', '{n}, я тебя запомнил'];
+
+  // Подкол за столом: кто-то цепляет кого-то, иногда тот огрызается. seats: [{char, name}] по местам
+  function banter(seats) {
+    const live = seats.map((x, i) => (x ? i : -1)).filter((i) => i >= 0);
+    if (live.length < 2) return [];
+    const a = pick(live), b = pick(live.filter((i) => i !== a));
+    const c = CHAR[seats[a].char];
+    const tpl = c && Math.random() < .8 ? pick(c.tease) : pick(GENERIC_TEASE);
+    const out = [{ seat: a, text: tpl.replace('{n}', seats[b].name) }];
+    if (Math.random() < .7) out.push({ seat: b, text: pick(REPLY), delay: 1600 });
+    if (seats[a].char === 'elvis' || (Math.random() < .25 && live.some((i) => seats[i].char === 'elvis'))) {
+      const e = live.find((i) => seats[i].char === 'elvis');
+      if (e !== undefined && e !== b) out.push({ seat: e, text: 'ГАААА-ГАААА!', delay: 2900 });
+    }
+    return out;
+  }
+
 
   // plays: [{seat, card}] одной взятки; вернёт [{seat, text, delay}] — кто что скажет
   function chatter(plays, winner, trump, points, K) {
@@ -592,7 +669,7 @@ button{font:inherit;color:inherit}
     return out;
   }
 
-  const api = { L, chatter };
+  const api = { L, chatter, CHAR, banter, REPLY };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -608,20 +685,7 @@ const TAG = { 1: [11, 45], 2: [50, 29], 3: [89, 45] };
 const PLATE = { 1: [11, 60], 2: [50, 46], 3: [89, 60] };
 const CHAR_SCALE = { zema: 1.08, lysy: .92 };
 function figFx(seat, cls) { const f = $('f' + seat); if (!f || f.hidden) return; f.classList.remove(cls); void f.offsetWidth; f.classList.add(cls); setTimeout(() => f.classList.remove(cls), 700); }
-const CHARS = [
-  { id: 'lysy', name: 'Лысый', desc: 'Коренастый, как дворф. Интеллигентное быдло, образованный бык. Без рэпа за стол не садится.',
-    lines: ['Как говорил Кант... а, хрен с ним, бей', 'Тактическая взятка, если позволите', 'Мозги и кулаки, всё при мне', 'Качает, как хороший бит', 'Я бы объяснил, но вы не поймёте', 'Читаю вас, как баттл', '<i>*качает головой под бит*</i>'] },
-  { id: 'zema', name: 'Зёма', desc: 'Два метра роста, худой как жердь. Бывший баскетболист-профи, сверху видит всё.',
-    lines: ['Сверху виднее, пацаны', 'Трёхочковый!', 'Блок-шот!', 'Данк в вашу корзину', 'Я ваши карты сверху вижу. Шучу. Или нет', 'Пригнулся, чтоб под дерево влезть', 'Свисток, фол, мой мяч'] },
-  { id: 'dantl', name: 'Дантл', desc: 'Средний рост, наглый и слегка мудаковатый, но в целом нормальный пацан.',
-    lines: ['А чё такого?', 'Ну я ж красавчик, признай', 'Сами виноваты', 'Не нравится, не играй', 'Я так и задумывал', 'Чисто по-братски: соснули', '<i>*нагло ухмыляется*</i>'] },
-  { id: 'vitaha', name: 'Витаха', desc: 'Весёлый, угарный и добрый. С ним даже люся не обидная.',
-    lines: ['Ахаха, ну вы даёте!', 'Пацаны, я вас всех люблю', 'Не плачь, на конфетку', 'Главное не победа... шучу, победа', 'Ору с вас', '<i>*ржёт до слёз*</i>'] },
-  { id: 'elvis', name: 'Элвис', desc: 'Конкретный и угарный. Причёска держится лучше, чем ваши козыри.',
-    lines: ['Конкретно забрал', 'Без базара, чисто моё', 'Элвис покинул ваши карты', 'Чётко, по факту', 'Рок-н-ролл, пацаны', '<i>*поправляет кок*</i>'] },
-  { id: 'oleg', name: 'Олег', desc: 'Создатель игры. Правила знает лучше всех, потому что сам их написал.',
-    lines: ['Я эту игру написал, мне виднее', 'По понятиям всё, я проверял', 'Это не баг, это фича', 'Админ всегда прав', 'Ваши руки для меня открытый код', '<i>*поправляет очки*</i>'] },
-];
+const CHARS = ['lysy', 'zema', 'dantl', 'vitaha', 'elvis', 'oleg'].map((id) => Object.assign({ id }, KozelLines.CHAR[id]));
 const charById = (id) => CHARS.find((c) => c.id === id) || CHARS[0];
 let SEATCH = ['lysy', 'zema', 'dantl', 'vitaha'];
 let myChar = 'oleg';
@@ -766,6 +830,7 @@ function seatPoints(r) {
 }
 function addXp(key) {
   try { if (sessionStorage.getItem('kozel-xpkey') === key) return; sessionStorage.setItem('kozel-xpkey', key); } catch (e) {}
+  seatPoints(round).forEach((v, i) => { SEATSTAT[i].pts += v; SEATSTAT[i].rounds++; });
   const pts = seatPoints(round)[0];
   $('msg').innerHTML += '<br>Ты лично взял ' + pts + ' очк., это +' + pts + ' опыта';
   xpGain(pts);
@@ -781,7 +846,7 @@ function render() {
   const hints = $('hints');
   hints.hidden = !lite;
   $('logBtn').hidden = !lite;
-  $('emoBtn').hidden = false;
+
   $('emoQuick').hidden = false; $('emoQuick').style.top = ($('me').offsetTop + $('me').offsetHeight + 8) + 'px';
   if (!lite) $('logPanel').classList.remove('open');
   if ($('logPanel').classList.contains('open')) renderLog();
@@ -942,6 +1007,7 @@ async function botsWatch(entry, g) {
     ' ' + NAMES[entry.seat] + ': во взятке ' + (ev.trickNo + 1) + ' у него') + ' «не было» ' + GEN[ev.suit] + ', а теперь ' + short(entry.card) + ' нарисовался. ' +
     (K.teamOf(r.team) === 0 ? 'Нам' : 'Им') + ' 3 штрафных, раздача всё.';
   if (entry.seat === 0) bumpStat('gotCaught');
+  seatVerdict(judge, entry.seat, r.guilty);
   await verdict(entry.seat === 0 ? 'Спалился!' : 'Крыса спалилась!', K.teamOf(r.team) === 0 ? 'bad' : 'good', text);
   if (entry.seat !== 0) { talk(entry.seat, pickOne(LINES.caught)); figFx(entry.seat, 'shake'); }
   if (g !== gen) return true;
@@ -1070,6 +1136,7 @@ async function doCheck() {
   await sleep(900);
   if (g !== gen) return;
   const r = K.accuse(match, round, 0, t, s);
+  seatVerdict(0, s, r.guilty);
   render();
   if (r.guilty) {
     const e = round.log.find((x) => x.trickNo === t && x.seat === s);
@@ -1132,7 +1199,7 @@ function finish(keepMsg) {
 }
 
 function clearTable() {
-  $('emoBtn').hidden = true; $('emoQuick').hidden = true; $('emoPanel').classList.remove('open');
+  $('emoQuick').hidden = true; $('emoPanel').classList.remove('open');
   for (const i of [1, 2, 3]) $('f' + i).hidden = true;
   $('logPanel').classList.remove('open'); $('logBtn').hidden = true;
   for (const id of ['pile', 'fx', 'hand', 's1', 's2', 's3', 'me']) $(id).replaceChildren();
@@ -1180,6 +1247,7 @@ function newMatch() {
   SEATCH = [myChar, others[0], others[1], others[2]];
   NAMES = SEATCH.map((id) => charById(id).name);
   botXp = [0, 1, 2, 3].map(() => Math.floor(Math.random() * 8000));
+  resetSeatStat();
   match = K.newMatch(mode === 'turbo' ? 6 : 12);
   startRound();
 }
@@ -1188,6 +1256,7 @@ function newMatch() {
 const open = (id) => $(id).classList.add('open');
 const hide = (id) => $(id).classList.remove('open');
 function showPause(html, title) {
+  $('pause').style.zIndex = $('menu').classList.contains('open') ? 8 : '';
   $('pause').querySelector('h1').textContent = title || 'ПЕРЕДЫХ';
   syncToggles();
   $('pauseIn').innerHTML = html;
@@ -1563,6 +1632,7 @@ const Net = (() => {
     code = j.code; tok = j.token; save(); connect();
   }
   function connect() {
+    resetSeatStat();
     online = true; gen++; closePanel(); clearTable(); round = null; match = null; shownEnd = null;
     ['menu', 'net', 'pause'].forEach(hide);
     if (es) es.close();
@@ -1653,6 +1723,7 @@ const Net = (() => {
     await sleep(900);
     if (ev.talk && who !== 0) talk(who, ev.talk);
     if (ev.guilty) figFx(who, 'shake');
+    seatVerdict(acc, who, ev.guilty);
     if (ev.guilty && acc === 0) bumpStat('caught');
     if (ev.guilty && who === 0) bumpStat('gotCaught');
     if (!ev.guilty && acc === 0) bumpStat('miss');
@@ -1767,13 +1838,35 @@ $('emoPanel').querySelectorAll('[data-emo]').forEach((b) => {
     if (Math.random() < .45) setTimeout(() => { const s = pickOne([1, 2, 3]); talk(s, pickOne(i === 9 ? ['Да щас, не гони', 'Думаю, не мешай'] : i === 10 || i === 11 ? LINES.clean : EMOTES.slice(0, 8))); }, 900);
   };
 });
-$('emoBtn').onclick = () => $('emoPanel').classList.toggle('open');
+
 applyPerks();
 
 // ---------- Досье игрока ----------
 let STATS = { troyak: 0, caught: 0, gotCaught: 0, miss: 0, rounds: 0, wins: 0, totalPts: 0, best: 0 };
 try { Object.assign(STATS, JSON.parse(localStorage.getItem('kozel-stats') || '{}')); } catch (e) {}
 function saveStats() { try { localStorage.setItem('kozel-stats', JSON.stringify(STATS)); } catch (e) {} }
+let SEATSTAT = [];
+function resetSeatStat() { SEATSTAT = [0, 1, 2, 3].map(() => ({ pts: 0, caught: 0, gotCaught: 0, miss: 0, rounds: 0 })); }
+resetSeatStat();
+function seatVerdict(acc, who, guilty) {
+  if (guilty) { SEATSTAT[acc].caught++; SEATSTAT[who].gotCaught++; } else SEATSTAT[acc].miss++;
+}
+function showSeatProfile(s) {
+  if (s === 0) return showProfile();
+  if (!round) return;
+  const id = SEATCH[s], c = charById(id), st = SEATSTAT[s], r = rankOf(seatXp(s));
+  const team = K.teamOf(s) === 0 ? 'Кореш, твоя команда' : 'Соперник';
+  showPause('<div class="dos"><img alt="" src="' + CHAR_IMG[id] + '"><div><b>' + NAMES[s] + '</b><br>Ур. ' + r.lvl + ' ' + r.name + '<br><small>' + team + '</small></div></div>' +
+    '<p class="chdesc" style="text-align:left">' + c.desc + '</p>' +
+    '<p style="margin:.2em 0 .4em;text-align:left"><b>За этот матч</b></p>' +
+    '<div class="stats"><span>Взял очков</span><span>' + st.pts + '</span>' +
+    '<span>Спалил подлецов</span><span>' + st.caught + '</span>' +
+    '<span>Спалили на трояке</span><span>' + st.gotCaught + '</span>' +
+    '<span>Предъявил зря</span><span>' + st.miss + '</span></div>' +
+    '<p class="note" style="text-align:left">Сколько раз он лез на трояк, никто не знает. Следи сам.</p>' +
+    '<button class="btn wide" id="dosClose">Ясно-понятно</button>', 'ДОСЬЕ');
+  $('dosClose').onclick = () => hide('pause');
+}
 function bumpStat(k) { STATS[k] = (STATS[k] || 0) + 1; saveStats(); checkAch(); }
 
 // ---------- Ачивки: за каждую опыт к рангу ----------
@@ -1872,7 +1965,7 @@ function showProfile() {
 }
 $('me').onclick = showProfile;
 document.querySelectorAll('[data-myrank]').forEach((p) => { p.style.cursor = 'pointer'; p.title = 'Открыть досье'; p.onclick = showProfile; });
-$('emoQuick').onclick = (e) => { e.stopPropagation(); $('emoPanel').classList.toggle('open'); };
+$('emoQuick').onclick = (e) => { e.stopPropagation(); const p = $('emoPanel'); p.style.top = $('emoQuick').offsetTop + 'px'; p.classList.toggle('open'); };
 
 // ---------- Применение косметики за уровни ----------
 function applyPerks() {
@@ -1926,6 +2019,19 @@ function trickBoom(winner) {
   }
   if (winner === 0 && hasPerk(4) && pts < 30) sparks(cx, cy, 14, false);
 }
+
+[1, 2, 3].forEach((i) => { $('s' + i).onclick = () => showSeatProfile(i); $('f' + i).onclick = () => showSeatProfile(i); });
+$('profBtn').onclick = () => { showProfile(); };
+// Перебранка за столом (с ботами; по сети её шлёт сервер)
+(function banterLoop() {
+  setTimeout(() => {
+    if (!online && round && !round.over && !paused()) {
+      const seats = SEATCH.map((id, i) => ({ char: id, name: NAMES[i] }));
+      KozelLines.banter(seats).forEach((c) => setTimeout(() => talk(c.seat, c.text), c.delay || 0));
+    }
+    banterLoop();
+  }, 18000 + Math.random() * 22000);
+})();
 
 // ---------- Время на ход ----------
 let timerOn = false, tLeft = 0, lastTick = performance.now(), lastSec = 99;
