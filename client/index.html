@@ -147,6 +147,11 @@ button{font:inherit;color:inherit}
 .seat .row{justify-content:flex-start}
 .me img.av{width:1.9em;height:1.9em;object-fit:cover;vertical-align:middle;border-radius:.12em;margin-right:.4em;border:.08em solid var(--red-dk)}
 .tbl .st img{width:2.6em;height:2.6em;object-fit:cover;border-radius:.12em;margin:0 auto .2em;display:block}
+.logp{left:1em;right:auto;width:33em}
+.logp .lt{padding:.45em 0;border-top:1px solid rgba(111,20,15,.25);line-height:1.45}
+.logp .lt b{font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk)}
+.logp .beat{color:var(--red);font-weight:700}
+.logp .won{color:var(--good);font-weight:700}
 .err{color:var(--bad);min-height:1.3em;margin:.4em 0 0}
 .snd{margin-top:.5em}.snd .btn{font-size:.9em;padding:.35em .8em .3em}
 .talk{position:absolute;z-index:3;transform:translate(-50%,-100%);background:#fffaf0;color:var(--ink);border:.14em solid var(--ink);border-radius:.9em;padding:.35em .75em;font-size:1.02em;max-width:15em;text-align:center;line-height:1.25;box-shadow:0 .3em .8em rgba(0,0,0,.35);pointer-events:none;animation:pop .22s ease-out}
@@ -176,6 +181,7 @@ button{font:inherit;color:inherit}
   </div>
   <div class="hints plate" id="hints" hidden></div>
   <div class="btns">
+    <button class="btn alt" id="logBtn" hidden>Журнал</button>
     <button class="btn" id="checkBtn">Предъявить</button>
     <button class="btn alt" id="menuBtn">Меню</button>
   </div>
@@ -205,6 +211,7 @@ button{font:inherit;color:inherit}
   <div class="hand" id="hand"></div>
   <div class="fx" id="fx"></div>
   <div class="panel plate" id="panel"></div>
+  <div class="panel plate logp" id="logPanel"></div>
 
   <!-- Главное меню -->
   <div class="ov open" id="menu">
@@ -221,7 +228,7 @@ button{font:inherit;color:inherit}
         <button class="btn wide" id="playBots">Раскинуть с ботами</button>
         <button class="btn wide" id="playNet" disabled>Позвать пацанов (на сайте игры)</button>
         <button class="btn wide alt" data-open="rules">Понятия</button>
-        <div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="amb"></button><button class="btn alt" data-toggle="leaf"></button></div>
+        <div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="amb"></button></div>
       </div>
     </div>
   </div>
@@ -591,6 +598,9 @@ function render() {
   $('pen1').textContent = match.penalties[1];
   const hints = $('hints');
   hints.hidden = !lite;
+  $('logBtn').hidden = !lite;
+  if (!lite) $('logPanel').classList.remove('open');
+  if ($('logPanel').classList.contains('open')) renderLog();
   if (lite) {
     const onTable = round.trick.reduce((s, e) => s + e.card.points, 0);
     hints.innerHTML = 'Козырь: ' + sym(round.trump) + ' ' + SUIT_NAME[round.trump] +
@@ -797,6 +807,35 @@ function renderPanel() {
   if (pending) { $('yesCheck').onclick = doCheck; $('noCheck').onclick = () => { pending = null; renderPanel(); }; $('yesCheck').focus(); }
   $('closeCheck').onclick = closePanel;
 }
+// Журнал раздачи (только Лайт): только то, что все видели на столе
+function renderLog() {
+  const byTrick = [];
+  for (const e of round.log) (byTrick[e.trickNo] = byTrick[e.trickNo] || []).push(e);
+  const who = (s) => (s === 0 ? 'Ты' : NAMES[s]);
+  const rows = byTrick.map((plays, no) => {
+    const led = K.effSuit(plays[0].card, round.trump);
+    let best = 0;
+    const parts = plays.map((e, i) => {
+      if (i === 0) return who(e.seat) + ' зашёл с ' + short(e.card);
+      const beats = K.power(e.card, round.trump, led) > K.power(plays[best].card, round.trump, led);
+      if (beats) { const trumpOver = K.isTrump(e.card, round.trump) && !K.isTrump(plays[best].card, round.trump); best = i;
+        return '<span class="beat">' + who(e.seat) + (trumpOver ? ' перебил козырем ' : ' перебил ') + short(e.card) + '</span>'; }
+      return who(e.seat) + ' кинул ' + short(e.card);
+    });
+    let tail = '';
+    if (plays.length === 4) {
+      const pts = plays.reduce((x, e) => x + e.card.points, 0);
+      tail = '<br><span class="won">Забрал ' + who(plays[best].seat) + ', +' + pts + '</span>';
+    }
+    return '<div class="lt"><b>Взятка ' + (no + 1) + '</b><br>' + parts.join('. ') + '.' + tail + '</div>';
+  });
+  $('logPanel').innerHTML = '<h2>Журнал раздачи</h2>' +
+    '<p>Козырь ' + sym(round.trump) + ' ' + SUIT_NAME[round.trump] + '. Хвал: ' + (round.hvalSeat === 0 ? 'у тебя' : NAMES[round.hvalSeat]) + '.</p>' +
+    (rows.length ? rows.reverse().join('') : '<p>Пока никто не ходил.</p>') +
+    '<div class="ask"><button class="btn alt" id="closeLog">Закрыть</button></div>';
+  $('closeLog').onclick = () => $('logPanel').classList.remove('open');
+}
+
 function closePanel() { pending = null; $('panel').classList.remove('open'); $('checkBtn').textContent = 'Предъявить'; }
 
 async function doCheck() {
@@ -868,6 +907,7 @@ function finish(keepMsg) {
 }
 
 function clearTable() {
+  $('logPanel').classList.remove('open'); $('logBtn').hidden = true;
   for (const id of ['pile', 'fx', 'hand', 's1', 's2', 's3', 'me']) $(id).replaceChildren();
   if ($('nextBtn')) $('nextBtn').hidden = true;
   stopTimer();
@@ -925,7 +965,7 @@ function showPause(html, title) {
 }
 function pauseMenu() {
   showPause((online ? '<p class="note">Игра по сети не ждёт: время на ход тикает.</p>' : '') + '<button class="btn wide" id="resume">Обратно за стол</button><button class="btn wide alt" id="pRules">Понятия</button>' +
-    '<button class="btn wide alt" id="exit">Свалить в меню</button><div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="amb"></button><button class="btn alt" data-toggle="leaf"></button></div>');
+    '<button class="btn wide alt" id="exit">Свалить в меню</button><div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="amb"></button></div>');
   bindToggles();
   $('resume').onclick = () => hide('pause');
   $('pRules').onclick = () => open('rules');
@@ -939,6 +979,7 @@ function pauseMenu() {
 
 $('menuBtn').onclick = () => { if ($('menu').classList.contains('open') || $('verdict').classList.contains('open')) return; pauseMenu(); };
 addEventListener('resize', () => { [...$('pile').children].forEach((el) => { const sp = SPOT[+el.dataset.seat]; const xy = stageXY(sp[0], sp[1]); place(el, xy[0], xy[1], .8); }); });
+$('logBtn').onclick = () => { const p = $('logPanel'); if (p.classList.toggle('open')) renderLog(); };
 $('checkBtn').onclick = () => {
   const p = $('panel');
   if (p.classList.contains('open')) return closePanel();
@@ -1041,7 +1082,6 @@ const Snd = (() => {
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     leafG = ctx.createGain(); leafG.gain.value = 1; leafG.connect(master);
     if (ambOn) startAmb();
-    if (leafOn) leaves();
   }
   const ok = () => ctx && sfxOn;
   function noise(t, dur, f, q, vol, f2, out) {
@@ -1142,7 +1182,6 @@ const Snd = (() => {
 function syncToggles() {
   document.querySelectorAll('[data-toggle="sfx"]').forEach((b) => { b.textContent = Snd.sfx ? 'Звук: есть' : 'Звук: нет'; });
   document.querySelectorAll('[data-toggle="amb"]').forEach((b) => { b.textContent = Snd.amb ? 'Двор: шумит' : 'Двор: тихо'; });
-  document.querySelectorAll('[data-toggle="leaf"]').forEach((b) => { b.textContent = Snd.leaf ? 'Листва: шелестит' : 'Листва: молчит'; });
 }
 function bindToggles() {
   document.querySelectorAll('[data-toggle]').forEach((b) => {
