@@ -63,7 +63,7 @@ button{font:inherit;color:inherit}
 .names input{font:inherit;font-size:1.15em;color:var(--ink);padding:.3em .5em;border:.1em solid rgba(111,20,15,.45);border-radius:.15em;background:rgba(255,255,255,.55)}
 .names input:focus{outline:.15em solid var(--ochre);border-color:var(--red)}
 #nextBtn{position:absolute;top:4.6em;left:50%;transform:translateX(-50%);font-size:1.2em;padding:.6em 1.6em .55em;z-index:3}
-.me{position:absolute;left:1em;top:5.8em;padding:.3em .85em;font-size:.98em;white-space:nowrap}
+.me{position:absolute;left:calc(50% - 19.3em);bottom:.6em;transform:translateX(-100%);display:flex;flex-direction:column;align-items:center;text-align:center;width:7.4em;white-space:normal!important;line-height:1.2;padding:.35em .3em .4em!important;z-index:2;padding:.3em .85em;font-size:.98em;white-space:nowrap}
 .me.turn{animation:pulse 1.4s ease-in-out infinite}
 .me em{font-style:normal;color:var(--red);font-weight:700}
 .rs{color:var(--red)}
@@ -145,7 +145,9 @@ button{font:inherit;color:inherit}
 .seat{display:flex;align-items:center;gap:.6em;text-align:left;min-width:13.5em}
 .seat .av{width:4.6em;height:4.6em;object-fit:cover;border-radius:.15em;border:.12em solid var(--red-dk);flex:none}
 .seat .row{justify-content:flex-start}
-.me img.av{width:1.9em;height:1.9em;object-fit:cover;vertical-align:middle;border-radius:.12em;margin-right:.4em;border:.08em solid var(--red-dk)}
+.me img.av{width:5.6em;height:5.6em;object-fit:cover;border-radius:.15em;margin-bottom:.3em;border:.12em solid var(--red-dk)}
+.me b{font-family:'Russo One',sans-serif;font-weight:400;font-size:1.1em}
+.me small{display:block;font-size:.85em;color:var(--ink-soft)}
 .tbl .st img{width:2.6em;height:2.6em;object-fit:cover;border-radius:.12em;margin:0 auto .2em;display:block}
 .logp{left:1em;right:auto;width:33em}
 .logp .lt{padding:.45em 0;border-top:1px solid rgba(111,20,15,.25);line-height:1.45}
@@ -662,8 +664,8 @@ function render() {
   }
   const mine = !round.over && round.turn === 0 && !busy;
   $('me').classList.toggle('turn', mine);
-  $('me').innerHTML = avatar(0) + (mine ? 'Твой ход' : NAMES[0]) + (match.praise[0] ? ', хвалишь ' + sym(match.praise[0]) : '') +
-    (round.hvalSeat === 0 ? ' <em>хвал у тебя</em>' : '');
+  $('me').innerHTML = avatar(0) + '<b>' + (mine ? 'Твой ход' : NAMES[0]) + '</b><small>' + (match.praise[0] ? 'хвалишь ' + sym(match.praise[0]) : 'ещё не хвалился') +
+    (round.hvalSeat === 0 ? ' <em>хвал</em>' : '') + '</small>';
   // Подсветка карт масти первого хода (валеты не масть, они козыри)
   const led = mine && round.trick.length ? K.effSuit(round.trick[0].card, round.trump) : null;
   const hand = $('hand');
