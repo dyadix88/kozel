@@ -19,7 +19,7 @@ const ROOM_TTL = 3 * 3600 * 1000;
 const CHARS = { lysy: 'Лысый', zema: 'Зёма', dantl: 'Дантл', vitaha: 'Витаха', elvis: 'Элвис', oleg: 'Олег' };
 const charOk = (c) => (CHARS[c] ? c : 'oleg');
 const xpOk = (x) => Math.max(0, Math.min(1e7, Math.floor(Number(x) || 0)));
-const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны'];
+const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны', '🔥', 'Учись, салага', '🎰', 'Фарт есть фарт', '👑', 'Склонитесь, черти'];
 
 const rooms = new Map();
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
