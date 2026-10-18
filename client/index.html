@@ -205,6 +205,26 @@ button{font:inherit;color:inherit}
 .talk.big{font-size:2.4em;padding:.1em .35em;border-radius:.4em}
 .myrank{margin:-.2em 0 .5em;font-size:.95em}
 .myrank b{color:var(--red-dk);font-family:'Russo One',sans-serif;font-weight:400}
+.xpbar{width:80%;height:.35em;margin:.2em auto .15em;background:rgba(111,20,15,.18);border-radius:1em;overflow:hidden}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ochre),var(--amber))}
+.me.fr-bronze img.av{border-color:#a5672f;box-shadow:0 0 0 .14em #a5672f}
+.me.fr-silver img.av{border-color:#c9ced6;box-shadow:0 0 0 .14em #c9ced6,0 0 .6em rgba(220,230,255,.6)}
+.me.fr-gold img.av{border-color:#e7b53c;box-shadow:0 0 0 .16em #e7b53c,0 0 .9em rgba(255,200,80,.7)}
+.me .crown{position:absolute;top:-.95em;left:50%;transform:translateX(-50%) rotate(-8deg);font-size:2em;filter:drop-shadow(0 .1em .2em rgba(0,0,0,.5))}
+.stage.back-blue .back{filter:hue-rotate(205deg) saturate(.85) brightness(.95)}
+.stage.back-black .back{filter:grayscale(1) brightness(.45) contrast(1.6) sepia(.6) saturate(2.2)}
+.achtoast.lvl{background:linear-gradient(175deg,#fff3c4,#f0d27a)}
+.boom{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);z-index:6;pointer-events:none;text-align:center;font-family:'Russo One',sans-serif;white-space:nowrap}
+.boom.big{font-size:3.6em;color:#ffd04a;text-shadow:0 0 .25em #ff7a00,0 0 .6em #ff3c00,.05em .05em 0 #6f140f;animation:boomBig 1.6s ease-out forwards}
+.boom.mid{font-size:2.2em;color:#fff2c0;text-shadow:0 0 .3em rgba(255,180,60,.9),.05em .05em 0 #6f140f;animation:boomMid 1.3s ease-out forwards}
+.boom small{display:block;font-size:.45em;color:#fff;text-shadow:0 0 .3em #000}
+@keyframes boomBig{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-6deg)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.25) rotate(3deg)}30%{transform:translate(-50%,-50%) scale(1) rotate(-2deg)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-70%) scale(1.05)}}
+@keyframes boomMid{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-65%)}}
+.flash{position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(circle at 50% 62%,rgba(255,200,80,.55),rgba(255,120,0,.15) 40%,transparent 70%);animation:flash .9s ease-out forwards}
+@keyframes flash{from{opacity:1}to{opacity:0}}
+.stage.shake{animation:sshake .45s}
+@keyframes sshake{0%,100%{transform:none}20%{transform:translate(-.4em,.2em)}40%{transform:translate(.4em,-.2em)}60%{transform:translate(-.25em,-.1em)}80%{transform:translate(.25em,.15em)}}
+.spark{position:absolute;z-index:6;width:.5em;height:.5em;border-radius:50%;pointer-events:none;background:#ffd56a;box-shadow:0 0 .6em #ffae00}
+@media (prefers-reduced-motion:reduce){.boom.big,.boom.mid{animation-duration:.01s}.stage.shake{animation:none}}
 .err{color:var(--bad);min-height:1.3em;margin:.4em 0 0}
 .snd{margin-top:.5em}.snd .btn{font-size:.9em;padding:.35em .8em .3em}
 .talk{position:absolute;z-index:3;transform:translate(-50%,-100%);background:#fffaf0;color:var(--ink);border:.14em solid var(--ink);border-radius:.9em;padding:.35em .75em;font-size:1.02em;max-width:15em;text-align:center;line-height:1.25;box-shadow:0 .3em .8em rgba(0,0,0,.35);pointer-events:none;animation:pop .22s ease-out}
@@ -273,7 +293,7 @@ button{font:inherit;color:inherit}
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate">
-      <div class="head"><h1 class="ty">KOZEL</h1><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.2</div></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.3</div></div>
       <div class="in">
         <div class="modes">
           <button class="mode" data-mode="hard" aria-pressed="true"><b>Хардкор</b><span>Вся инфа в твоей бошке, говяжей</span></button>
@@ -693,12 +713,51 @@ function enableDrag(d, c, mine) {
 }
 
 // ---------- Ранги ----------
-const RANKS = [[0, 'Шнырь'], [300, 'Пацан'], [1000, 'Бывалый'], [2500, 'Блатной'], [5000, 'Авторитет'], [9000, 'Смотрящий'], [15000, 'Вор в законе']];
-function rankOf(xp) { let i = 0; RANKS.forEach((r, k) => { if (xp >= r[0]) i = k; }); return { lvl: i + 1, name: RANKS[i][1], next: RANKS[i + 1] ? RANKS[i + 1][0] : null }; }
+// Уровни: первые идут быстро, каждый следующий дороже в 1.35 раза
+const LVL_NEED = (l) => Math.round(80 * Math.pow(1.35, l - 1)); // сколько опыта нужно с уровня l на l+1
+const TITLES = [[1, 'Шнырь'], [3, 'Пацан'], [5, 'Бывалый'], [8, 'Блатной'], [11, 'Авторитет'], [15, 'Смотрящий'], [20, 'Вор в законе']];
+function rankOf(xp) {
+  let lvl = 1, cur = 0;
+  while (lvl < 60 && xp >= cur + LVL_NEED(lvl)) { cur += LVL_NEED(lvl); lvl++; }
+  let name = TITLES[0][1];
+  TITLES.forEach((t) => { if (lvl >= t[0]) name = t[1]; });
+  return { lvl, name, cur, next: cur + LVL_NEED(lvl), pct: Math.min(100, Math.round((xp - cur) / LVL_NEED(lvl) * 100)) };
+}
+// Награды за уровни: только внешний вид, на игру не влияют
+const PERKS = [
+  { lvl: 2, i: '🟫', n: 'Бронзовая рамка аватара' },
+  { lvl: 3, i: '🔥', n: 'Эмоция 🔥 и фраза «Учись, салага»' },
+  { lvl: 4, i: '✨', n: 'Искры, когда забираешь взятку' },
+  { lvl: 5, i: '⬜', n: 'Серебряная рамка аватара' },
+  { lvl: 6, i: '🎰', n: 'Эмоция 🎰 и фраза «Фарт есть фарт»' },
+  { lvl: 7, i: '⭐', n: 'Звезда возле имени' },
+  { lvl: 8, i: '🂠', n: 'Синяя рубашка карт' },
+  { lvl: 10, i: '🟨', n: 'Золотая рамка аватара' },
+  { lvl: 12, i: '👑', n: 'Эмоция 👑 и фраза «Склонитесь, черти»' },
+  { lvl: 14, i: '🎆', n: 'Салют, когда берёшь жирную взятку' },
+  { lvl: 16, i: '🂠', n: 'Чёрная рубашка с золотом' },
+  { lvl: 20, i: '👑', n: 'Корона над аватаром' },
+];
+const hasPerk = (lvl) => rankOf(myXp).lvl >= lvl;
+function xpGain(amount, why) {
+  const before = rankOf(myXp).lvl;
+  myXp += amount;
+  try { localStorage.setItem('kozel-xp', myXp); } catch (e) {}
+  if (online) Net.send('xp', { xp: myXp });
+  const after = rankOf(myXp);
+  for (let l = before + 1; l <= after.lvl; l++) {
+    const perks = PERKS.filter((p) => p.lvl === l);
+    achQueue.push({ i: '⬆️', n: 'Уровень ' + l + (TITLES.some((t) => t[0] === l) ? ', ' + after.name : ''), d: perks.length ? 'Открыто: ' + perks.map((p) => p.n).join(', ') : 'Так держать, до следующего ещё ' + (LVL_NEED(l)) + ' опыта', lvlUp: true });
+  }
+  if (after.lvl > before) { if (achQueue.length && !achShowing) showAch(); setTimeout(() => talk(0, 'Уровень ' + after.lvl + '!'), 700); }
+  applyPerks();
+  renderPickers();
+  if (round) render();
+}
 let myXp = 0, botXp = [0, 0, 0, 0];
 try { myXp = +localStorage.getItem('kozel-xp') || 0; } catch (e) {}
 function seatXp(s) { if (s === 0) return myXp; if (online) return (Net.view && Net.view.seats[s] && Net.view.seats[s].xp) || 0; return botXp[s] || 0; }
-const rankLine = (s) => { const r = rankOf(seatXp(s)); return '<div class="rk">Ур. ' + r.lvl + ' ' + r.name + '</div>'; };
+const rankLine = (s) => { const r = rankOf(seatXp(s)); return '<div class="rk">Ур. ' + r.lvl + ' ' + r.name + '</div>' + (s === 0 ? '<div class="xpbar"><i style="width:' + r.pct + '%"></i></div>' : ''); };
 function seatPoints(r) {
   const pts = [0, 0, 0, 0], g = {};
   r.log.forEach((e) => (g[e.trickNo] = g[e.trickNo] || []).push(e));
@@ -708,16 +767,9 @@ function seatPoints(r) {
 function addXp(key) {
   try { if (sessionStorage.getItem('kozel-xpkey') === key) return; sessionStorage.setItem('kozel-xpkey', key); } catch (e) {}
   const pts = seatPoints(round)[0];
-  const before = rankOf(myXp);
-  myXp += pts;
+  $('msg').innerHTML += '<br>Ты лично взял ' + pts + ' очк., это +' + pts + ' опыта';
+  xpGain(pts);
   setTimeout(() => roundAch(pts), 0);
-  try { localStorage.setItem('kozel-xp', myXp); } catch (e) {}
-  if (online) Net.send('xp', { xp: myXp });
-  const after = rankOf(myXp);
-  $('msg').innerHTML += '<br>Ты лично взял ' + pts + ' очк. в копилку ранга';
-  if (after.lvl > before.lvl) setTimeout(() => { talk(0, 'Новый ранг: ' + after.name + '!'); Snd.good(); }, 600);
-  renderPickers();
-  render();
 }
 
 // ---------- Отрисовка ----------
@@ -770,7 +822,8 @@ function render() {
   }
   const mine = !round.over && round.turn === 0 && !busy;
   $('me').classList.toggle('turn', mine);
-  $('me').innerHTML = avatar(0) + '<b>' + (mine ? 'Твой ход' : NAMES[0]) + '</b>' + rankLine(0) + '<small>' + (match.praise[0] ? 'хвалишь ' + sym(match.praise[0]) : 'ещё не хвалился') +
+  applyPerks();
+  $('me').innerHTML = (hasPerk(20) ? '<span class="crown">👑</span>' : '') + avatar(0) + '<b>' + (mine ? 'Твой ход' : NAMES[0]) + (hasPerk(7) ? ' ⭐' : '') + '</b>' + rankLine(0) + '<small>' + (match.praise[0] ? 'хвалишь ' + sym(match.praise[0]) : 'ещё не хвалился') +
     (round.hvalSeat === 0 ? ' <em>хвал</em>' : '') + '</small>';
   // Подсветка карт масти первого хода (валеты не масть, они козыри)
   const led = mine && round.trick.length ? K.effSuit(round.trick[0].card, round.trump) : null;
@@ -844,7 +897,7 @@ async function doPlay(seat, id, fromXY, g) {
   if (!res.trickDone) { busy = false; render(); return; }
   [...$('pile').children].forEach((el) => { if (+el.dataset.seat === res.winner) el.classList.add('win'); });
   say(res.winner === 0 ? 'Твоя взятка' : 'Взятку забрал ' + NAMES[res.winner]);
-  figFx(res.winner, 'hop'); trickAch(res.winner);
+  figFx(res.winner, 'hop'); trickAch(res.winner); trickBoom(res.winner);
   trickTalk(res.winner, res.points);
   await sleep(1200);
   if (g !== gen) return;
@@ -1186,7 +1239,7 @@ function renderPickers() {
   });
   document.querySelectorAll('[data-chdesc]').forEach((p) => { p.textContent = charById(myChar).desc; });
   const mr = rankOf(myXp);
-  document.querySelectorAll('[data-myrank]').forEach((p) => { p.innerHTML = 'Твой ранг: <b>Ур. ' + mr.lvl + ' ' + mr.name + '</b>, очков ' + myXp + (mr.next ? ' (до следующего ' + (mr.next - myXp) + ')' : ''); });
+  document.querySelectorAll('[data-myrank]').forEach((p) => { p.innerHTML = 'Твой ранг: <b>Ур. ' + mr.lvl + ' ' + mr.name + '</b>, до уровня ' + (mr.lvl + 1) + ' ещё ' + (mr.next - myXp) + ' опыта'; });
   document.querySelectorAll('[data-ch]').forEach((b) => {
     b.onclick = () => {
       const old = charById(myChar).name;
@@ -1340,6 +1393,16 @@ const Snd = (() => {
     musicT = setInterval(mSched, 100);
   }
   function stopMusic() { clearInterval(musicT); musicT = null; if (musicG) musicG.gain.linearRampToValueAtTime(.0001, ctx.currentTime + .4); }
+  function boom(big) {
+    if (!ok()) return;
+    const t = now();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.setValueAtTime(big ? 120 : 220, t); o.frequency.exponentialRampToValueAtTime(big ? 38 : 110, t + (big ? .5 : .25));
+    g.gain.setValueAtTime(big ? .5 : .18, t); g.gain.exponentialRampToValueAtTime(.0001, t + (big ? .7 : .35));
+    o.connect(g).connect(master); o.start(t); o.stop(t + .75);
+    noise(t, big ? .55 : .25, big ? 700 : 1500, .5, big ? .35 : .12, big ? 150 : 600);
+    if (big) [523, 659, 784, 1047].forEach((f, i) => tone(t + .12 + i * .06, 'triangle', f, .4, .09));
+  }
   function creak() { if (!ctx || !ambOn) return; const t = now(); tone(t, 'sawtooth', 190, .35, .03, 120, amb); noise(t, .3, 900, 4, .08, 600, amb); }
   // Двор: птицы и ветерок
   function chirp() {
@@ -1401,7 +1464,7 @@ const Snd = (() => {
     speechSynthesis.speak(u);
   }
   return {
-    init, flick, place, swoosh, shuffle, click, tick, good, bad, creak, voice, whistle, trombone, drill,
+    init, flick, place, swoosh, shuffle, click, tick, good, bad, creak, voice, whistle, trombone, drill, boom,
     get sfx() { return sfxOn; }, get amb() { return ambOn; }, get leaf() { return leafOn; }, get music() { return musicOn; },
     setMusic(v) { musicOn = v; try { localStorage.setItem('kozel-music', v ? 'on' : 'off'); } catch (e) {} if (v) startMusic(); else stopMusic(); },
     setLeaf(v) { leafOn = v; try { localStorage.setItem('kozel-leaf', v ? 'on' : 'off'); } catch (e) {} if (v) leaves(); else clearTimeout(leafT); },
@@ -1565,7 +1628,7 @@ const Net = (() => {
       case 'trick':
         [...$('pile').children].forEach((el) => { if (+el.dataset.seat === ev.winner) el.classList.add('win'); });
         say(ev.winner === 0 ? 'Твоя взятка' : 'Взятку забрал ' + NAMES[ev.winner]);
-        figFx(ev.winner, 'hop'); trickAch(ev.winner);
+        figFx(ev.winner, 'hop'); trickAch(ev.winner); trickBoom(ev.winner);
         await sleep(1200);
         await collect(ev.winner);
         if (round && !round.over) say(round.turn === 0 ? pickOne(['Твой ход', 'Ходи давай', 'Твой выход']) : 'Ходит ' + NAMES[round.turn]);
@@ -1689,7 +1752,8 @@ const savedName = () => { try { return localStorage.getItem('kozel-name') || '';
 })();
 
 // ---------- Эмоции ----------
-const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны'];
+const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны', '🔥', 'Учись, салага', '🎰', 'Фарт есть фарт', '👑', 'Склонитесь, черти'];
+const EMO_LOCK = { 14: 3, 15: 3, 16: 6, 17: 6, 18: 12, 19: 12 };
 let lastEmo = 0;
 $('emoPanel').innerHTML = EMOTES.map((t, i) => '<button class="' + ([...t].length <= 2 ? 'e' : 'ph') + '" data-emo="' + i + '">' + t + '</button>').join('');
 $('emoPanel').querySelectorAll('[data-emo]').forEach((b) => {
@@ -1704,6 +1768,7 @@ $('emoPanel').querySelectorAll('[data-emo]').forEach((b) => {
   };
 });
 $('emoBtn').onclick = () => $('emoPanel').classList.toggle('open');
+applyPerks();
 
 // ---------- Досье игрока ----------
 let STATS = { troyak: 0, caught: 0, gotCaught: 0, miss: 0, rounds: 0, wins: 0, totalPts: 0, best: 0 };
@@ -1740,28 +1805,26 @@ function unlock(id) {
   if (!a) return;
   ACHS[id] = Date.now();
   try { localStorage.setItem('kozel-ach', JSON.stringify(ACHS)); } catch (e) {}
-  const before = rankOf(myXp);
-  myXp += a.xp;
-  try { localStorage.setItem('kozel-xp', myXp); } catch (e) {}
-  if (online) Net.send('xp', { xp: myXp });
   achQueue.push(a);
-  if (achQueue.length === 1) showAch();
-  if (rankOf(myXp).lvl > before.lvl) setTimeout(() => talk(0, 'Новый ранг: ' + rankOf(myXp).name + '!'), 900);
-  renderPickers();
-  if (round) render();
+  xpGain(a.xp);
+  if (!achShowing) showAch();
 }
+let achShowing = false;
 async function showAch() {
+  if (achShowing) return;
+  achShowing = true;
   while (achQueue.length) {
     const a = achQueue[0];
     const t = document.createElement('div');
-    t.className = 'achtoast plate';
-    t.innerHTML = '<i>' + a.i + '</i><div><b>Ачивка: ' + a.n + '</b><br>' + a.d + ' <em style="color:var(--good);font-style:normal;font-weight:700">+' + a.xp + ' опыта</em></div>';
+    t.className = 'achtoast plate' + (a.lvlUp ? ' lvl' : '');
+    t.innerHTML = '<i>' + a.i + '</i><div><b>' + (a.lvlUp ? '' : 'Ачивка: ') + a.n + '</b><br>' + a.d + (a.xp ? ' <em style="color:var(--good);font-style:normal;font-weight:700">+' + a.xp + ' опыта</em>' : '') + '</div>';
     stage.appendChild(t);
     Snd.good();
     await sleep(3200);
     t.remove();
     achQueue.shift();
   }
+  achShowing = false;
 }
 function checkAch() { ACH.forEach((a) => { if (a.ok(STATS)) unlock(a.id); }); }
 function trickAch(winner) {
@@ -1791,7 +1854,7 @@ function roundAch(pts) {
 function showProfile() {
   const r = rankOf(myXp), c = charById(myChar);
   showPause('<div class="dos"><img alt="" src="' + CHAR_IMG[myChar] + '"><div><b>' + (round ? NAMES[0] : c.name) + '</b><br>Ур. ' + r.lvl + ' ' + r.name +
-    '<br><small>' + myXp + ' очк.' + (r.next ? ', до следующего ранга ' + (r.next - myXp) : ', выше некуда') + '</small></div></div>' +
+    '<br><small>Опыт ' + myXp + ', до уровня ' + (r.lvl + 1) + ' ещё ' + (r.next - myXp) + '</small><div class="xpbar" style="width:12em;margin:.3em 0"><i style="width:' + r.pct + '%"></i></div></div></div>' +
     '<div class="stats"><span>Залез на трояк</span><span>' + STATS.troyak + '</span>' +
     '<span>Спалил подлецов</span><span>' + STATS.caught + '</span>' +
     '<span>Спалили самого</span><span>' + STATS.gotCaught + '</span>' +
@@ -1800,6 +1863,8 @@ function showProfile() {
     '<span>Лучшая раздача</span><span>' + (STATS.best || 0) + '</span>' +
     '<span>Раздач сыграно</span><span>' + (STATS.rounds || 0) + '</span>' +
     '<span>Матчей выиграно</span><span>' + (STATS.wins || 0) + '</span></div>' +
+    '<p style="margin:.2em 0 .4em;text-align:left"><b>Награды за уровни</b></p>' +
+    '<div class="achs">' + PERKS.map((p) => '<div class="' + (r.lvl >= p.lvl ? '' : 'off') + '"><i>' + p.i + '</i><span>Ур. ' + p.lvl + '<small>' + p.n + '</small></span></div>').join('') + '</div>' +
     '<p style="margin:.2em 0 .4em;text-align:left"><b>Ачивки ' + Object.keys(ACHS).length + ' из ' + ACH.length + '</b></p>' +
     '<div class="achs">' + ACH.map((a) => '<div class="' + (ACHS[a.id] ? '' : 'off') + '"><i>' + a.i + '</i><span>' + a.n + ' <em>+' + a.xp + '</em><small>' + a.d + '</small></span></div>').join('') + '</div>' +
     '<button class="btn wide" id="dosClose">Ясно-понятно</button>', 'ДОСЬЕ');
@@ -1808,6 +1873,59 @@ function showProfile() {
 $('me').onclick = showProfile;
 document.querySelectorAll('[data-myrank]').forEach((p) => { p.style.cursor = 'pointer'; p.title = 'Открыть досье'; p.onclick = showProfile; });
 $('emoQuick').onclick = (e) => { e.stopPropagation(); $('emoPanel').classList.toggle('open'); };
+
+// ---------- Применение косметики за уровни ----------
+function applyPerks() {
+  const L = rankOf(myXp).lvl, me = $('me');
+  me.classList.toggle('fr-bronze', L >= 2 && L < 5);
+  me.classList.toggle('fr-silver', L >= 5 && L < 10);
+  me.classList.toggle('fr-gold', L >= 10);
+  stage.classList.toggle('back-blue', L >= 8 && L < 16);
+  stage.classList.toggle('back-black', L >= 16);
+  document.querySelectorAll('[data-emo]').forEach((b) => { const need = EMO_LOCK[+b.dataset.emo]; b.hidden = need ? L < need : false; });
+}
+function sparks(x, y, n, big) {
+  for (let k = 0; k < n; k++) {
+    const d = document.createElement('div');
+    d.className = 'spark';
+    d.style.left = x + 'px'; d.style.top = y + 'px';
+    if (big) d.style.background = ['#ffd56a', '#ff6a3d', '#7fd3ff', '#b6ff7a'][k % 4];
+    stage.appendChild(d);
+    const a = Math.random() * Math.PI * 2, r = (big ? 120 : 60) + Math.random() * (big ? 160 : 70);
+    d.animate([{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }, { transform: 'translate(' + Math.cos(a) * r + 'px,' + Math.sin(a) * r + 'px) scale(.3)', opacity: 0 }],
+      { duration: 700 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.3,1)' }).finished.then(() => d.remove(), () => d.remove());
+  }
+}
+// Жирная взятка: 30+ бум, 20+ поскромнее
+function trickBoom(winner) {
+  if (!round) return;
+  const last = round.log[round.log.length - 1];
+  if (!last) return;
+  const pl = round.log.filter((e) => e.trickNo === last.trickNo);
+  if (pl.length < 4) return;
+  const pts = pl.reduce((x, e) => x + e.card.points, 0);
+  const who = winner === 0 ? 'Ты' : NAMES[winner];
+  const [cx, cy] = stageXY(50, 66);
+  if (pts >= 30) {
+    const b = document.createElement('div');
+    b.className = 'boom big';
+    b.innerHTML = 'ЖИРНАЯ ВЗЯТКА!' + '<small>' + who + (lite ? ', +' + pts : '') + '</small>';
+    const f = document.createElement('div'); f.className = 'flash';
+    stage.appendChild(f); stage.appendChild(b);
+    stage.classList.remove('shake'); void stage.offsetWidth; stage.classList.add('shake');
+    Snd.boom(true);
+    sparks(cx, cy, winner === 0 && hasPerk(14) ? 46 : 22, winner === 0 && hasPerk(14));
+    setTimeout(() => { b.remove(); f.remove(); stage.classList.remove('shake'); }, 1700);
+  } else if (pts >= 20) {
+    const b = document.createElement('div');
+    b.className = 'boom mid';
+    b.innerHTML = 'Неплохо!' + '<small>' + who + (lite ? ', +' + pts : '') + '</small>';
+    stage.appendChild(b);
+    Snd.boom(false);
+    setTimeout(() => b.remove(), 1400);
+  }
+  if (winner === 0 && hasPerk(4) && pts < 30) sparks(cx, cy, 14, false);
+}
 
 // ---------- Время на ход ----------
 let timerOn = false, tLeft = 0, lastTick = performance.now(), lastSec = 99;
