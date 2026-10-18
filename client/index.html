@@ -25,12 +25,12 @@ button{font:inherit;color:inherit}
   box-shadow:inset 0 0 0 .2em var(--cream),inset 0 0 0 .3em var(--ochre),0 .35em 1.1em rgba(0,0,0,.45)}
 
 /* Табло */
-.board{position:absolute;top:1em;left:1em;display:flex;align-items:center;gap:.7em;padding:.5em .8em;background:var(--board);border:.16em solid #3a332a;border-radius:.3em;box-shadow:inset 0 0 0 .14em #000,0 .35em 1.1em rgba(0,0,0,.5)}
+.board{position:absolute;top:1em;left:17%;display:flex;align-items:center;gap:.7em;padding:.5em .8em;background:var(--board);border:.16em solid #3a332a;border-radius:.3em;box-shadow:inset 0 0 0 .14em #000,0 .35em 1.1em rgba(0,0,0,.5)}
 .board .lab{color:var(--paper);font-size:.9em;text-align:center;line-height:1.2}
 .board .num{display:inline-grid;place-items:center;min-width:1.55em;height:1.35em;padding:0 .12em;font-size:2.1em;color:var(--amber);background:#0b0a08;border-radius:.12em;box-shadow:inset 0 .12em .3em rgba(0,0,0,.9);text-shadow:0 0 .35em rgba(255,179,59,.75);font-variant-numeric:tabular-nums}
 .board .sep{color:#8d8170;font-size:.85em;text-align:center;line-height:1.15}
 
-.hints{position:absolute;top:1em;left:17.2em;padding:.5em .9em;font-size:1.02em;line-height:1.5}
+.hints{position:absolute;top:5.6em;left:17%;padding:.5em .9em;font-size:1.02em;line-height:1.5}
 .hints b{color:var(--red)}
 
 .btns{position:absolute;top:1em;right:1em;display:flex;gap:.55em}
@@ -63,8 +63,21 @@ button{font:inherit;color:inherit}
 .names input{font:inherit;font-size:1.15em;color:var(--ink);padding:.3em .5em;border:.1em solid rgba(111,20,15,.45);border-radius:.15em;background:rgba(255,255,255,.55)}
 .names input:focus{outline:.15em solid var(--ochre);border-color:var(--red)}
 #nextBtn{position:absolute;top:4.6em;left:50%;transform:translateX(-50%);font-size:1.2em;padding:.6em 1.6em .55em;z-index:3}
-.me{position:absolute;left:calc(50% - 19.3em);bottom:.6em;transform:translateX(-100%);display:flex;flex-direction:column;align-items:center;text-align:center;width:7.4em;white-space:normal!important;line-height:1.2;padding:.35em .3em .4em!important;z-index:2;padding:.3em .85em;font-size:.98em;white-space:nowrap}
+.me{position:absolute;left:1em;top:1em;display:flex;flex-direction:column;align-items:center;text-align:center;width:10em;white-space:normal!important;line-height:1.2;padding:.35em .3em .4em!important;z-index:2;padding:.3em .85em;font-size:.98em;white-space:nowrap}
 .me.turn{animation:pulse 1.4s ease-in-out infinite}
+.me{cursor:pointer}
+.me.turn img.av{border-color:var(--amber);box-shadow:0 0 0 .18em var(--amber),0 0 1.4em .3em rgba(255,179,59,.85);animation:avglow 1.2s ease-in-out infinite}
+@keyframes avglow{0%,100%{box-shadow:0 0 0 .18em var(--amber),0 0 .8em .1em rgba(255,179,59,.6)}50%{box-shadow:0 0 0 .22em #ffd27a,0 0 1.8em .5em rgba(255,179,59,.95)}}
+.emoq{position:absolute;left:1em;z-index:3;font-size:1.6em;padding:.15em .4em;cursor:pointer;background:var(--cream);border:.1em solid var(--red-dk);border-radius:.4em;box-shadow:0 .2em .5em rgba(0,0,0,.4)}
+.achs{display:grid;grid-template-columns:1fr 1fr;gap:.35em;text-align:left;margin:0 0 1em;max-height:15em;overflow:auto}
+.achs div{display:flex;gap:.45em;align-items:center;padding:.3em .4em;border-radius:.2em;background:rgba(255,255,255,.4);border:.1em solid rgba(111,20,15,.2);font-size:.88em;line-height:1.2}
+.achs div.off{opacity:.42;filter:grayscale(1)}.achs i{font-style:normal;font-size:1.6em}.achs small{display:block;color:var(--ink-soft)}.achs em{font-style:normal;color:var(--good);font-weight:700}
+.achtoast{position:absolute;left:50%;top:6.4em;transform:translateX(-50%);z-index:7;display:flex;gap:.6em;align-items:center;padding:.5em 1.1em;font-size:1.1em;animation:achin .35s ease-out both;pointer-events:none}
+@keyframes achin{from{opacity:0;transform:translate(-50%,-.8em)}to{opacity:1;transform:translate(-50%,0)}}
+.achtoast i{font-style:normal;font-size:1.8em}.achtoast b{font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk)}
+.dos{display:flex;gap:1em;align-items:center;text-align:left;margin-bottom:.8em}.dos img{width:7em;height:7em;object-fit:cover;border-radius:.2em;border:.12em solid var(--red-dk)}
+.dos b{font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk);font-size:1.3em}
+.stats{display:grid;grid-template-columns:1fr auto;gap:.3em 1em;text-align:left;margin:0 0 1em;font-size:1.05em}.stats span:nth-child(even){font-family:'Russo One',sans-serif;color:var(--red-dk)}
 .me em{font-style:normal;color:var(--red);font-weight:700}
 .rs{color:var(--red)}
 
@@ -145,11 +158,21 @@ button{font:inherit;color:inherit}
 .seat{display:flex;align-items:center;gap:.6em;text-align:left;min-width:13.5em}
 .seat .av{width:4.6em;height:4.6em;object-fit:cover;border-radius:.15em;border:.12em solid var(--red-dk);flex:none}
 .seat .row{justify-content:flex-start}
-.me img.av{width:5.6em;height:5.6em;object-fit:cover;border-radius:.15em;margin-bottom:.3em;border:.12em solid var(--red-dk)}
+.me img.av{width:8.6em;height:8.6em;object-fit:cover;border-radius:.15em;margin-bottom:.3em;border:.12em solid var(--red-dk)}
 .me b{font-family:'Russo One',sans-serif;font-weight:400;font-size:1.1em}
 .me small{display:block;font-size:.85em;color:var(--ink-soft)}
 .tbl .st img{width:2.6em;height:2.6em;object-fit:cover;border-radius:.12em;margin:0 auto .2em;display:block}
-.logp{left:1em;right:auto;width:33em}
+.logp{left:12.5em;right:auto;width:36em;max-height:80%}
+.logp .lrow{display:grid;grid-template-columns:repeat(4,1fr);gap:.4em;margin:.35em 0}
+.logp .lc{text-align:center;padding:.3em .2em;border-radius:.25em;border:.12em solid transparent;background:rgba(255,255,255,.35)}
+.logp .lc.our{border-color:rgba(47,107,42,.35)}.logp .lc.their{border-color:rgba(163,32,26,.3)}
+.logp .lc.win{border-color:var(--ochre);box-shadow:0 0 0 .1em var(--ochre),0 0 .8em rgba(214,160,70,.5);background:rgba(255,236,170,.6)}
+.logp .lav{width:2.2em;height:2.2em;object-fit:cover;border-radius:50%;display:block;margin:0 auto .15em;border:.08em solid var(--red-dk)}
+.logp .lnm{font-size:.82em;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logp .lcard{width:3.6em;display:block;margin:.2em auto;border-radius:.25em;box-shadow:0 .1em .3em rgba(0,0,0,.35)}
+.logp .ltag{font-size:.78em;color:var(--ink-soft)}.logp .ltag.hit{color:var(--red);font-weight:700}.logp .lc.win .ltag{color:var(--good);font-weight:700}
+.logp .lfoot{font-size:.95em;font-weight:700}.logp .lfoot.our{color:var(--good)}.logp .lfoot.their{color:var(--bad)}
+.logp .lsum{font-weight:700;color:var(--ink)}
 .logp .lt{padding:.45em 0;border-top:1px solid rgba(111,20,15,.25);line-height:1.45}
 .logp .lt b{font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk)}
 .logp .beat{color:var(--red);font-weight:700}
@@ -170,6 +193,18 @@ button{font:inherit;color:inherit}
 .seat.tag .nm{font-size:1.1em}
 .seat.tag .nm small{font-family:'PT Sans',sans-serif;color:var(--ink-soft);font-size:.8em;margin-left:.35em}
 @media (prefers-reduced-motion:reduce){.fig .body,.fig.hop,.fig.shake{animation:none}}
+.hand .card{touch-action:none}
+.hand .card.dragging{z-index:6;transition:none;cursor:grabbing;box-shadow:0 .8em 1.6em rgba(0,0,0,.55)}
+.rk{font-size:.78em;color:var(--red-dk);font-family:'Russo One',sans-serif;letter-spacing:.02em}
+.emo{position:absolute;right:1em;top:4.4em;z-index:5;display:none;grid-template-columns:repeat(4,auto);gap:.35em;padding:.6em}
+.emo.open{display:grid}
+.emo button{font:inherit;cursor:pointer;background:rgba(255,255,255,.5);border:.1em solid rgba(111,20,15,.35);border-radius:.25em;padding:.3em .45em;color:var(--ink)}
+.emo button.e{font-size:1.6em;padding:.1em .3em}
+.emo button:hover,.emo button:focus-visible{background:rgba(179,36,28,.15);outline:none}
+.emo .ph{grid-column:span 2}
+.talk.big{font-size:2.4em;padding:.1em .35em;border-radius:.4em}
+.myrank{margin:-.2em 0 .5em;font-size:.95em}
+.myrank b{color:var(--red-dk);font-family:'Russo One',sans-serif;font-weight:400}
 .err{color:var(--bad);min-height:1.3em;margin:.4em 0 0}
 .snd{margin-top:.5em}.snd .btn{font-size:.9em;padding:.35em .8em .3em}
 .talk{position:absolute;z-index:3;transform:translate(-50%,-100%);background:#fffaf0;color:var(--ink);border:.14em solid var(--ink);border-radius:.9em;padding:.35em .75em;font-size:1.02em;max-width:15em;text-align:center;line-height:1.25;box-shadow:0 .3em .8em rgba(0,0,0,.35);pointer-events:none;animation:pop .22s ease-out}
@@ -194,11 +229,12 @@ button{font:inherit;color:inherit}
 <div class="stage" id="stage">
   <div class="board" aria-label="Счёт">
     <div class="lab disp">МЫ</div><div class="num disp" id="pen0">0</div>
-    <div class="sep disp">ДО<br>12</div>
+    <div class="sep disp">ДО<br><span id="limitN">12</span></div>
     <div class="num disp" id="pen1">0</div><div class="lab disp">ОНИ</div>
   </div>
   <div class="hints plate" id="hints" hidden></div>
   <div class="btns">
+    <button class="btn alt" id="emoBtn" hidden>Эмоции</button>
     <button class="btn alt" id="logBtn" hidden>Журнал</button>
     <button class="btn" id="checkBtn">Предъявить</button>
     <button class="btn alt" id="menuBtn">Меню</button>
@@ -231,23 +267,27 @@ button{font:inherit;color:inherit}
   <div class="fx" id="fx"></div>
   <div class="panel plate" id="panel"></div>
   <div class="panel plate logp" id="logPanel"></div>
+  <div class="emo plate" id="emoPanel"></div>
+  <button class="emoq" id="emoQuick" hidden title="Эмоции">😎</button>
 
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate">
-      <div class="head"><h1 class="ty">KOZEL</h1></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.2</div></div>
       <div class="in">
         <div class="modes">
           <button class="mode" data-mode="hard" aria-pressed="true"><b>Хардкор</b><span>Вся инфа в твоей бошке, говяжей</span></button>
           <button class="mode" data-mode="lite" aria-pressed="false"><b>Лайт</b><span>Для игры под пивко</span></button>
+          <button class="mode" data-mode="turbo" aria-pressed="false"><b>Турбо</b><span>До 6, 45 сек на ход, подсказки как в Лайте</span></button>
         </div>
         <div class="names" style="grid-template-columns:1fr"><div class="nmh">Выбери себя</div></div>
         <div class="chars" data-picker></div>
         <p class="chdesc" data-chdesc></p>
+        <p class="myrank" data-myrank></p>
         <button class="btn wide" id="playBots">Раскинуть с ботами</button>
         <button class="btn wide" id="playNet" disabled>Позвать пацанов (на сайте игры)</button>
         <button class="btn wide alt" data-open="rules">Понятия</button>
-        <div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="amb"></button></div>
+        <div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="music"></button><button class="btn alt" data-toggle="amb"></button></div>
       </div>
     </div>
   </div>
@@ -287,7 +327,7 @@ button{font:inherit;color:inherit}
         <h3>Кто кого бьёт</h3><p>Мать (шестёрка козырей) бьёт всех. Дальше валеты: крестовый, пиковый, червовый, бубновый. Все валеты козыри, их масть не считается. Потом туз, десятка, король, дама, 9, 8, 7 козырей. В простой масти: туз, десятка, король, дама, 9, 8, 7, 6.</p>
         <h3>Как ходить</h3><p>Зашли с масти: кидай масть, если есть. Валет не масть, он козырь. Масти нет: кидай что хочешь, хоть козыря, хоть мусор. Взятку забирает старшая карта, и он же ходит дальше. На ход минута, уснул: сходим за тебя.</p>
         <h3>Очки</h3><p>Туз 11, десятка 10, король 4, дама 3, валет 2, мелочь 0. Всего на кону 120.</p>
-        <h3>Штрафы до 12</h3><p>Хвалились и взяли 0: люся, 12 штрафных, сразу на выход. До 29: 3 штрафных. От 30 до 59: 2. Ровно 60: 2 штрафных и яйца. Хвалившие взяли 61 и больше: штрафы прилетают соперникам. У соперников от 30 до 59: 1 штрафной, до 29: 2, ноль (люся): 6. Кто первым набрал 12, тот и козёл.</p>
+        <h3>Штрафы до 12</h3><p>Хвалились и взяли 0: люся, 12 штрафных, сразу на выход. До 29: 3 штрафных. От 30 до 59: 2. Ровно 60: 2 штрафных и яйца. Хвалившие взяли 61 и больше: штрафы прилетают соперникам. У соперников от 30 до 59: 1 штрафной, до 29: 2, ноль (люся): 6. Кто первым набрал 12 (в Турбо 6), тот и козёл.</p>
         <h3>Крысятничество</h3><p>Не кинул масть, хотя была? Полез на трояк, значит крыса. Игра не мешает, но любой из соперников может предъявить. Спалили: команде крысы 3 штрафных, раздача всё. Предъявил зря: 3 штрафных себе, за базар надо отвечать.</p>
         <button class="btn" data-close="rules" style="margin-top:1.1em">Всё ясно</button>
       </div>
@@ -348,8 +388,8 @@ button{font:inherit;color:inherit}
   const holderOf = (hands, id) => hands.findIndex((h) => h.some((c) => c.id === id));
 
   // Состояние матча: постоянные масти хвала, штрафы до 12, яйца.
-  function newMatch() {
-    return { praise: [null, null, null, null], penalties: [0, 0], eggs: [0, 0] };
+  function newMatch(limit) {
+    return { praise: [null, null, null, null], penalties: [0, 0], eggs: [0, 0], limit: limit || 12 };
   }
 
   // Кому первому в матче достался J♣: он крести, напарник пики.
@@ -476,7 +516,7 @@ button{font:inherit;color:inherit}
     return { guilty, team };
   }
 
-  const matchLoser = (m) => (m.penalties[0] >= 12 ? 0 : m.penalties[1] >= 12 ? 1 : null);
+  const matchLoser = (m) => { const L = m.limit || 12; return m.penalties[0] >= L ? 0 : m.penalties[1] >= L ? 1 : null; };
 
   const api = { SUITS, SUIT_SYMBOL, RANKS, POINTS, opposite, teamOf, createDeck, shuffle,
     dealHands, holderOf, newMatch, assignPraise, startRound, roundPenalties, applyRound, matchLoser,
@@ -571,7 +611,7 @@ const K = Kozel;
 const DEF_NAMES = ['Ты', 'Левый', 'Кореш', 'Правый'];
 const pickOne = (a) => a[Math.floor(Math.random() * a.length)];
 let NAMES = DEF_NAMES.slice();
-const TURN_MS = 60000;
+let TURN_MS = 60000;
 const SUIT_NAME = { C: 'крести', S: 'пики', H: 'черви', D: 'бубны' };
 const GEN = { C: 'крестей', S: 'пик', H: 'червей', D: 'бубен', T: 'козырей' };
 const RU = { J: 'В', Q: 'Д', K: 'К', A: 'Т' };
@@ -617,14 +657,80 @@ function fly(el, from, to, s0, s1, ms, extra) {
   return el.animate(k, { duration: ms, easing: 'cubic-bezier(.2,.7,.2,1)' }).finished.catch(() => {});
 }
 
+// ---------- Порядок карт в руке (можно перетаскивать) ----------
+let handOrder = [], dragging = false;
+function orderedHand() {
+  const ids = round.hands[0].map((c) => c.id);
+  handOrder = handOrder.filter((id) => ids.includes(id));
+  for (const c of sortHand(round.hands[0])) if (!handOrder.includes(c.id)) handOrder.push(c.id);
+  return handOrder.map((id) => round.hands[0].find((c) => c.id === id));
+}
+function enableDrag(d, c, mine) {
+  d.onpointerdown = (e) => {
+    if (e.button) return;
+    const sx = e.clientX, sy = e.clientY;
+    let drag = false;
+    try { d.setPointerCapture(e.pointerId); } catch (x) {}
+    const move = (ev) => {
+      const dx = ev.clientX - sx, dy = ev.clientY - sy;
+      if (!drag && Math.hypot(dx, dy) > 10) { drag = true; dragging = true; d.classList.add('dragging'); }
+      if (drag) d.style.transform = 'translate(' + dx + 'px,' + Math.min(0, dy) + 'px)';
+    };
+    const up = (ev) => {
+      d.removeEventListener('pointermove', move); d.removeEventListener('pointerup', up); d.removeEventListener('pointercancel', up);
+      if (!drag) { if (mine && ev.type === 'pointerup') myPlay(c.id, d); return; }
+      const others = [...$('hand').children].filter((el) => el !== d);
+      const x = ev.clientX;
+      const before = others.find((el) => { const r = el.getBoundingClientRect(); return x < r.left + r.width / 2; });
+      handOrder.splice(handOrder.indexOf(c.id), 1);
+      if (before) handOrder.splice(handOrder.indexOf(before.dataset.id), 0, c.id); else handOrder.push(c.id);
+      dragging = false;
+      Snd.flick();
+      render();
+    };
+    d.addEventListener('pointermove', move); d.addEventListener('pointerup', up); d.addEventListener('pointercancel', up);
+  };
+}
+
+// ---------- Ранги ----------
+const RANKS = [[0, 'Шнырь'], [300, 'Пацан'], [1000, 'Бывалый'], [2500, 'Блатной'], [5000, 'Авторитет'], [9000, 'Смотрящий'], [15000, 'Вор в законе']];
+function rankOf(xp) { let i = 0; RANKS.forEach((r, k) => { if (xp >= r[0]) i = k; }); return { lvl: i + 1, name: RANKS[i][1], next: RANKS[i + 1] ? RANKS[i + 1][0] : null }; }
+let myXp = 0, botXp = [0, 0, 0, 0];
+try { myXp = +localStorage.getItem('kozel-xp') || 0; } catch (e) {}
+function seatXp(s) { if (s === 0) return myXp; if (online) return (Net.view && Net.view.seats[s] && Net.view.seats[s].xp) || 0; return botXp[s] || 0; }
+const rankLine = (s) => { const r = rankOf(seatXp(s)); return '<div class="rk">Ур. ' + r.lvl + ' ' + r.name + '</div>'; };
+function seatPoints(r) {
+  const pts = [0, 0, 0, 0], g = {};
+  r.log.forEach((e) => (g[e.trickNo] = g[e.trickNo] || []).push(e));
+  Object.values(g).forEach((pl) => { if (pl.length < 4) return; const w = pl[K.trickWinner(pl.map((e) => e.card), r.trump)].seat; pts[w] += pl.reduce((x, e) => x + e.card.points, 0); });
+  return pts;
+}
+function addXp(key) {
+  try { if (sessionStorage.getItem('kozel-xpkey') === key) return; sessionStorage.setItem('kozel-xpkey', key); } catch (e) {}
+  const pts = seatPoints(round)[0];
+  const before = rankOf(myXp);
+  myXp += pts;
+  setTimeout(() => roundAch(pts), 0);
+  try { localStorage.setItem('kozel-xp', myXp); } catch (e) {}
+  if (online) Net.send('xp', { xp: myXp });
+  const after = rankOf(myXp);
+  $('msg').innerHTML += '<br>Ты лично взял ' + pts + ' очк. в копилку ранга';
+  if (after.lvl > before.lvl) setTimeout(() => { talk(0, 'Новый ранг: ' + after.name + '!'); Snd.good(); }, 600);
+  renderPickers();
+  render();
+}
+
 // ---------- Отрисовка ----------
 function render() {
   if (!round) return;
+  $('limitN').textContent = match.limit || 12;
   $('pen0').textContent = match.penalties[0];
   $('pen1').textContent = match.penalties[1];
   const hints = $('hints');
   hints.hidden = !lite;
   $('logBtn').hidden = !lite;
+  $('emoBtn').hidden = false;
+  $('emoQuick').hidden = false; $('emoQuick').style.top = ($('me').offsetTop + $('me').offsetHeight + 8) + 'px';
   if (!lite) $('logPanel').classList.remove('open');
   if ($('logPanel').classList.contains('open')) renderLog();
   if (lite) {
@@ -653,27 +759,30 @@ function render() {
       fig.classList.toggle('turn', turn);
       el.classList.add('tag');
       el.style.left = f.cx + '%'; el.style.top = Math.max(16, f.bottom - w * stage.clientWidth / stage.clientHeight - 2.5) + '%';
-      el.innerHTML = '<div class="nm disp">' + NAMES[s] + (away ? ' 📵' : '') + '<small>×' + round.hands[s].length + '</small></div><div class="sub">' + sub + '</div>';
+      el.innerHTML = '<div class="nm disp">' + NAMES[s] + (away ? ' 📵' : '') + '<small>×' + round.hands[s].length + '</small></div>' + rankLine(s) + '<div class="sub">' + sub + '</div>';
     } else {
       fig.hidden = true;
       el.classList.remove('tag');
       el.style.left = PLATE[s][0] + '%'; el.style.top = PLATE[s][1] + '%';
-      el.innerHTML = avatar(s) + '<div><div class="nm disp">' + NAMES[s] + (away ? ' 📵' : '') + '</div><div class="sub">' + sub +
+      el.innerHTML = avatar(s) + '<div><div class="nm disp">' + NAMES[s] + (away ? ' 📵' : '') + '</div>' + rankLine(s) + '<div class="sub">' + sub +
         '</div><div class="row"><span class="mini back"></span>×' + round.hands[s].length + '</div></div>';
     }
   }
   const mine = !round.over && round.turn === 0 && !busy;
   $('me').classList.toggle('turn', mine);
-  $('me').innerHTML = avatar(0) + '<b>' + (mine ? 'Твой ход' : NAMES[0]) + '</b><small>' + (match.praise[0] ? 'хвалишь ' + sym(match.praise[0]) : 'ещё не хвалился') +
+  $('me').innerHTML = avatar(0) + '<b>' + (mine ? 'Твой ход' : NAMES[0]) + '</b>' + rankLine(0) + '<small>' + (match.praise[0] ? 'хвалишь ' + sym(match.praise[0]) : 'ещё не хвалился') +
     (round.hvalSeat === 0 ? ' <em>хвал</em>' : '') + '</small>';
   // Подсветка карт масти первого хода (валеты не масть, они козыри)
   const led = mine && round.trick.length ? K.effSuit(round.trick[0].card, round.trump) : null;
   const hand = $('hand');
   hand.classList.toggle('my', mine);
-  hand.replaceChildren(...sortHand(round.hands[0]).map((c) => {
+  if (dragging) return;
+  hand.replaceChildren(...orderedHand().map((c) => {
     const d = cardEl(c);
     if (led && K.effSuit(c, round.trump) === led) d.classList.add('suit');
-    if (mine) { d.tabIndex = 0; d.onclick = () => myPlay(c.id, d); d.onkeydown = (e) => { if (e.key === 'Enter') myPlay(c.id, d); }; }
+    d.dataset.id = c.id;
+    enableDrag(d, c, mine);
+    if (mine) { d.tabIndex = 0; d.onkeydown = (e) => { if (e.key === 'Enter') myPlay(c.id, d); }; }
     return d;
   }));
 }
@@ -735,7 +844,7 @@ async function doPlay(seat, id, fromXY, g) {
   if (!res.trickDone) { busy = false; render(); return; }
   [...$('pile').children].forEach((el) => { if (+el.dataset.seat === res.winner) el.classList.add('win'); });
   say(res.winner === 0 ? 'Твоя взятка' : 'Взятку забрал ' + NAMES[res.winner]);
-  figFx(res.winner, 'hop');
+  figFx(res.winner, 'hop'); trickAch(res.winner);
   trickTalk(res.winner, res.points);
   await sleep(1200);
   if (g !== gen) return;
@@ -748,6 +857,7 @@ async function doPlay(seat, id, fromXY, g) {
 
 async function myPlay(id, el) {
   if (busy || paused() || !round || round.over || round.turn !== 0) return;
+  { const legal = K.legalCards(round.hands[0], round.trick.map((e) => e.card), round.trump); if (!legal.some((c) => c.id === id)) bumpStat('troyak'); }
   if (online) { Net.from(el ? centerOf(el) : null); stopTimer(); busy = true; render(); Net.send('play', { card: id }); return; }
   const g = gen;
   stopTimer();
@@ -778,6 +888,7 @@ async function botsWatch(entry, g) {
   const text = NAMES[judge] + ' предъявил' + (entry.seat === 0 ? ': во взятке ' + (ev.trickNo + 1) + ' у тебя' :
     ' ' + NAMES[entry.seat] + ': во взятке ' + (ev.trickNo + 1) + ' у него') + ' «не было» ' + GEN[ev.suit] + ', а теперь ' + short(entry.card) + ' нарисовался. ' +
     (K.teamOf(r.team) === 0 ? 'Нам' : 'Им') + ' 3 штрафных, раздача всё.';
+  if (entry.seat === 0) bumpStat('gotCaught');
   await verdict(entry.seat === 0 ? 'Спалился!' : 'Крыса спалилась!', K.teamOf(r.team) === 0 ? 'bad' : 'good', text);
   if (entry.seat !== 0) { talk(entry.seat, pickOne(LINES.caught)); figFx(entry.seat, 'shake'); }
   if (g !== gen) return true;
@@ -859,25 +970,36 @@ function renderLog() {
   const byTrick = [];
   for (const e of round.log) (byTrick[e.trickNo] = byTrick[e.trickNo] || []).push(e);
   const who = (s) => (s === 0 ? 'Ты' : NAMES[s]);
+  const team = (s) => (K.teamOf(s) === 0 ? 'our' : 'their');
   const rows = byTrick.map((plays, no) => {
     const led = K.effSuit(plays[0].card, round.trump);
     let best = 0;
-    const parts = plays.map((e, i) => {
-      if (i === 0) return who(e.seat) + ' зашёл с ' + short(e.card);
-      const beats = K.power(e.card, round.trump, led) > K.power(plays[best].card, round.trump, led);
-      if (beats) { const trumpOver = K.isTrump(e.card, round.trump) && !K.isTrump(plays[best].card, round.trump); best = i;
-        return '<span class="beat">' + who(e.seat) + (trumpOver ? ' перебил козырем ' : ' перебил ') + short(e.card) + '</span>'; }
-      return who(e.seat) + ' кинул ' + short(e.card);
+    const cells = plays.map((e, i) => {
+      let tag, cls = '';
+      if (i === 0) tag = 'зашёл';
+      else {
+        const beats = K.power(e.card, round.trump, led) > K.power(plays[best].card, round.trump, led);
+        if (beats) { const trumpOver = K.isTrump(e.card, round.trump) && !K.isTrump(plays[best].card, round.trump); best = i; tag = trumpOver ? 'бьёт козырем' : 'перебил'; cls = 'hit'; }
+        else tag = K.effSuit(e.card, round.trump) === led ? 'в масть' : 'скинул';
+      }
+      return { e, tag, cls };
     });
-    let tail = '';
-    if (plays.length === 4) {
-      const pts = plays.reduce((x, e) => x + e.card.points, 0);
-      tail = '<br><span class="won">Забрал ' + who(plays[best].seat) + ', +' + pts + '</span>';
-    }
-    return '<div class="lt"><b>Взятка ' + (no + 1) + '</b><br>' + parts.join('. ') + '.' + tail + '</div>';
+    const done = plays.length === 4;
+    const pts = plays.reduce((x, e) => x + e.card.points, 0);
+    const html = cells.map((c, i) => {
+      const win = done && i === best;
+      const av = CHAR_IMG[SEATCH[c.e.seat]] ? '<img class="lav" alt="" src="' + CHAR_IMG[SEATCH[c.e.seat]] + '">' : '';
+      return '<div class="lc ' + team(c.e.seat) + (win ? ' win' : '') + '">' + av + '<div class="lnm">' + who(c.e.seat) + '</div>' +
+        '<img class="lcard" alt="' + (RU[c.e.card.rank] || c.e.card.rank) + ' ' + SUIT_NAME[c.e.card.suit] + '" src="' + CARD_IMG[c.e.card.id] + '">' +
+        '<div class="ltag ' + c.cls + '">' + (win ? 'забрал' : c.tag) + '</div></div>';
+    }).join('');
+    const foot = done ? '<div class="lfoot ' + team(plays[best].seat) + '">Забрал ' + who(plays[best].seat) + (K.teamOf(plays[best].seat) === 0 ? ' (наши)' : ' (их)') + ': +' + pts + ' очк.</div>' : '<div class="lfoot">Взятка ещё идёт</div>';
+    return '<div class="lt"><b>Взятка ' + (no + 1) + '</b><div class="lrow">' + html + '</div>' + foot + '</div>';
   });
+  const pts = seatPoints(round);
   $('logPanel').innerHTML = '<h2>Журнал раздачи</h2>' +
-    '<p>Козырь ' + sym(round.trump) + ' ' + SUIT_NAME[round.trump] + '. Хвал: ' + (round.hvalSeat === 0 ? 'у тебя' : NAMES[round.hvalSeat]) + '.</p>' +
+    '<p>Козырь: ' + sym(round.trump) + ' ' + SUIT_NAME[round.trump] + '. Хвал у ' + (round.hvalSeat === 0 ? 'тебя' : NAMES[round.hvalSeat]) + '.<br>' +
+    '<span class="lsum">Наши: ' + round.taken[0] + ' очк. &nbsp; Их: ' + round.taken[1] + ' очк.</span></p>' +
     (rows.length ? rows.reverse().join('') : '<p>Пока никто не ходил.</p>') +
     '<div class="ask"><button class="btn alt" id="closeLog">Закрыть</button></div>';
   $('closeLog').onclick = () => $('logPanel').classList.remove('open');
@@ -899,12 +1021,14 @@ async function doCheck() {
   if (r.guilty) {
     const e = round.log.find((x) => x.trickNo === t && x.seat === s);
     talk(s, pickOne(LINES.caught)); figFx(s, 'shake');
+    bumpStat('caught');
     await verdict('Крыса спалилась!', 'good', NAMES[s] + ' полез на трояк во взятке ' + (t + 1) + ': кинул ' + short(e.card) +
       ', а масть была. Им 3 штрафных, раздача всё.');
     if (g !== gen) return;
     $('pile').replaceChildren(); busy = false;
     finish(true);
   } else {
+    bumpStat('miss');
     talk(s, pickOne(LINES.clean));
     await verdict('Мимо, братан', 'bad', NAMES[s] + ' чистый во взятке ' + (t + 1) + '. За базар отвечаем: нам 3 штрафных.');
     if (g === gen && K.matchLoser(match) !== null) finish(true);
@@ -939,6 +1063,7 @@ function finish(keepMsg) {
     if (e.lusya) talk(pickOne([1, 3].filter((x) => K.teamOf(x) !== team).concat(team === 1 ? [2] : [])), pickOne(LINES.lusya));
     else if (team === 1) talk(2, pickOne(LINES.partner));
   } else if (keepMsg) say('Раздача всё');
+  addXp('off:' + Date.now());
   const loser = K.matchLoser(match);
   const box = $('pauseIn');
   if (loser !== null) {
@@ -954,6 +1079,7 @@ function finish(keepMsg) {
 }
 
 function clearTable() {
+  $('emoBtn').hidden = true; $('emoQuick').hidden = true; $('emoPanel').classList.remove('open');
   for (const i of [1, 2, 3]) $('f' + i).hidden = true;
   $('logPanel').classList.remove('open'); $('logBtn').hidden = true;
   for (const id of ['pile', 'fx', 'hand', 's1', 's2', 's3', 'me']) $(id).replaceChildren();
@@ -975,6 +1101,7 @@ async function startRound() {
   const g = gen;
   const fresh = match.praise.slice();
   round = K.newRound(match);
+  handOrder = [];
   voids = []; busy = true;
   if ($('nextBtn')) $('nextBtn').hidden = true;
   $('pile').replaceChildren();
@@ -992,12 +1119,15 @@ async function startRound() {
 function newMatch() {
   gen++;
   closePanel();
-  lite = document.querySelector('.mode[aria-pressed="true"]').dataset.mode === 'lite';
-  try { localStorage.setItem('kozel-mode', lite ? 'lite' : 'hard'); } catch (e) {}
+  const mode = document.querySelector('.mode[aria-pressed="true"]').dataset.mode;
+  lite = mode !== 'hard';
+  TURN_MS = mode === 'turbo' ? 45000 : 60000;
+  try { localStorage.setItem('kozel-mode', mode); } catch (e) {}
   const others = CHARS.map((c) => c.id).filter((id) => id !== myChar).sort(() => Math.random() - .5);
   SEATCH = [myChar, others[0], others[1], others[2]];
   NAMES = SEATCH.map((id) => charById(id).name);
-  match = K.newMatch();
+  botXp = [0, 1, 2, 3].map(() => Math.floor(Math.random() * 8000));
+  match = K.newMatch(mode === 'turbo' ? 6 : 12);
   startRound();
 }
 
@@ -1013,7 +1143,7 @@ function showPause(html, title) {
 }
 function pauseMenu() {
   showPause((online ? '<p class="note">Игра по сети не ждёт: время на ход тикает.</p>' : '') + '<button class="btn wide" id="resume">Обратно за стол</button><button class="btn wide alt" id="pRules">Понятия</button>' +
-    '<button class="btn wide alt" id="exit">Свалить в меню</button><div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="amb"></button></div>');
+    '<button class="btn wide alt" id="exit">Свалить в меню</button><div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="music"></button><button class="btn alt" data-toggle="amb"></button></div>');
   bindToggles();
   $('resume').onclick = () => hide('pause');
   $('pRules').onclick = () => open('rules');
@@ -1048,13 +1178,15 @@ document.addEventListener('keydown', (e) => {
   if ($('pause').classList.contains('open') && $('resume')) return hide('pause');
   if (!$('menu').classList.contains('open') && !$('verdict').classList.contains('open') && round) pauseMenu();
 });
-try { if (localStorage.getItem('kozel-mode') === 'lite') document.querySelector('.mode[data-mode="lite"]').click(); } catch (e) {}
+try { const m = localStorage.getItem('kozel-mode'), el = m && document.querySelector('.mode[data-mode="' + m + '"]'); if (el) el.click(); } catch (e) {}
 // Выбор персонажа (в меню и в окне игры по сети)
 function renderPickers() {
   document.querySelectorAll('[data-picker]').forEach((box) => {
     box.innerHTML = CHARS.map((c) => '<button class="ch" data-ch="' + c.id + '" aria-pressed="' + (c.id === myChar) + '"><img alt="" src="' + CHAR_IMG[c.id] + '"><b>' + c.name + '</b></button>').join('');
   });
   document.querySelectorAll('[data-chdesc]').forEach((p) => { p.textContent = charById(myChar).desc; });
+  const mr = rankOf(myXp);
+  document.querySelectorAll('[data-myrank]').forEach((p) => { p.innerHTML = 'Твой ранг: <b>Ур. ' + mr.lvl + ' ' + mr.name + '</b>, очков ' + myXp + (mr.next ? ' (до следующего ' + (mr.next - myXp) + ')' : ''); });
   document.querySelectorAll('[data-ch]').forEach((b) => {
     b.onclick = () => {
       const old = charById(myChar).name;
@@ -1100,9 +1232,11 @@ function talk(seat, text, chatter) {
   el.className = 'talk';
   el.dataset.seat = seat;
   el.innerHTML = text;
+  if ([...text].length <= 2) el.classList.add('big');
   const s = stage.getBoundingClientRect(), r = plate.getBoundingClientRect();
   el.style.left = (r.left - s.left + r.width / 2) + 'px';
   el.style.top = (r.top - s.top - 8) + 'px';
+  if (seat === 0) { el.style.left = (r.right - s.left + 14) + 'px'; el.style.top = (r.top - s.top + r.height * .8) + 'px'; el.style.transform = 'translate(0,-100%)'; el.style.animation = 'none'; }
   stage.appendChild(el);
   setTimeout(() => el.remove(), 2800);
 }
@@ -1130,6 +1264,7 @@ const Snd = (() => {
     for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     leafG = ctx.createGain(); leafG.gain.value = 1; leafG.connect(master);
     if (ambOn) startAmb();
+    if (musicOn) startMusic();
   }
   const ok = () => ctx && sfxOn;
   function noise(t, dur, f, q, vol, f2, out) {
@@ -1159,6 +1294,52 @@ const Snd = (() => {
   function whistle() { if (!ok()) return; const t = now(); [0, .32].forEach((d) => { const o = ctx.createOscillator(), l = ctx.createOscillator(), lg = ctx.createGain(), g = ctx.createGain(); o.type = 'sine'; o.frequency.value = 2900; l.frequency.value = 28; lg.gain.value = 180; l.connect(lg).connect(o.frequency); g.gain.setValueAtTime(.0001, t + d); g.gain.exponentialRampToValueAtTime(.18, t + d + .02); g.gain.setValueAtTime(.18, t + d + .22); g.gain.exponentialRampToValueAtTime(.0001, t + d + .28); o.connect(g).connect(master); o.start(t + d); l.start(t + d); o.stop(t + d + .3); l.stop(t + d + .3); }); }
   function trombone() { if (!ok()) return; const t = now(); [[311, .32], [294, .32], [277, .32], [262, .9]].reduce((st, [f, d]) => { const o = ctx.createOscillator(), l = ctx.createOscillator(), lg = ctx.createGain(), g = ctx.createGain(), lp = ctx.createBiquadFilter(); o.type = 'sawtooth'; o.frequency.value = f; l.frequency.value = 5.5; lg.gain.value = d > .5 ? 7 : 0; l.connect(lg).connect(o.frequency); lp.type = 'lowpass'; lp.frequency.value = 1100; g.gain.setValueAtTime(.0001, st); g.gain.exponentialRampToValueAtTime(.12, st + .04); g.gain.exponentialRampToValueAtTime(.0001, st + d); o.connect(lp).connect(g).connect(master); o.start(st); l.start(st); o.stop(st + d + .05); l.stop(st + d + .05); return st + d * .95; }, t); }
   function drill() { if (!ctx || !ambOn) return; const t = now(); const o = ctx.createOscillator(), l = ctx.createOscillator(), lg = ctx.createGain(), g = ctx.createGain(), lp = ctx.createBiquadFilter(); o.type = 'sawtooth'; o.frequency.setValueAtTime(90, t); o.frequency.linearRampToValueAtTime(160, t + .3); l.frequency.value = 34; lg.gain.value = .5; l.connect(lg).connect(g.gain); lp.type = 'lowpass'; lp.frequency.value = 1400; g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.06, t + .1); g.gain.setValueAtTime(.06, t + 1.2); g.gain.linearRampToValueAtTime(.0001, t + 1.4); o.connect(lp).connect(g).connect(amb); o.start(t); l.start(t); o.stop(t + 1.5); l.stop(t + 1.5); }
+  // ---------- Ламповая музыка: тёплые аккорды, бас, мягкий бит и треск пластинки ----------
+  let musicOn = true, musicG = null, musicT = null, mNext = 0, mStep = 0, vinyl = null;
+  try { musicOn = localStorage.getItem('kozel-music') !== 'off'; } catch (e) {}
+  const PROG = [[57, 60, 64, 67], [50, 53, 57, 60], [55, 59, 62, 65], [48, 52, 55, 59]]; // Am7 Dm7 G7 Cmaj7
+  const BEAT = 60 / 72, mf = (n) => 440 * Math.pow(2, (n - 69) / 12);
+  function mNote(t, n, dur, vol, type) {
+    const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type || 'sine'; o2.type = 'triangle';
+    o.frequency.value = mf(n); o2.frequency.value = mf(n) * 1.003;
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(vol, t + .025); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); o2.connect(g); g.connect(musicG);
+    o.start(t); o2.start(t); o.stop(t + dur + .05); o2.stop(t + dur + .05);
+  }
+  function mKick(t) { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(95, t); o.frequency.exponentialRampToValueAtTime(42, t + .18);
+    g.gain.setValueAtTime(.32, t); g.gain.exponentialRampToValueAtTime(.0001, t + .3); o.connect(g).connect(musicG); o.start(t); o.stop(t + .32); }
+  function mHit(t, f, dur, vol) { const s = ctx.createBufferSource(); s.buffer = nb; const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f; bp.Q.value = .9;
+    const g = ctx.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur); s.connect(bp).connect(g).connect(musicG); s.start(t, Math.random() * .5); s.stop(t + dur + .02); }
+  function mSched() {
+    while (mNext < ctx.currentTime + .35) {
+      const t = mNext, st = mStep % 8, ch = PROG[Math.floor(mStep / 8) % PROG.length];
+      if (st === 0) ch.forEach((n, i) => mNote(t + i * .018, n, BEAT * 4.2, .045));
+      if (st === 0 || st === 5) mNote(t, ch[0] - 24, BEAT * 1.4, .11, 'sine');
+      if (st === 3 || st === 6) mNote(t, ch[1 + Math.floor(Math.random() * 3)] + 12, BEAT * 1.1, .026);
+      if (st === 0 || st === 5) mKick(t);
+      if (st === 2 || st === 6) mHit(t, 1800, .16, .06);
+      if (st % 2 === 1) mHit(t, 7000, .04, .012);
+      mNext += BEAT / 2; mStep++;
+    }
+  }
+  function startMusic() {
+    if (!ctx || !musicOn || musicT) return;
+    if (!musicG) {
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1900;
+      musicG = ctx.createGain(); musicG.connect(lp).connect(master);
+      const vb = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), d = vb.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() < .0007 ? (Math.random() * 2 - 1) * .8 : (Math.random() * 2 - 1) * .015;
+      vinyl = ctx.createBufferSource(); vinyl.buffer = vb; vinyl.loop = true;
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2500;
+      const vg = ctx.createGain(); vg.gain.value = .25; vinyl.connect(hp).connect(vg).connect(musicG); vinyl.start();
+    }
+    musicG.gain.cancelScheduledValues(ctx.currentTime);
+    musicG.gain.setValueAtTime(.0001, ctx.currentTime); musicG.gain.linearRampToValueAtTime(.55, ctx.currentTime + 2);
+    mNext = ctx.currentTime + .1; mStep = 0;
+    musicT = setInterval(mSched, 100);
+  }
+  function stopMusic() { clearInterval(musicT); musicT = null; if (musicG) musicG.gain.linearRampToValueAtTime(.0001, ctx.currentTime + .4); }
   function creak() { if (!ctx || !ambOn) return; const t = now(); tone(t, 'sawtooth', 190, .35, .03, 120, amb); noise(t, .3, 900, 4, .08, 600, amb); }
   // Двор: птицы и ветерок
   function chirp() {
@@ -1221,19 +1402,21 @@ const Snd = (() => {
   }
   return {
     init, flick, place, swoosh, shuffle, click, tick, good, bad, creak, voice, whistle, trombone, drill,
-    get sfx() { return sfxOn; }, get amb() { return ambOn; }, get leaf() { return leafOn; },
+    get sfx() { return sfxOn; }, get amb() { return ambOn; }, get leaf() { return leafOn; }, get music() { return musicOn; },
+    setMusic(v) { musicOn = v; try { localStorage.setItem('kozel-music', v ? 'on' : 'off'); } catch (e) {} if (v) startMusic(); else stopMusic(); },
     setLeaf(v) { leafOn = v; try { localStorage.setItem('kozel-leaf', v ? 'on' : 'off'); } catch (e) {} if (v) leaves(); else clearTimeout(leafT); },
     setSfx(v) { sfxOn = v; try { localStorage.setItem('kozel-sfx', v ? 'on' : 'off'); } catch (e) {} if (!v && window.speechSynthesis) speechSynthesis.cancel(); },
     setAmb(v) { ambOn = v; try { localStorage.setItem('kozel-amb', v ? 'on' : 'off'); } catch (e) {} if (v) startAmb(); else stopAmb(); },
   };
 })();
 function syncToggles() {
+  document.querySelectorAll('[data-toggle="music"]').forEach((b) => { b.textContent = Snd.music ? 'Музыка: играет' : 'Музыка: нет'; });
   document.querySelectorAll('[data-toggle="sfx"]').forEach((b) => { b.textContent = Snd.sfx ? 'Звук: есть' : 'Звук: нет'; });
   document.querySelectorAll('[data-toggle="amb"]').forEach((b) => { b.textContent = Snd.amb ? 'Двор: шумит' : 'Двор: тихо'; });
 }
 function bindToggles() {
   document.querySelectorAll('[data-toggle]').forEach((b) => {
-    b.onclick = () => { Snd.init(); const k = b.dataset.toggle; if (k === 'sfx') Snd.setSfx(!Snd.sfx); else if (k === 'leaf') Snd.setLeaf(!Snd.leaf); else Snd.setAmb(!Snd.amb); syncToggles(); };
+    b.onclick = () => { Snd.init(); const k = b.dataset.toggle; if (k === 'sfx') Snd.setSfx(!Snd.sfx); else if (k === 'music') Snd.setMusic(!Snd.music); else if (k === 'leaf') Snd.setLeaf(!Snd.leaf); else Snd.setAmb(!Snd.amb); syncToggles(); };
   });
   syncToggles();
 }
@@ -1310,10 +1493,10 @@ const Net = (() => {
   async function available() { try { const r = await fetch('/api/ping', { cache: 'no-store' }); return r.ok; } catch (e) { return false; } }
   const saved = () => { try { return JSON.parse(localStorage.getItem('kozel-net') || 'null'); } catch (e) { return null; } };
   function save() { try { localStorage.setItem('kozel-net', JSON.stringify({ code, tok })); } catch (e) {} }
-  async function create(name, mode) { const j = await api('/api/create', { name, mode, char: myChar }); code = j.code; tok = j.token; save(); connect(); }
+  async function create(name, mode) { const j = await api('/api/create', { name, mode, char: myChar, xp: myXp }); code = j.code; tok = j.token; save(); connect(); }
   async function join(c, name) {
     const old = saved();
-    const j = await api('/api/join', { code: c, name, char: myChar, token: old && old.code === c ? old.tok : undefined });
+    const j = await api('/api/join', { code: c, name, char: myChar, xp: myXp, token: old && old.code === c ? old.tok : undefined });
     code = j.code; tok = j.token; save(); connect();
   }
   function connect() {
@@ -1343,7 +1526,7 @@ const Net = (() => {
     running = false;
   }
   function apply(v) {
-    view = v; skew = v.now - Date.now(); lite = v.mode === 'lite';
+    view = v; skew = v.now - Date.now(); lite = v.mode !== 'hard'; TURN_MS = v.mode === 'turbo' ? 45000 : 60000;
     NAMES = v.seats.map((s, i) => (s ? s.name : (i === 0 ? 'Ты' : 'свободно')));
     SEATCH = v.seats.map((s) => (s && s.char) || '');
     match = v.match || null; round = v.round || null;
@@ -1366,7 +1549,7 @@ const Net = (() => {
   async function onEvent(ev) {
     switch (ev.type) {
       case 'deal':
-        shownEnd = null;
+        shownEnd = null; handOrder = [];
         if ($('nextBtn')) $('nextBtn').hidden = true;
         hide('pause'); $('pile').replaceChildren(); $('hand').replaceChildren();
         say('Тасуем, раздаём');
@@ -1382,7 +1565,7 @@ const Net = (() => {
       case 'trick':
         [...$('pile').children].forEach((el) => { if (+el.dataset.seat === ev.winner) el.classList.add('win'); });
         say(ev.winner === 0 ? 'Твоя взятка' : 'Взятку забрал ' + NAMES[ev.winner]);
-        figFx(ev.winner, 'hop');
+        figFx(ev.winner, 'hop'); trickAch(ev.winner);
         await sleep(1200);
         await collect(ev.winner);
         if (round && !round.over) say(round.turn === 0 ? pickOne(['Твой ход', 'Ходи давай', 'Твой выход']) : 'Ходит ' + NAMES[round.turn]);
@@ -1407,6 +1590,9 @@ const Net = (() => {
     await sleep(900);
     if (ev.talk && who !== 0) talk(who, ev.talk);
     if (ev.guilty) figFx(who, 'shake');
+    if (ev.guilty && acc === 0) bumpStat('caught');
+    if (ev.guilty && who === 0) bumpStat('gotCaught');
+    if (!ev.guilty && acc === 0) bumpStat('miss');
     const pen = (ev.team === 0 ? 'Нам' : 'Им') + ' 3 штрафных';
     const by = acc === 0 ? 'Ты предъявил ' : NAMES[acc] + ' предъявил ';
     let title, kind, text;
@@ -1434,6 +1620,7 @@ const Net = (() => {
       say('Раздача всё. Очки: мы ' + round.taken[0] + ', они ' + round.taken[1] + '. ' + (e.lusya ? 'Люся! ' : '') + (e.egg ? 'Яйца! ' : '') +
         (team === null ? 'Без штрафов, живём' : (team === 0 ? 'Нам ' : 'Им ') + n + (n === 1 ? ' штрафной' : ' штрафных')));
     } else say('Раздача всё');
+    addXp(key);
     if (match.loser !== null && match.loser !== undefined) {
       const loser = match.loser;
       const eggs = match.eggs[loser] ? '<p>И яйца на ' + (loser === 0 ? 'вас' : 'них') + ' висят: ' + match.eggs[loser] + ' 🥚</p>' : '';
@@ -1462,7 +1649,7 @@ const Net = (() => {
     };
     const link = location.origin + location.pathname + '?r=' + v.code;
     $('lobbyBox').innerHTML = '<div class="head"><h1 style="font-size:2.4em">СТОЛ НАКРЫТ</h1></div><div class="in">' +
-      '<div class="bigcode">' + v.code + '</div><p class="note">Режим: ' + (v.mode === 'lite' ? 'Лайт, для игры под пивко' : 'Хардкор, вся инфа в бошке') + '</p>' +
+      '<div class="bigcode">' + v.code + '</div><p class="note">Режим: ' + (v.mode === 'lite' ? 'Лайт, для игры под пивко' : v.mode === 'turbo' ? 'Турбо, до 6 и 45 секунд на ход' : 'Хардкор, вся инфа в бошке') + '</p>' +
       '<p style="margin:.6em 0 .2em">Кинь пацанам ссылку, пусть садятся:</p>' +
       '<div class="linkrow"><input id="linkIn" readonly value="' + link + '"><button class="btn" id="copyLink">Скопировать</button></div>' +
       '<div class="tbl">' + seat(2, 'top') + seat(1, 'left') + '<div class="mid">стол</div>' + seat(3, 'right') + seat(0, 'me') + '</div>' +
@@ -1500,6 +1687,127 @@ const savedName = () => { try { return localStorage.getItem('kozel-name') || '';
     hide('menu'); open('net'); $('netCode').value = code; $('netName').value = savedName() || charById(myChar).name; $('netName').focus();
   }
 })();
+
+// ---------- Эмоции ----------
+const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны'];
+let lastEmo = 0;
+$('emoPanel').innerHTML = EMOTES.map((t, i) => '<button class="' + ([...t].length <= 2 ? 'e' : 'ph') + '" data-emo="' + i + '">' + t + '</button>').join('');
+$('emoPanel').querySelectorAll('[data-emo]').forEach((b) => {
+  b.onclick = () => {
+    const i = +b.dataset.emo, now = Date.now();
+    $('emoPanel').classList.remove('open');
+    if (now - lastEmo < 1500 || !round) return;
+    lastEmo = now;
+    if (online) return Net.send('emote', { i });
+    talk(0, EMOTES[i]);
+    if (Math.random() < .45) setTimeout(() => { const s = pickOne([1, 2, 3]); talk(s, pickOne(i === 9 ? ['Да щас, не гони', 'Думаю, не мешай'] : i === 10 || i === 11 ? LINES.clean : EMOTES.slice(0, 8))); }, 900);
+  };
+});
+$('emoBtn').onclick = () => $('emoPanel').classList.toggle('open');
+
+// ---------- Досье игрока ----------
+let STATS = { troyak: 0, caught: 0, gotCaught: 0, miss: 0, rounds: 0, wins: 0, totalPts: 0, best: 0 };
+try { Object.assign(STATS, JSON.parse(localStorage.getItem('kozel-stats') || '{}')); } catch (e) {}
+function saveStats() { try { localStorage.setItem('kozel-stats', JSON.stringify(STATS)); } catch (e) {} }
+function bumpStat(k) { STATS[k] = (STATS[k] || 0) + 1; saveStats(); checkAch(); }
+
+// ---------- Ачивки: за каждую опыт к рангу ----------
+const ACH = [
+  { id: 'r1', i: '🃏', n: 'Сел за стол', d: 'Сыграть первую раздачу', xp: 50, ok: (s) => s.rounds >= 1 },
+  { id: 'r10', i: '🪑', n: 'Свой за столом', d: 'Сыграть 10 раздач', xp: 150, ok: (s) => s.rounds >= 10 },
+  { id: 'r50', i: '🏚️', n: 'Прописался во дворе', d: 'Сыграть 50 раздач', xp: 500, ok: (s) => s.rounds >= 50 },
+  { id: 'w1', i: '🏆', n: 'Красавцы', d: 'Выиграть матч', xp: 200, ok: (s) => s.wins >= 1 },
+  { id: 'w5', i: '👑', n: 'Хозяева лавки', d: 'Выиграть 5 матчей', xp: 600, ok: (s) => s.wins >= 5 },
+  { id: 'p500', i: '💰', n: 'Пол-косаря', d: 'Заработать 500 очков', xp: 100, ok: (s) => s.totalPts >= 500 },
+  { id: 'p3000', i: '💎', n: 'Набил карманы', d: 'Заработать 3000 очков', xp: 400, ok: (s) => s.totalPts >= 3000 },
+  { id: 'b60', i: '🐂', n: 'Тащер', d: 'Лично взять 60+ очков за раздачу', xp: 150, ok: (s) => s.best >= 60 },
+  { id: 'big', i: '🍖', n: 'Жирный куш', d: 'Забрать взятку на 30+ очков', xp: 80, ok: () => false },
+  { id: 'mom', i: '👵', n: 'Мать пришла', d: 'Забрать взятку матерью', xp: 70, ok: () => false },
+  { id: 'lusya', i: '🙈', n: 'Люся!', d: 'Оставить соперников с нулём', xp: 300, ok: () => false },
+  { id: 'egg', i: '🥚', n: 'Яйца', d: 'Раздача 60 на 60', xp: 60, ok: () => false },
+  { id: 'c1', i: '🔎', n: 'Глаз-алмаз', d: 'Спалить подлеца', xp: 100, ok: (s) => s.caught >= 1 },
+  { id: 'c5', i: '🕵️', n: 'Опер двора', d: 'Спалить 5 подлецов', xp: 300, ok: (s) => s.caught >= 5 },
+  { id: 't1', i: '🐀', n: 'Первый трояк', d: 'Залезть на трояк', xp: 30, ok: (s) => s.troyak >= 1 },
+  { id: 'g1', i: '🚨', n: 'Спалился', d: 'Попасться на трояке', xp: 20, ok: (s) => s.gotCaught >= 1 },
+  { id: 'm3', i: '🗣️', n: 'Пустобрёх', d: 'Предъявить зря 3 раза', xp: 30, ok: (s) => s.miss >= 3 },
+];
+let ACHS = {};
+try { ACHS = JSON.parse(localStorage.getItem('kozel-ach') || '{}'); } catch (e) {}
+const achQueue = [];
+function unlock(id) {
+  if (ACHS[id]) return;
+  const a = ACH.find((x) => x.id === id);
+  if (!a) return;
+  ACHS[id] = Date.now();
+  try { localStorage.setItem('kozel-ach', JSON.stringify(ACHS)); } catch (e) {}
+  const before = rankOf(myXp);
+  myXp += a.xp;
+  try { localStorage.setItem('kozel-xp', myXp); } catch (e) {}
+  if (online) Net.send('xp', { xp: myXp });
+  achQueue.push(a);
+  if (achQueue.length === 1) showAch();
+  if (rankOf(myXp).lvl > before.lvl) setTimeout(() => talk(0, 'Новый ранг: ' + rankOf(myXp).name + '!'), 900);
+  renderPickers();
+  if (round) render();
+}
+async function showAch() {
+  while (achQueue.length) {
+    const a = achQueue[0];
+    const t = document.createElement('div');
+    t.className = 'achtoast plate';
+    t.innerHTML = '<i>' + a.i + '</i><div><b>Ачивка: ' + a.n + '</b><br>' + a.d + ' <em style="color:var(--good);font-style:normal;font-weight:700">+' + a.xp + ' опыта</em></div>';
+    stage.appendChild(t);
+    Snd.good();
+    await sleep(3200);
+    t.remove();
+    achQueue.shift();
+  }
+}
+function checkAch() { ACH.forEach((a) => { if (a.ok(STATS)) unlock(a.id); }); }
+function trickAch(winner) {
+  if (winner !== 0 || !round) return;
+  const last = round.log[round.log.length - 1];
+  if (!last) return;
+  const pl = round.log.filter((e) => e.trickNo === last.trickNo);
+  if (pl.length < 4) return;
+  const pts = pl.reduce((x, e) => x + e.card.points, 0);
+  const wc = pl[K.trickWinner(pl.map((e) => e.card), round.trump)].card;
+  if (pts >= 30) unlock('big');
+  if (wc.rank === '6' && wc.suit === round.trump) unlock('mom');
+}
+function roundAch(pts) {
+  STATS.rounds++; STATS.totalPts += pts; STATS.best = Math.max(STATS.best || 0, pts);
+  const e = round.end;
+  if (e && e.type === 'cards') {
+    const hTeam = K.teamOf(round.hvalSeat);
+    if ((e.lusya === 'praise' && hTeam === 1) || (e.lusya === 'other' && hTeam === 0)) unlock('lusya');
+    if (e.egg) unlock('egg');
+  }
+  const loser = online ? match.loser : K.matchLoser(match);
+  if (loser === 1) STATS.wins++;
+  saveStats();
+  checkAch();
+}
+function showProfile() {
+  const r = rankOf(myXp), c = charById(myChar);
+  showPause('<div class="dos"><img alt="" src="' + CHAR_IMG[myChar] + '"><div><b>' + (round ? NAMES[0] : c.name) + '</b><br>Ур. ' + r.lvl + ' ' + r.name +
+    '<br><small>' + myXp + ' очк.' + (r.next ? ', до следующего ранга ' + (r.next - myXp) : ', выше некуда') + '</small></div></div>' +
+    '<div class="stats"><span>Залез на трояк</span><span>' + STATS.troyak + '</span>' +
+    '<span>Спалил подлецов</span><span>' + STATS.caught + '</span>' +
+    '<span>Спалили самого</span><span>' + STATS.gotCaught + '</span>' +
+    '<span>Предъявил зря</span><span>' + STATS.miss + '</span>' +
+    '<span>Очков заработано</span><span>' + (STATS.totalPts || 0) + '</span>' +
+    '<span>Лучшая раздача</span><span>' + (STATS.best || 0) + '</span>' +
+    '<span>Раздач сыграно</span><span>' + (STATS.rounds || 0) + '</span>' +
+    '<span>Матчей выиграно</span><span>' + (STATS.wins || 0) + '</span></div>' +
+    '<p style="margin:.2em 0 .4em;text-align:left"><b>Ачивки ' + Object.keys(ACHS).length + ' из ' + ACH.length + '</b></p>' +
+    '<div class="achs">' + ACH.map((a) => '<div class="' + (ACHS[a.id] ? '' : 'off') + '"><i>' + a.i + '</i><span>' + a.n + ' <em>+' + a.xp + '</em><small>' + a.d + '</small></span></div>').join('') + '</div>' +
+    '<button class="btn wide" id="dosClose">Ясно-понятно</button>', 'ДОСЬЕ');
+  $('dosClose').onclick = () => hide('pause');
+}
+$('me').onclick = showProfile;
+document.querySelectorAll('[data-myrank]').forEach((p) => { p.style.cursor = 'pointer'; p.title = 'Открыть досье'; p.onclick = showProfile; });
+$('emoQuick').onclick = (e) => { e.stopPropagation(); $('emoPanel').classList.toggle('open'); };
 
 // ---------- Время на ход ----------
 let timerOn = false, tLeft = 0, lastTick = performance.now(), lastSec = 99;
