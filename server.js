@@ -43,9 +43,9 @@ const token = () => crypto.randomBytes(16).toString('hex');
 const humans = (room) => room.seats.filter((s) => s && !s.bot);
 const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
-function createRoom(name, mode, ch, xp, acct, loc, honest) {
+function createRoom(name, mode, ch, xp, acct, loc, honest, noEmo) {
   const code = newCode();
-  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', honest: !!honest, seats: [null, null, null, null], host: 0,
+  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', honest: !!honest, noEmo: !!noEmo, seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
@@ -61,7 +61,7 @@ function viewFor(room, my) {
   const rot = (arr) => [0, 1, 2, 3].map((r) => arr[(r + my) % 4]);
   const t = my % 2;
   const v = {
-    code: room.code, phase: room.phase, mode: room.mode, honest: !!room.honest, paused: room.paused ? { by: R(room.paused.by) } : null, weather: room.weather || null, loc: room.loc, host: R(room.host), now: Date.now(),
+    code: room.code, phase: room.phase, mode: room.mode, honest: !!room.honest, noEmo: !!room.noEmo, paused: room.paused ? { by: R(room.paused.by) } : null, weather: room.weather || null, canUndo: canUndo(room, my), undo: room.undo ? { seat: R(room.undo.seat), votes: [...room.undo.votes].map(R), mine: room.undo.votes.has(my) } : null, loc: room.loc, host: R(room.host), now: Date.now(),
     seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0 } : null)),
   };
   if (room.match) {
@@ -86,7 +86,7 @@ function viewFor(room, my) {
 }
 function convEvent(ev, my) {
   const e = Object.assign({}, ev);
-  for (const k of ['seat', 'winner', 'accuser', 'accused', 'mate']) if (e[k] !== undefined) e[k] = (e[k] - my + 4) % 4;
+  for (const k of ['seat', 'winner', 'accuser', 'accused', 'mate', 'by']) if (e[k] !== undefined) e[k] = (e[k] - my + 4) % 4;
   if (e.team !== undefined) e.team = (e.team - (my % 2) + 2) % 2;
   return e;
 }
@@ -157,12 +157,13 @@ function startRound(room) {
 }
 
 function schedule(room, delay) {
-  if (room.phase === 'closing' || room.paused) return; // у последней предъявы свой таймер
+  if (room.phase === 'closing' || room.paused || room.undo) return; // у последней предъявы свой таймер
   clearTimeout(room.timer);
   const r = room.round;
   if (room.phase !== 'playing' || !r || r.over) { room.deadline = 0; return; }
   const s = room.seats[r.turn];
-  if (s.bot) { room.deadline = 0; room.timer = setTimeout(() => botAct(room), delay + BOT_DELAY); return; }
+  const afterHuman = room.undoSnap && room.round.log.length === room.undoSnap.logLen && Date.now() - room.undoSnap.at < 3000;
+  if (s.bot) { room.deadline = 0; room.timer = setTimeout(() => botAct(room), delay + BOT_DELAY + (afterHuman ? 1600 : 0)); return; }
   const limit = s.conns.size ? (room.mode === 'turbo' ? 45000 : TURN_MS) : AWAY_TURN_MS;
   room.deadline = Date.now() + delay + limit;
   room.timer = setTimeout(() => timeoutAct(room), delay + limit);
@@ -200,7 +201,7 @@ function doPlay(room, seat, cardId) {
     evs.push({ type: 'trick', winner: res.winner, points: room.mode !== 'hard' ? res.points : null });
     chatter(room, evs, res);
   }
-  if (res.trickDone && room.mode !== 'hard') { const m = checkMayak(room, res); if (m) { evs.push(m); delay = Math.max(delay, AFTER_VERDICT); } }
+  if (res.trickDone && room.mode !== 'hard' && !room.noEmo) { const m = checkMayak(room, res); if (m) evs.push(m); }
   if (r.over) evs.push(endRound(room));
   else if (r.closing && room.honest) { K.finishRound(room.match, r); evs.push(endRound(room)); }
   else if (r.closing) { startClosing(room, delay); evs.push({ type: 'closing' }); broadcast(room, evs); return; }
@@ -261,14 +262,14 @@ function verdictEvent(room, accuser, trickNo, accused, evidenceCard) {
 // Маяки. Хардкор: во время раздачи смайлы и жесты закрыты.
 // Лайт и Турбо: если живой игрок маякнул (смайл или жест) в этой или прошлой взятке,
 // а живой кореш после этого накинул ему туза или десятку (не козырь) во взятку, которую тот забрал, команде 1 штрафная (раз за раздачу).
-const signalBlocked = (room) => room.mode === 'hard' && room.phase === 'playing';
+const signalBlocked = (room) => (room.mode === 'hard' || room.noEmo) && room.phase === 'playing';
 function markSignal(room, s) {
   if (room.phase !== 'playing' || !room.round || s.bot) return;
-  s.sig = { trick: room.round.tricks.length, n: room.round.log.length };
+  s.sig = { r: room.round, trick: room.round.tricks.length, n: room.round.log.length }; // сигнал только этой раздачи
 }
 function checkMayak(room, res) {
   const r = room.round, w = res.winner, mate = (w + 2) % 4, W = room.seats[w], M = room.seats[mate];
-  if (!W || !M || W.bot || M.bot || !W.sig) return null;
+  if (!W || !M || W.bot || M.bot || !W.sig || W.sig.r !== r) return null;
   r.mayak = r.mayak || [];
   if (r.mayak.includes(K.teamOf(w))) return null;
   const done = r.tricks.length - 1; // индекс только что сыгранной взятки
@@ -279,12 +280,13 @@ function checkMayak(room, res) {
   if (card.points < 10 || K.isTrump(card, r.trump)) return null;
   r.mayak.push(K.teamOf(w));
   W.sig = null;
-  room.match.penalties[K.teamOf(w)] += 1;
-  if (K.matchLoser(room.match) !== null) { r.over = true; r.closing = false; r.end = r.end || { type: 'penalty' }; }
-  return { type: 'mayak', seat: w, mate, card, team: K.teamOf(w) };
+  // без штрафа: только свист, обзывалки и какашки в маякнувшего
+  const opp = [0, 1, 2, 3].filter((i) => K.teamOf(i) !== K.teamOf(w));
+  return { type: 'mayak', seat: w, mate, card, team: K.teamOf(w), by: pick(opp), seed: Math.floor(Math.random() * 2 ** 31) };
 }
 
 function endRound(room) {
+  room.undoSnap = null; if (room.undo) { clearTimeout(room.undoT); room.undo = null; }
   room.paused = null; clearTimeout(room.pauseT);
   const m = room.match;
   room.phase = K.matchLoser(m) === null ? 'roundEnd' : 'matchEnd';
@@ -294,12 +296,12 @@ function endRound(room) {
 
 function botAct(room) {
   const r = room.round;
-  if (!r || r.over || room.phase !== 'playing' || room.paused || !room.seats[r.turn].bot) return;
+  if (!r || r.over || room.phase !== 'playing' || room.paused || room.undo || !room.seats[r.turn].bot) return;
   try { doPlay(room, r.turn, botMove(r, r.turn)); } catch (e) { console.error('bot', e); }
 }
 function timeoutAct(room) {
   const r = room.round;
-  if (!r || r.over || room.phase !== 'playing' || room.paused) return;
+  if (!r || r.over || room.phase !== 'playing' || room.paused || room.undo) return;
   const s = r.turn;
   const legal = K.legalCards(r.hands[s], r.trick.map((e) => e.card), r.trump);
   const led = r.trick.length ? K.effSuit(r.trick[0].card, r.trump) : null;
@@ -337,6 +339,27 @@ function botMove(r, s) {
   return legal.reduce((a, b) => (a.points < b.points || (a.points === b.points && pw(a) < pw(b)) ? a : b)).id;
 }
 
+// ---------- Забрать карту обратно (если все не против) ----------
+// Можно, пока после твоей карты никто не ходил и прошло не больше 15 секунд
+function canUndo(room, seat) {
+  const u = room.undoSnap;
+  return !!(u && u.seat === seat && room.phase === 'playing' && room.round && !room.round.over && room.round.log.length === u.logLen && Date.now() - u.at < 15000 && !room.paused);
+}
+function undoYes(room) {
+  const u = room.undoSnap, seat = room.undo.seat;
+  clearTimeout(room.undoT); room.undo = null; room.undoSnap = null;
+  room.round = u.round; room.match = u.match; room.voids = u.voids;
+  broadcast(room, [{ type: 'undoDone', seat }, { type: 'talk', seat, text: pick(['Спасибо, пацаны, по-братски', 'Должен буду', 'Всё, теперь нормально кину']) }]);
+  schedule(room, 0);
+}
+function undoNo(room, by) {
+  if (!room.undo) return;
+  const seat = room.undo.seat;
+  clearTimeout(room.undoT); room.undo = null; room.undoSnap = null;
+  broadcast(room, [{ type: 'undoNo', seat, by }].concat(by !== null ? [{ type: 'talk', seat: by, text: pick(['Не, кинул так кинул', 'Карта легла, всё', 'Нет! Думать надо было']) }] : []));
+  schedule(room, 300);
+}
+
 // ---------- Пауза для всех: таймеры стоят, боты ждут ----------
 function pauseRoom(room, seat) {
   if (room.paused) return;
@@ -368,6 +391,7 @@ function act(room, seat, body) {
   const s = room.seats[seat];
   const abs = (rel) => (Number(rel) + seat) % 4;
   if (room.paused && ['play', 'accuse', 'ready'].includes(body.type)) throw new Error('Передых: сначала снимите паузу');
+  if (room.undo && ['play', 'accuse', 'ready', 'pause'].includes(body.type)) throw new Error('Идёт голосование: забрать карту или нет');
   switch (body.type) {
     case 'pause': {
       if (room.phase !== 'playing' && room.phase !== 'closing') throw new Error('Пауза только во время игры');
@@ -394,8 +418,28 @@ function act(room, seat, body) {
         const r = room.round, c = r && r.turn === seat && K.legalCards(r.hands[seat], r.trick.map((e) => e.card), r.trump).find((x) => x.id === String(body.card));
         if (r && r.turn === seat && !c) throw new Error('Честняк: масть есть, клади масть');
       }
+      // снимок до хода: вдруг попросит забрать карту обратно
+      room.undoSnap = { seat, at: Date.now(), round: structuredClone(room.round), match: structuredClone(room.match), voids: structuredClone(room.voids), logLen: room.round.log.length + 1, card: String(body.card) };
       doPlay(room, seat, String(body.card));
       return;
+    case 'undoAsk': {
+      if (!canUndo(room, seat)) throw new Error('Поздно, карту уже не забрать');
+      if (room.undo) return;
+      clearTimeout(room.timer); room.deadline = 0;
+      room.undo = { seat, votes: new Set([seat, ...room.seats.map((x, i) => (x && x.bot ? i : -1)).filter((i) => i >= 0)]) };
+      room.undoT = setTimeout(() => undoNo(room, null), 20000);
+      const card = room.undoSnap.round.hands[seat].find((c) => c.id === room.undoSnap.card);
+      broadcast(room, [{ type: 'talk', seat, text: pick(['Пацаны, не ту кинул! Можно назад?', 'Ой, рука соскочила. Верните карту?', 'Стоп-стоп, не та карта! Можно переиграть?']) }, { type: 'undoAsk', seat, card }]);
+      if (room.undo.votes.size >= 4) undoYes(room);
+      return;
+    }
+    case 'undoVote': {
+      if (!room.undo || room.undo.votes.has(seat)) return;
+      if (!body.yes) return undoNo(room, seat);
+      room.undo.votes.add(seat);
+      if (room.undo.votes.size >= 4) undoYes(room); else broadcast(room, [{ type: 'talk', seat, text: pick(['Да ладно, забирай', 'Пусть забирает', 'Окей, без базара']) }]);
+      return;
+    }
     case 'accuse': {
       if (room.honest) throw new Error('Честняк: предъявлять некому');
       if (room.phase !== 'playing' && room.phase !== 'closing') throw new Error('Сейчас не играем');
@@ -446,7 +490,7 @@ function act(room, seat, body) {
       broadcast(room, []);
       return;
     case 'gesture': {
-      if (signalBlocked(room)) throw new Error('Хардкор: маяки запрещены, жесты между раздачами');
+      if (signalBlocked(room)) throw new Error(room.mode === 'hard' ? 'Хардкор: маяки запрещены, жесты между раздачами' : 'Смайлы за этим столом только между раздачами');
       const g = String(body.g);
       if (!GESTURES.includes(g)) throw new Error('Нет такого жеста');
       const now = Date.now();
@@ -467,7 +511,7 @@ function act(room, seat, body) {
     case 'emote': {
       const i = Number(body.i);
       if (!EMOTES[i]) throw new Error('Нет такой эмоции');
-      if (signalBlocked(room)) throw new Error('Хардкор: маяки запрещены, смайлы между раздачами');
+      if (signalBlocked(room)) throw new Error(room.mode === 'hard' ? 'Хардкор: маяки запрещены, смайлы между раздачами' : 'Смайлы за этим столом только между раздачами');
       const now = Date.now();
       if (s.lastEmote && now - s.lastEmote < 1500) return;
       s.lastEmote = now;
@@ -532,7 +576,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
       const u = await A.userByToken(b.acct).catch(() => null);
-      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest);
+      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest, b.emotes === false);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {

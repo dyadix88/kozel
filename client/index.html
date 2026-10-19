@@ -147,10 +147,16 @@ button{font:inherit;color:inherit}
 .emonote{position:absolute;z-index:60;max-width:16em;padding:.5em .8em;background:rgba(20,10,8,.92);color:var(--cream);border:.1em solid var(--red);border-radius:.3em;font-size:.85em;line-height:1.3;pointer-events:none;animation:fadeout 3.2s forwards}
 @keyframes fadeout{0%,80%{opacity:1}100%{opacity:0}}
 #emoQuick.locked{filter:grayscale(1);opacity:.55}
+.poop{position:absolute;left:0;top:0;z-index:7;font:2.2em 'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;pointer-events:none}
 .netpause{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:40;display:flex;flex-direction:column;align-items:center;gap:.4em;padding:1em 1.8em;text-align:center}
 .netpause b{font:400 2.2em 'Russo One',sans-serif;color:var(--red-dk);letter-spacing:.06em}
 .netpause span{color:var(--ink-soft)}
 .netpause[hidden]{display:none}
+.vbtn{position:absolute;right:.6em;bottom:.35em;font:inherit;font-size:.8em;color:var(--cream);background:rgba(0,0,0,.25);border:.08em solid rgba(255,240,210,.5);border-radius:1em;padding:.15em .7em;cursor:pointer}
+.vbtn:hover{background:rgba(0,0,0,.45)}
+.undobox b{font-size:1.6em}
+.undobtn{position:absolute;left:24%;bottom:22%;z-index:8;font-size:.95em;animation:pop .2s ease-out}
+.undobtn[hidden]{display:none}
 .hand .card.nope{animation:nope .35s}
 @keyframes nope{25%{translate:-.35em 0}75%{translate:.35em 0}}
 .mode{flex:1;cursor:pointer;padding:.7em .8em;border:.12em solid rgba(111,20,15,.45);border-radius:.2em;background:rgba(255,255,255,.35);text-align:left;line-height:1.35}
@@ -216,12 +222,13 @@ button{font:inherit;color:inherit}
 .fig .jaw{position:absolute;left:0;top:0;width:100%;pointer-events:none;display:none}
 .fig .jaw img{width:100%}
 .fig.mouthy .jaw{display:block}
-.fig .mh{position:absolute;left:var(--mx);top:var(--my);width:var(--mw);height:0;transform:translateX(-50%);border-radius:0 0 45% 45%/0 0 60% 60%;overflow:hidden;display:none;background:radial-gradient(ellipse 55% 50% at 50% 100%,#b8303f 0 55%,transparent 58%),#140302}
-.fig.mouthy.talking .mh{display:block;animation:mh var(--mt,.9s) steps(1,end) infinite}
+.fig .mh{position:absolute;inset:0;display:none;background:radial-gradient(ellipse at 50% 40%,#3a0a08,#140302 70%)}
+.fig.mouthy.talking .mh{display:block}
+.fig.mouthy.talking .body>img{-webkit-mask-image:var(--jm);mask-image:var(--jm);-webkit-mask-size:100% 100%;mask-size:100% 100%}
+.fig.fade.mouthy.talking .body>img{-webkit-mask-image:var(--jm),linear-gradient(to bottom,#000 78%,transparent 99%);mask-image:var(--jm),linear-gradient(to bottom,#000 78%,transparent 99%);-webkit-mask-composite:source-in;mask-composite:intersect}
 .fig.mouthy.talking .jaw{animation:jaw var(--mt,.9s) steps(1,end) infinite}
-/* Как в Южном парке: челюсть целиком отваливается вниз рывками, без плавности */
+/* Как в «Южном парке»: челюсть по контуру отваливается вниз рывками */
 @keyframes jaw{0%{transform:translateY(0)}10%{transform:translateY(var(--md))}22%{transform:translateY(calc(var(--md) * .4))}32%{transform:translateY(var(--md))}44%{transform:translateY(0)}54%{transform:translateY(calc(var(--md) * 1.3))}68%{transform:translateY(calc(var(--md) * .5))}78%{transform:translateY(var(--md))}90%{transform:translateY(calc(var(--md) * .3))}}
-@keyframes mh{0%{height:0}10%{height:var(--md)}22%{height:calc(var(--md) * .4)}32%{height:var(--md)}44%{height:0}54%{height:calc(var(--md) * 1.3)}68%{height:calc(var(--md) * .5)}78%{height:var(--md)}90%{height:calc(var(--md) * .3)}}
 .fig.mouthy.talking .body{animation:yap var(--mt,.9s) steps(1,end) infinite}
 @keyframes yap{0%,44%,100%{transform:translateY(0)}10%,54%{transform:translateY(-.5%)}32%,78%{transform:translateY(-.25%)}}
 .fig .wave{position:absolute;left:58%;top:6%;width:9%;aspect-ratio:1;border:.18em solid rgba(255,230,170,.9);border-color:transparent rgba(255,230,170,.9) transparent transparent;border-radius:50%;display:none;pointer-events:none}
@@ -637,20 +644,22 @@ details.sets summary::-webkit-details-marker{display:none}
   <div class="panel plate" id="panel"></div>
   <div class="panel plate logp" id="logPanel"></div>
   <div class="emo plate" id="emoPanel"></div>
+  <button class="btn undobtn" id="undoBtn" hidden>↩ Забрать карту</button>
+  <div class="netpause undobox plate" id="undoBox" hidden><b>ЗАБРАТЬ КАРТУ?</b><span id="undoTxt"></span><div class="row2" id="undoBtns"><button class="btn" id="undoYes">Да, пусть забирает</button><button class="btn alt" id="undoNo">Нет</button></div></div>
   <div class="netpause plate" id="netPause" hidden><b>ПЕРЕДЫХ</b><span id="npBy"></span><button class="btn" id="npGo">▶ Погнали дальше</button></div>
   <button class="emoq" id="emoQuick" hidden title="Эмоции">😎</button>
 
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.33</div></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.36</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
           <div class="mmcol">
             <div class="mmh">1. Твой пацан</div>
             <div data-mychar></div>
-            <div class="mmrow"><button class="btn alt" id="profBtn">Мой профиль</button><button class="btn alt" data-open="news">Что нового</button></div>
+            <div class="mmrow"><button class="btn alt" id="profBtn">Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button></div>
           </div>
           <div class="mmcol">
             <div class="mmh">2. Где играем</div>
@@ -661,6 +670,7 @@ details.sets summary::-webkit-details-marker{display:none}
               <button class="mode" data-mode="lite" aria-pressed="false"><b>Лайт</b><span>Для игры под пивко</span></button>
               <button class="mode" data-mode="turbo" aria-pressed="false"><b>Турбо</b><span>До 6, 45 сек на ход</span></button>
             </div>
+            <button class="honest" id="emoBtn" aria-pressed="true"><b>😎 Смайлы</b><span>Смайлы и жесты во время раздачи. Выключишь, будут только между раздачами (никаких маяков).</span></button>
             <button class="honest" id="honestBtn" aria-pressed="false"><b>🤝 Честняк</b><span>На трояк не залезешь: игра не даст положить не ту карту. Боты тоже играют честно, «Предъявить» не нужно.</span></button>
             <button class="btn wide" id="backNet" hidden></button><button class="btn wide big" id="playNet" disabled>Позвать пацанов (на сайте игры)</button>
             <button class="btn wide" id="playBots">Раскинуть с ботами</button>
@@ -740,7 +750,8 @@ details.sets summary::-webkit-details-marker{display:none}
         <h3>Штрафы до 12</h3><p>Хвалились и взяли 0: люся, 12 штрафных, сразу на выход. До 29: 3 штрафных. От 30 до 59: 2. Ровно 60: 2 штрафных и яйца. Хвалившие взяли 61 и больше: штрафы прилетают соперникам. У соперников от 30 до 59: 1 штрафной, до 29: 2, ноль (люся): 6. Кто первым набрал 12 (в Турбо 6), тот и козёл.</p>
         <h3>Крысятничество</h3><p>Не кинул масть, хотя была? Полез на трояк, значит крыса. Игра не мешает, но любой из соперников может предъявить. Спалили: команде крысы 3 штрафных, раздача всё. Предъявил зря: 3 штрафных себе, за базар надо отвечать. После последней взятки есть 20 секунд на последнюю предъяву, и только потом подбиваем очки.</p>
         <h3>Хардкор и «Предъявить»</h3><p>В Хардкоре журнала нет, и подсмотреть ходы через «Предъявить» не выйдет: открыл список ходов, значит обязан кому-то предъявить. Если зря, 3 штрафных себе.</p>
-        <h3>Маяки</h3><p>Маякнуть корешу смайлом, чтобы он накинул тебе туза или десятку, не по-пацански. В Хардкоре смайлы и жесты закрыты, пока идёт раздача: только между раздачами. В Лайте и Турбо можно, но если маякнул, а кореш сразу после этого кинул туза или десятку (не козырь) в твою взятку и ты её забрал, «Маяк спалили»: команде 1 штрафная (не больше раза за раздачу). Это за столом с пацанами, с ботами не считается.</p>
+        <h3>Маяки</h3><p>Маякнуть корешу смайлом, чтобы он накинул тебе туза или десятку, не по-пацански. В Хардкоре смайлы и жесты во время раздачи закрыты. Перед игрой можно выключить смайлы совсем (кнопка «😎 Смайлы»), тогда они только между раздачами. Если смайлы включены и кто-то маякнул, а кореш сразу накинул ему туза или десятку: «Маяк спалили!», свист, обзывалки и какашки в маячника. Штрафа нет.</p>
+        <h3>Забрать карту</h3><p>Кинул не ту карту? Пока после тебя никто не походил (и не больше 15 секунд), жми «↩ Забрать карту». Остальные трое голосуют: если все не против, карта возвращается в руку. Боты всегда не против. Один «нет», и карта остаётся на столе. Только в игре по сети.</p>
         <h3>Карта заранее</h3><p>Пока ходят другие, тыкни свою карту: она поднимется с надписью «следующая» и пойдёт сама, когда дойдёт очередь. Ещё тык по ней снимает выбор. Если к твоему ходу её класть нельзя (есть масть), она не пойдёт, выберешь сам. Спрятать карты: смахни их вниз. Открыть: тык по колоде. Заряженная карта при этом не сбрасывается.</p>
         <button class="btn" data-close="rules" style="margin-top:1.1em">Всё ясно</button>
       </div>
@@ -751,14 +762,17 @@ details.sets summary::-webkit-details-marker{display:none}
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.33 · Сегодня</h3><ul><li>Хардкор: «Предъявить» больше не журнал. Открыл ходы, значит обязан предъявить</li></ul>
+        <h3>Версия 2.36 · Сегодня</h3><ul><li>📰 Кнопка «Обновления» в шапке меню и «Что нового» в меню паузы, чтобы смотреть прямо во время игры</li></ul>
+        <h3>Версия 2.35</h3><ul><li>↩ Забрать карту: кинул не ту, жмёшь кнопку, и если трое не против, карта возвращается в руку (по сети)</li><li>Челюсть вырезана точно по контуру лица у каждого пацана: нижняя губа с подбородком отваливается целиком, без «второго подбородка»</li></ul>
+        <h3>Версия 2.34</h3><ul><li>Исправлен баг: маяк засчитывался из-за смайла из прошлых раздач</li><li>За маяк больше нет штрафа: свист, обзывалки и какашки в маячника 💩</li><li>Перед игрой кнопка «😎 Смайлы»: выключил, и смайлы только между раздачами</li></ul>
+        <h3>Версия 2.33</h3><ul><li>Хардкор: «Предъявить» больше не журнал. Открыл ходы, значит обязан предъявить</li></ul>
         <h3>Версия 2.32</h3><ul><li>Карты в руке раздвинуты шире, меньше промахов</li><li>Карта под курсором не дёргается и не съезжает: мелкое движение руки больше не считается перетаскиванием</li></ul>
         <h3>Версия 2.31</h3><ul><li>Челюсть отваливается целиком, как в «Южном парке»</li><li>Погода: листопад, жара, радуга. Под дождём листья падают сильнее. Тумана больше нет</li><li>Пацаны болтают про погоду, у каждого свои фразы (Элвис в жару: «ЖАРА! ИЮЛЬ!»)</li><li>Витя Гудок теперь в образе алкаша с бутылкой</li><li>Звания без тюремного жаргона: Салага, Свой в доску, Старшой, Главный по лавке, Батя двора</li><li>Этот список: что нового, видно всем</li></ul>
         <h3>Версия 2.30</h3><ul><li>Погода: дождь, гроза с громом и молниями, ветер. По сети у всех одна</li><li>Бомж Валера стал Витей Гудком с рынка Кирово: гудит «ТУ-ТУУУ» и палит, у кого мать (наполовину врёт)</li></ul>
         <h3>Версия 2.29</h3><ul><li>Рот открывается шире, с зубами и языком, болтает дольше</li></ul>
         <h3>Версия 2.28</h3><ul><li>⏸ Пауза для всех по сети (в меню)</li><li>↩ Кнопка «Вернуться за стол», если случайно свалил: садишься на своё место</li><li>Досье с оправой по уровню: от картона до золотого дракона с крыльями</li><li>Уровни до 60, новые звания, 22 новые ачивки</li><li>В чужом досье видно уровень и рамку</li></ul>
         <h3>Версия 2.27</h3><ul><li>Рот шевелится, когда пацан говорит</li><li>🎙 «Рот по микрофону»: говоришь в Дискорде, у твоего пацана шевелится рот у всех на экране (лучше в наушниках)</li><li>Гости, бабка и соседи по сети у всех одинаковые</li><li>Реплики висят дольше, свои над своей головой</li><li>Спрятать карты: смахни их вниз</li></ul>
-        <h3>Версия 2.26</h3><ul><li>Карта заранее: тыкни карту, пока ходят другие, она пойдёт сама</li><li>Маяки: в Хардкоре смайлы во время раздачи закрыты, в Лайте за маяк корешу 1 штрафная</li></ul>
+        <h3>Версия 2.26</h3><ul><li>Карта заранее: тыкни карту, пока ходят другие, она пойдёт сама</li><li>Маяки: в Хардкоре смайлы во время раздачи закрыты</li></ul>
         <h3>Версия 2.24</h3><ul><li>🤝 Честняк: игра не даёт залезть на трояк, боты тоже честные</li></ul>
         <h3>Версия 2.22</h3><ul><li>Свои пацаны: выбираешь персонажа и качаешь его, можно завести нескольких и удалять</li><li>Двор: статистика каждого пацана по клику</li></ul>
         <div class="row2" style="margin-top:1.1em"><button class="btn" data-close="news">Понятно</button><button class="btn alt" id="newsRules">Правила игры</button></div>
@@ -1618,29 +1632,32 @@ const MOUTH = {
   front: { oleg: [46.9, 33.1], elvis: [53.8, 46.9], lysy: [48.8, 46.3], zema: [51.3, 46], dantl: [51.3, 41.9], vitaha: [46.9, 36.3] },
   side: { oleg: [56.9, 33.5], elvis: [58.1, 42.5], lysy: [55, 43.1], zema: [65, 44.4], dantl: [54.4, 36.3], vitaha: [55.6, 39.4] },
 };
+// Контур челюсти по каждому пацану (% картинки 640x640): линия губ, край щёк, подбородок
+const JAWS = {"front":{"oleg":[[36,34],[41.5,33.4],[44,33.5],[46.5,33.3],[49,33.0],[52.5,32.7],[56,32.8],[59.2,33.5],[58.8,36],[57.6,38.2],[55.8,40.5],[53.5,42.8],[50.5,44.4],[47.5,44.9],[44.5,44.4],[41.5,42.5],[39.2,40.2],[37.4,38],[36.3,36]],"elvis":[[40.0,45.4],[44,45.2],[48.9,45.3],[51,46.6],[54.6,47.1],[58,46.8],[61.2,46.2],[63.4,45.4],[62.8,46.5],[61.8,48],[59.7,50],[56.2,52],[54,54.2],[51.8,54.6],[49.5,54.0],[47.2,52],[44.4,50],[42.1,48],[40.5,46.3]],"lysy":[[40.0,44.2],[44.5,44.4],[47,45.7],[50,46.5],[52.5,46],[54.7,45],[58,44.6],[63.6,44.2],[62.1,46],[60.1,48],[57.8,50],[55.1,52],[52.3,54],[50.5,54.4],[48.5,54.1],[46.1,52],[44.1,50],[42.6,48],[41.2,46]],"zema":[[42.6,44.5],[44.5,45.9],[47.5,46.6],[50.9,46.8],[53.5,45.6],[56.2,43.7],[60,43.6],[63.4,43.8],[62.3,46],[60.3,48],[58.3,50],[56.4,52],[53.7,53.4],[51.5,53.6],[49.5,53.3],[47,52],[44.5,50],[43.5,48],[42.9,46]],"dantl":[[37.4,41.2],[42.5,41.4],[46,42.1],[50.1,42.3],[54,41.6],[57.2,40.2],[61,40.4],[60.3,42],[59.1,44],[57.8,46],[56.6,48],[54.8,50],[52.5,51.9],[50,52.2],[47.5,51.9],[44.7,50],[42.1,48],[40.4,46],[39,44],[37.8,42.3]],"vitaha":[[38.5,37.0],[42.6,37.7],[46,37.6],[49.3,37.3],[52,36.3],[54.3,35.0],[58,35.2],[62.4,35.6],[62.0,38],[61.0,40],[59.0,42],[56.7,44],[53.6,46],[51.2,47.0],[49,47.2],[47.3,47.0],[45,46],[43,44],[41.4,42],[40.1,40],[39,38]]},"side":{"oleg":[[38.5,35.6],[45,35.9],[51.1,35.3],[53.5,34.9],[55.7,34.3],[58,33.8],[60.4,33.4],[63.5,33.4],[63.6,35.3],[63.4,37.7],[62.8,40],[61.2,42.3],[59.3,43.9],[56.5,44.9],[52.6,44.7],[48.7,43.9],[44.8,42.3],[40.9,40.4],[38.6,38.6]],"elvis":[[43.0,42.0],[48,42.0],[53.8,41.8],[55.8,42.6],[57.7,43.0],[60.5,42.4],[61.4,42.6],[60.9,44.7],[60.5,46.3],[59.7,48],[58.1,49.2],[55.8,49.8],[52.6,49.0],[49.9,47.4],[47.2,45.5],[44.6,44]],"lysy":[[42.4,44.4],[47,44.6],[51.1,44.3],[53.2,44.6],[55.4,44.5],[57.5,44.1],[59.3,43.5],[62.2,43.3],[62.0,44.5],[61.3,46.1],[59.7,48],[57.4,49.6],[54.6,50.4],[51.9,50.6],[49.2,50.0],[46.8,48.4],[44.1,45.3]],"zema":[[50.4,44.8],[55,44.8],[58.8,44.65],[61,45.0],[63.5,45.0],[65.5,44.4],[67.4,43.3],[69,43.4],[68.7,46.2],[68.1,48.2],[67,50.1],[65.4,51.3],[63.5,51.9],[60.7,51.3],[56.8,50.1],[52.9,48.0],[50.4,46.8]],"dantl":[[39.6,36.3],[43,36.4],[47.4,36.4],[50,37.2],[52.9,37.7],[56.5,37.3],[60.3,36.2],[61.2,36.1],[60.9,37.2],[60.3,39.1],[59.1,41.1],[57.5,43],[55.2,44.6],[52.1,45.0],[49.3,44.6],[46.2,43],[43.5,40.7],[40.7,38.3]],"vitaha":[[42,38.0],[47,38.0],[51.3,37.7],[54,39.0],[56.4,39.8],[60.7,40.0],[61.3,40.4],[60.3,41.6],[59.1,43.2],[57.2,45.1],[55.6,47.1],[54.1,47.9],[51.3,47.5],[47.4,45.9],[44.5,44.5],[42.3,42.5]]}};
 function setMouth(fig, ch, poseName, src, flip) {
-  const m = MOUTH[poseName] && MOUTH[poseName][ch];
-  fig.classList.toggle('mouthy', !!m);
-  if (!m) return;
-  const key = ch + poseName + flip + 'sp';
+  const P = JAWS[poseName] && JAWS[poseName][ch];
+  fig.classList.toggle('mouthy', !!P);
+  if (!P) return;
+  const key = ch + poseName + flip + 'jaw2';
   if (fig.dataset.mk === key) return;
   fig.dataset.mk = key;
-  // вся нижняя часть лица от губ до подбородка, как вырезанная из картона
-  const rx = poseName === 'front' ? 10.5 : 8.5, ry = poseName === 'front' ? 11.5 : 10.5, cx = m[0] + (poseName === 'side' ? 1 : 0);
-  const pts = [[cx - rx * 1.02, m[1] - .4]];
-  for (let a = 0; a <= 180; a += 12) { const r = a * Math.PI / 180; pts.push([cx - Math.cos(r) * rx, m[1] + Math.sin(r) * ry]); }
-  pts.push([cx + rx * 1.02, m[1] - .4]);
+  const cx = P.reduce((a, q) => a + q[0], 0) / P.length, cy = P.reduce((a, q) => a + q[1], 0) / P.length;
+  const grow = (q, k) => [cx + (q[0] - cx) * k, cy + (q[1] - cy) * k];
+  const poly = (Q, mirror) => 'polygon(' + Q.map((q) => (mirror ? 100 - q[0] : q[0]).toFixed(2) + '% ' + q[1].toFixed(2) + '%').join(',') + ')';
+  // челюсть: копия картинки по контуру (чуть шире, чтобы не было шва)
   const jimg = fig.querySelector('.jaw img'); jimg.src = src;
-  jimg.style.clipPath = 'polygon(' + pts.map((q) => q[0].toFixed(1) + '% ' + q[1].toFixed(1) + '%').join(',') + ')';
-  fig.style.setProperty('--mx', (flip ? 100 - cx : cx) + '%');
-  fig.style.setProperty('--my', m[1] + '%');
-  fig.style.setProperty('--mw', (rx * 1.75) + '%');
+  jimg.style.clipPath = poly(P.map((q) => grow(q, 1.03)), false);
+  // тёмный рот на месте челюсти (не отражается вместе с картинкой, поэтому зеркалим сами)
+  fig.querySelector('.mh').style.clipPath = poly(P, flip);
+  // в самой картинке на время разговора вырезаем челюсть, чтобы не было «второго подбородка»
+  const d = 'M0 0H100V100H0Z M' + P.map((q) => q[0].toFixed(2) + ' ' + q[1].toFixed(2)).join(' L') + 'Z';
+  fig.style.setProperty('--jm', 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill-rule="evenodd" d="' + d + '"/></svg>') + '")');
 }
 const talkUntil = [0, 0, 0, 0], micOn = [false, false, false, false], talkT = [];
 function updTalk(seat) {
   const f = $('f' + seat); if (!f) return;
   const on = micOn[seat] || Date.now() < talkUntil[seat];
-  if (on && !f.classList.contains('talking')) { f.style.setProperty('--mt', (.8 + Math.random() * .35).toFixed(2) + 's'); f.style.setProperty('--md', (6.5 + Math.random() * 2.5).toFixed(1) + '%'); }
+  if (on && !f.classList.contains('talking')) { f.style.setProperty('--mt', (.8 + Math.random() * .35).toFixed(2) + 's'); f.style.setProperty('--md', (4.5 + Math.random() * 2).toFixed(1) + '%'); }
   f.classList.toggle('talking', on);
 }
 // реплика в пузыре: рот шевелится, пока «проговаривает» текст
@@ -1696,6 +1713,21 @@ const Mic = (() => {
   return { toggle, get on() { return on; } };
 })();
 document.addEventListener('click', (e) => { if (e.target.closest('[data-mic]')) Mic.toggle(); });
+
+// Какашки летят в того, кто маякнул
+function poopRain(seat, R) {
+  const f = $('f' + seat), t = f && !f.hidden ? f : $('s' + seat) || $('me');
+  if (!t) return;
+  const sr = stage.getBoundingClientRect(), r = t.getBoundingClientRect();
+  const tx = r.left - sr.left + r.width / 2, ty = r.top - sr.top + r.height * .3;
+  for (let k = 0; k < 9; k++) setTimeout(() => {
+    const e = document.createElement('div'); e.className = 'poop'; e.textContent = R() < .8 ? '💩' : '🍅';
+    const sx = R() < .5 ? -40 : sr.width + 40, sy = sr.height * (.2 + R() * .5);
+    stage.appendChild(e);
+    e.animate([{ transform: 'translate(' + sx + 'px,' + sy + 'px) rotate(0)' }, { transform: 'translate(' + (tx + (R() - .5) * 60) + 'px,' + (ty + (R() - .5) * 50) + 'px) rotate(' + (R() * 720) + 'deg)' }], { duration: 650 + R() * 300, easing: 'cubic-bezier(.3,.6,.6,1)', fill: 'forwards' })
+      .finished.then(() => { e.textContent = '💥'; setTimeout(() => e.remove(), 350); }).catch(() => e.remove());
+  }, k * 120);
+}
 
 // ---------- Ранги ----------
 // Уровни: первые идут быстро, каждый следующий дороже в 1.35 раза
@@ -2107,7 +2139,8 @@ async function doPlay(seat, id, fromXY, g) {
   render();
 }
 
-let honest = false;
+let honest = false, emoOn = true;
+try { emoOn = localStorage.getItem('kozel-emo') !== 'off'; } catch (e) {}
 try { honest = localStorage.getItem('kozel-honest') === '1'; } catch (e) {}
 const honestBtnSync = () => $('honestBtn').setAttribute('aria-pressed', String(honest));
 // Честняк: можно ли эту карту класть
@@ -2472,12 +2505,13 @@ function showPause(html, title) {
 }
 function pauseMenu() {
   const np = online && Net.view && Net.view.paused, canNP = online && Net.view && (Net.view.phase === 'playing' || Net.view.phase === 'closing');
-  showPause((canNP ? (np ? '<button class="btn wide" id="netPauseBtn">▶ Снять паузу для всех</button>' : '<button class="btn wide" id="netPauseBtn">⏸ Пауза для всех</button><p class="note">Иначе игра по сети не ждёт: время на ход тикает.</p>') : online ? '<p class="note">Игра по сети не ждёт: время на ход тикает.</p>' : '') + '<button class="btn wide" id="resume">Обратно за стол</button><button class="btn wide alt" id="pRules">Правила</button>' +
+  showPause((canNP ? (np ? '<button class="btn wide" id="netPauseBtn">▶ Снять паузу для всех</button>' : '<button class="btn wide" id="netPauseBtn">⏸ Пауза для всех</button><p class="note">Иначе игра по сети не ждёт: время на ход тикает.</p>') : online ? '<p class="note">Игра по сети не ждёт: время на ход тикает.</p>' : '') + '<button class="btn wide" id="resume">Обратно за стол</button><button class="btn wide alt" id="pRules">Правила</button><button class="btn wide alt" id="pNews">📰 Что нового</button>' +
     '<button class="btn wide alt" id="exit">Свалить в меню</button><div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="music"></button><button class="btn alt" data-toggle="amb"></button></div><div class="mus"><span>Трек:</span><select data-track></select><span>Громкость:</span><input type="range" min="0" max="100" data-mvol></div><div class="mus"><span>Голос:</span><select data-voice></select><button class="btn alt" data-vtest style="font-size:.85em;padding:.3em .7em">Послушать</button></div><button class="btn alt wide" data-mic></button><button class="btn alt wide" data-wx></button>');
   bindToggles();
   $('resume').onclick = () => hide('pause');
   if ($('netPauseBtn')) $('netPauseBtn').onclick = () => { hide('pause'); Net.send('pause', { on: !np }); };
   $('pRules').onclick = () => open('rules');
+  $('pNews').onclick = () => open('news');
   $('exit').onclick = () => {
     $('pauseIn').innerHTML = online ? '<h2>Свалить?</h2><p>За тебя сядет бот, пацаны доиграют без тебя.</p><div class="row2"><button class="btn" id="yesExit">Свалить</button><button class="btn alt" id="noExit">Остаюсь</button></div>' : '<h2>Свалить?</h2><p>Партия сгорит, никто не запомнит.</p><div class="row2"><button class="btn" id="yesExit">Свалить</button><button class="btn alt" id="noExit">Остаюсь</button></div>';
     $('yesExit').focus();
@@ -2501,6 +2535,8 @@ const LOC_THUMB = { yard: (window.YARD_BG || getComputedStyle(stage).backgroundI
 document.querySelector('.loccards').innerHTML = Object.keys(LAYOUTS).map((l) => '<button class="lcard2" data-loc="' + l + '" style="background-image:url(' + (LOCS[LAYOUTS[l].bg] || LOC_THUMB.yard) + ')">' + (LAYOUTS[l].base ? '<small>ТОП-1</small>' : '') + '<b>' + LAYOUTS[l].name + '</b></button>').join('');
 document.querySelectorAll('[data-loc]').forEach((b) => { b.onclick = () => { try { localStorage.setItem('kozel-loc', b.dataset.loc); } catch (e) {} setLoc(b.dataset.loc); }; });
 setLoc(LOC);
+$('emoBtn').setAttribute('aria-pressed', String(emoOn));
+$('emoBtn').onclick = () => { emoOn = !emoOn; $('emoBtn').setAttribute('aria-pressed', String(emoOn)); try { localStorage.setItem('kozel-emo', emoOn ? 'on' : 'off'); } catch (e) {} };
 honestBtnSync();
 $('honestBtn').onclick = () => { honest = !honest; honestBtnSync(); try { localStorage.setItem('kozel-honest', honest ? '1' : '0'); } catch (e) {} };
 document.querySelectorAll('.mode').forEach((b) => {
@@ -3259,7 +3295,7 @@ const Net = (() => {
   const lastNet = () => { try { const x = JSON.parse(localStorage.getItem('kozel-lastnet') || 'null'); return x && Date.now() - x.at < 3 * 3600000 ? x : null; } catch (e) { return null; } };
   const saved = () => { try { return JSON.parse(localStorage.getItem('kozel-net') || 'null'); } catch (e) { return null; } };
   function save() { try { localStorage.setItem('kozel-net', JSON.stringify({ code, tok })); } catch (e) {} }
-  async function create(name, mode) { const j = await api('/api/create', { name, mode, honest: $('honestBtn').getAttribute('aria-pressed') === 'true', loc: LOC, char: myChar, xp: myXp, acct: Acct.token }); code = j.code; tok = j.token; save(); connect(); }
+  async function create(name, mode) { const j = await api('/api/create', { name, mode, honest: $('honestBtn').getAttribute('aria-pressed') === 'true', emotes: emoOn, loc: LOC, char: myChar, xp: myXp, acct: Acct.token }); code = j.code; tok = j.token; save(); connect(); }
   async function join(c, name) {
     const old = saved();
     const back = lastNet();
@@ -3287,6 +3323,10 @@ const Net = (() => {
     ['lobby', 'pause', 'verdict'].forEach(hide); closePanel(); clearTable(); open('menu');
   }
   $('npGo').onclick = () => send('pause', { on: false });
+  let undoHideT = null;
+  $('undoBtn').onclick = () => { $('undoBtn').hidden = true; send('undoAsk'); };
+  $('undoYes').onclick = () => { $('undoBtns').hidden = true; send('undoVote', { yes: true }); };
+  $('undoNo').onclick = () => { $('undoBtns').hidden = true; send('undoVote', { yes: false }); };
   function fxEvent(ev) {
     if (ev.type === 'mic') { if (ev.seat !== 0) micTalk(ev.seat, ev.on); }
     else if (ev.type === 'scene') netScene(ev);
@@ -3305,7 +3345,7 @@ const Net = (() => {
   function apply(v) {
     view = v; skew = v.now - Date.now(); lite = v.mode !== 'hard'; MODE = v.mode;
     if (v.loc && v.loc !== LOC) setLoc(v.loc);
-    if (v.weather && (v.weather.kind !== wxKind || v.weather.seed !== wxSeed)) setWeather(v.weather.kind, v.weather.seed, null, true); TURN_MS = v.mode === 'turbo' ? 45000 : 60000; honest = !!v.honest;
+    if (v.weather && (v.weather.kind !== wxKind || v.weather.seed !== wxSeed)) setWeather(v.weather.kind, v.weather.seed, null, true); TURN_MS = v.mode === 'turbo' ? 45000 : 60000; honest = !!v.honest; tableEmo = !v.noEmo;
     NAMES = v.seats.map((s, i) => (s ? s.name : (i === 0 ? 'Ты' : 'свободно')));
     SEATCH = v.seats.map((s) => (s && s.char) || '');
     match = v.match || null; round = v.round || null;
@@ -3313,6 +3353,15 @@ const Net = (() => {
     else if (closeOn) hideClosing();
     if (round && !round.over && round.turn === 0 && v.phase === 'playing') { timerOn = true; tLeft = Math.min(TURN_MS, round.deadline - Date.now() - skew); updTimer(); }
     else stopTimer();
+    $('undoBtn').hidden = !(v.canUndo && !v.undo);
+    clearTimeout(undoHideT); if (v.canUndo) undoHideT = setTimeout(() => { $('undoBtn').hidden = true; }, 14500);
+    $('undoBox').hidden = !v.undo;
+    if (v.undo) {
+      const asker = v.undo.seat === 0, n = v.undo.votes.length - 1;
+      $('undoTxt').textContent = asker ? 'Ждём пацанов: согласны ' + n + ' из 3' : (NAMES[v.undo.seat] + ' кинул не ту карту и просит забрать её обратно. Не против? Согласны ' + n + ' из 3');
+      $('undoBtns').hidden = asker || v.undo.mine;
+      if (!asker && v.undo.mine) $('undoTxt').textContent += '. Ты уже согласился, ждём остальных';
+    }
     const pz = v.paused && (v.phase === 'playing' || v.phase === 'closing');
     $('netPause').hidden = !pz;
     if (pz) { stopTimer(); $('npBy').textContent = v.paused.by === 0 ? 'Ты поставил паузу. Таймеры стоят, боты ждут.' : (NAMES[v.paused.by] || 'Кто-то') + ' поставил паузу. Таймеры стоят, боты ждут.'; }
@@ -3366,12 +3415,31 @@ const Net = (() => {
       case 'verdict':
         await netVerdict(ev);
         break;
+      case 'undoAsk':
+        Snd.whistle && Snd.click();
+        break;
+      case 'undoDone': {
+        // карту вернули: стол и рука как до хода
+        const n = document.createElement('div'); n.className = 'wxnote plate'; n.innerHTML = '↩ ' + (ev.seat === 0 ? 'Ты забрал' : NAMES[ev.seat] + ' забрал') + ' карту обратно, пацаны не против';
+        stage.appendChild(n); setTimeout(() => n.remove(), 4000);
+        rebuildPile(); Snd.flick();
+        break;
+      }
+      case 'undoNo': {
+        const n = document.createElement('div'); n.className = 'wxnote plate'; n.innerHTML = '✋ Карту не вернули: ' + (ev.by === null || ev.by === undefined ? 'время вышло' : (ev.by === 0 ? 'ты против' : NAMES[ev.by] + ' против'));
+        stage.appendChild(n); setTimeout(() => n.remove(), 4000);
+        break;
+      }
       case 'mayak': {
-        const us = K.teamOf(ev.seat) === 0;
+        const R = seeded(ev.seed || 1), by = ev.by === undefined ? ((ev.seat + 1) % 4) : ev.by;
         Snd.whistle();
-        figFx(ev.seat, 'shake'); figFx(ev.mate, 'shake');
-        const who = (x) => (x === 0 ? 'ты' : NAMES[x]);
-        await verdict('Маяк спалили!', us ? 'bad' : 'good', who(ev.seat).replace(/^./, (m) => m.toUpperCase()) + ' маякнул смайлом, и ' + who(ev.mate) + ' тут же накинул ' + short(ev.card) + ' в его взятку. ' + (us ? 'Нам' : 'Им') + ' 1 штрафная за маяк.', 4500);
+        figFx(ev.seat, 'shake');
+        poopRain(ev.seat, R);
+        const who = ev.seat === 0 ? 'Ты' : NAMES[ev.seat];
+        const note = document.createElement('div'); note.className = 'wxnote plate'; note.innerHTML = '💩 <b>Маяк спалили!</b> ' + who + ' маякнул, ' + (ev.mate === 0 ? 'ты' : NAMES[ev.mate]) + ' накинул ' + short(ev.card);
+        stage.appendChild(note); setTimeout(() => note.remove(), 4600);
+        const SHAME = ['Маячник! Фу-у-у!', 'Ты чё, маякуешь? Позорище', 'Видели?! Смайлом маякнул, а тот сразу десятку!', 'Штирлиц, блин, нашёлся', 'Азбука Морзе через смайлы, ага', 'Маякни ещё, мы не заметили', 'Фу, некрасиво, пацаны'];
+        setTimeout(() => talk(by, SHAME[Math.floor(R() * SHAME.length)]), 600);
         break;
       }
       case 'roundEnd':
@@ -3453,7 +3521,7 @@ const Net = (() => {
     };
     const link = location.origin + location.pathname + '?r=' + v.code;
     $('lobbyBox').innerHTML = '<div class="head"><h1 style="font-size:2.4em">СТОЛ НАКРЫТ</h1></div><div class="in">' +
-      '<div class="bigcode">' + v.code + '</div><p class="note">' + (LAYOUTS[v.loc] ? 'Место: ' + LAYOUTS[v.loc].name + '. ' : '') + 'Режим: ' + (v.mode === 'lite' ? 'Лайт, для игры под пивко' : v.mode === 'turbo' ? 'Турбо, до 6 и 45 секунд на ход' : 'Хардкор, вся инфа в бошке') + (v.honest ? '. 🤝 Честняк: на трояк не залезешь' : '') + '</p>' +
+      '<div class="bigcode">' + v.code + '</div><p class="note">' + (LAYOUTS[v.loc] ? 'Место: ' + LAYOUTS[v.loc].name + '. ' : '') + 'Режим: ' + (v.mode === 'lite' ? 'Лайт, для игры под пивко' : v.mode === 'turbo' ? 'Турбо, до 6 и 45 секунд на ход' : 'Хардкор, вся инфа в бошке') + (v.honest ? '. 🤝 Честняк: на трояк не залезешь' : '') + (v.noEmo ? '. 😶 Смайлы только между раздачами' : '') + '</p>' +
       '<p style="margin:.6em 0 .2em">Кинь пацанам ссылку, пусть садятся:</p>' +
       '<div class="linkrow"><input id="linkIn" readonly value="' + link + '"><button class="btn" id="copyLink">Скопировать</button></div>' +
       '<div class="tbl">' + seat(2, 'top') + seat(1, 'left') + '<div class="mid">стол</div>' + seat(3, 'right') + seat(0, 'me') + '</div>' +
@@ -3505,7 +3573,7 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.33') { localStorage.setItem('kozel-seen-ver', '2.33'); setTimeout(() => { if ($('menu').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.36') { localStorage.setItem('kozel-seen-ver', '2.36'); setTimeout(() => { if ($('menu').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
 // ---------- Эмоции ----------
 const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны', '🔥', 'Учись, салага', '🎰', 'Фарт есть фарт', '👑', 'Учитесь, пацаны'];
 const EMO_LOCK = { 14: 3, 15: 3, 16: 6, 17: 6, 18: 12, 19: 12 };
@@ -4063,13 +4131,14 @@ function showProfile() {
 $('me').onclick = showProfile;
 document.querySelectorAll('[data-myrank]').forEach((p) => { p.style.cursor = 'pointer'; p.title = 'Открыть досье'; p.onclick = showProfile; });
 // Хардкор: пока идёт раздача, смайлы и жесты закрыты, чтобы не маячить
-const signalsLocked = () => MODE === 'hard' && round && !round.over && !round.closing;
+let tableEmo = true; // по сети: как решил хозяин стола
+const signalsLocked = () => (MODE === 'hard' || !(online ? tableEmo : emoOn)) && round && !round.over && !round.closing;
 function emoNote(text) {
   const n = document.createElement('div'); n.className = 'emonote'; n.innerHTML = text;
   const b = $('emoQuick'); n.style.left = (b.offsetLeft + b.offsetWidth + 10) + 'px'; n.style.top = b.offsetTop + 'px';
   stage.appendChild(n); setTimeout(() => n.remove(), 3300);
 }
-$('emoQuick').onclick = (e) => { e.stopPropagation(); if (signalsLocked()) { emoNote('<b>Хардкор: маяки запрещены.</b><br>Смайлы и жесты между раздачами.'); return; } const p = $('emoPanel'); p.style.top = $('emoQuick').offsetTop + 'px'; p.classList.toggle('open'); };
+$('emoQuick').onclick = (e) => { e.stopPropagation(); if (signalsLocked()) { emoNote(MODE === 'hard' ? '<b>Хардкор: маяки запрещены.</b><br>Смайлы и жесты между раздачами.' : '<b>Смайлы выключены за этим столом.</b><br>Можно между раздачами.'); return; } const p = $('emoPanel'); p.style.top = $('emoQuick').offsetTop + 'px'; p.classList.toggle('open'); };
 
 // ---------- Свои: аккаунт по нику и PIN, прогресс в облаке, «Двор» ----------
 const Acct = (() => {
