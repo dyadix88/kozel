@@ -15,6 +15,7 @@ const AWAY_TURN_MS = 12000;     // если игрок отключился, ж�
 const BOT_DELAY = 900;
 const AFTER_TRICK = 2100;       // пауза, чтобы все увидели взятку
 const AFTER_VERDICT = 5500;     // пауза на окно проверки
+const CLOSE_MS = 20000;         // окно «последней предъявы» после 9-й взятки
 const ROOM_TTL = 3 * 3600 * 1000;
 const CHARS = { lysy: 'Лысый', zema: 'Зёма', dantl: 'Дантл', vitaha: 'Витаха', elvis: 'Элвис', oleg: 'Олег' };
 const charOk = (c) => (CHARS[c] ? c : 'oleg');
@@ -73,7 +74,8 @@ function viewFor(room, my) {
       hands: rot(r.hands).map((h, i) => (i === 0 ? h : { length: h.length })),
       trick: r.trick.map((e) => ({ seat: R(e.seat), card: e.card, trickNo: e.trickNo })),
       log: r.log.map((e) => ({ seat: R(e.seat), card: e.card, trickNo: e.trickNo, checked: e.checked })),
-      hvalSeat: R(r.hvalSeat), trump: r.trump, turn: R(r.turn), over: r.over,
+      hvalSeat: R(r.hvalSeat), trump: r.trump, turn: r.turn < 0 ? -1 : R(r.turn), over: r.over, closing: !!r.closing,
+      ready: r.closing ? rot(room.seats.map((x, i) => !!(room.ready && room.ready.has(i)))) : null,
       taken: room.mode !== 'hard' || r.over ? [r.taken[t], r.taken[1 - t]] : [0, 0],
       end: r.end ? Object.assign({}, r.end, r.end.team !== undefined ? { team: (r.end.team - t + 2) % 2 } : {}, r.end.accused !== undefined ? { accused: R(r.end.accused) } : {}) : null,
       deadline: room.deadline,
@@ -105,6 +107,7 @@ function startMatch(room) {
 }
 function startRound(room) {
   room.round = K.newRound(room.match);
+  room.bomzhAt = Math.random() < .5 ? 2 + Math.floor(Math.random() * 5) : -1; // бомж заходит примерно раз в две раздачи
   room.voids = [];
   room.phase = 'playing';
   const evs = [{ type: 'deal' }];
@@ -115,6 +118,7 @@ function startRound(room) {
 }
 
 function schedule(room, delay) {
+  if (room.phase === 'closing') return; // у последней предъявы свой таймер
   clearTimeout(room.timer);
   const r = room.round;
   if (room.phase !== 'playing' || !r || r.over) { room.deadline = 0; return; }
@@ -158,14 +162,49 @@ function doPlay(room, seat, cardId) {
     chatter(room, evs, res);
   }
   if (r.over) evs.push(endRound(room));
+  else if (r.closing) { startClosing(room, delay); evs.push({ type: 'closing' }); broadcast(room, evs); return; }
   schedule(room, delay);
   broadcast(room, evs);
 }
 
-// Реплики после взятки (за всех, включая живых: это дворовой юмор)
+// Последняя предъява: все карты сыграны, но счёт ещё не подбит
+function startClosing(room, delay) {
+  clearTimeout(room.timer);
+  room.phase = 'closing';
+  room.ready = new Set(room.seats.map((s, i) => (s.bot ? i : -1)).filter((i) => i >= 0));
+  room.deadline = Date.now() + delay + CLOSE_MS;
+  room.timer = setTimeout(() => finalize(room), delay + CLOSE_MS);
+}
+function finalize(room) {
+  if (room.phase !== 'closing' || !room.round) return;
+  clearTimeout(room.timer);
+  K.finishRound(room.match, room.round);
+  broadcast(room, [endRound(room)]);
+}
+
+// Кто за столом: персонаж, имя без «(бот)», бот или нет
+const seatsInfo = (room) => room.seats.map((s) => (s ? { char: s.char, name: s.name.replace(' (бот)', ''), bot: !!s.bot } : null));
+const GESTURE_MS = 15000;
+const GESTURES = ['wink', 'clap', 'fuck'];
+// Реплики после взятки (за всех, включая живых: это дворовой юмор) + жесты ботов + бомж Валера
 function chatter(room, evs, res) {
-  const t = room.round.tricks[room.round.tricks.length - 1];
-  KL.chatter(t.plays, res.winner, room.round.trump, res.points, K).forEach((c) => evs.push({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0, chatter: true }));
+  const r = room.round, t = r.tricks[r.tricks.length - 1];
+  const lines = KL.chatter(t.plays, res.winner, r.trump, res.points, K, seatsInfo(room), r.hands);
+  lines.forEach((c) => evs.push({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0 }));
+  const now = Date.now(), bot = (i) => room.seats[i] && room.seats[i].bot;
+  const gest = (i, g, delay) => { const s = room.seats[i]; s.gest = s.gest || {}; if (now - (s.gest[g] || 0) < GESTURE_MS) return; s.gest[g] = now; evs.push({ type: 'gesture', seat: i, g, delay }); };
+  if (res.points >= 25 && Math.random() < .45) {
+    const enemies = [0, 1, 2, 3].filter((i) => K.teamOf(i) !== K.teamOf(res.winner) && bot(i));
+    const mate = (res.winner + 2) % 4;
+    const x = Math.random();
+    if (x < .35 && enemies.length) gest(enemies[Math.floor(Math.random() * enemies.length)], 'fuck', 1500);
+    else if (x < .7 && bot(mate)) gest(mate, 'clap', 900);
+    else if (bot(res.winner)) gest(res.winner, 'wink', 700);
+  }
+  if (room.bomzhAt === r.tricks.length && !r.closing && !r.over) {
+    const b = KL.bomzh(seatsInfo(room), r.hands, r.trump);
+    evs.push({ type: 'bomzh', text: b.text, seat: b.reply.seat, reply: b.reply.text, delay: 2500 });
+  }
 }
 
 function verdictEvent(room, accuser, trickNo, accused, evidenceCard) {
@@ -254,12 +293,29 @@ function act(room, seat, body) {
       doPlay(room, seat, String(body.card));
       return;
     case 'accuse': {
-      if (room.phase !== 'playing') throw new Error('Сейчас не играем');
+      if (room.phase !== 'playing' && room.phase !== 'closing') throw new Error('Сейчас не играем');
+      const closing = room.phase === 'closing';
       const ev = verdictEvent(room, seat, Number(body.trickNo), abs(body.seat), null);
       const evs = [ev];
-      if (room.round.over || K.matchLoser(room.match) !== null) { room.round.over = true; if (!room.round.end) room.round.end = { type: 'penalty' }; evs.push(endRound(room)); }
-      schedule(room, AFTER_VERDICT);
+      if (room.round.over || K.matchLoser(room.match) !== null) {
+        room.round.over = true; room.round.closing = false; if (!room.round.end) room.round.end = { type: 'penalty' };
+        clearTimeout(room.timer); evs.push(endRound(room));
+      } else if (closing) {
+        // зря предъявили в конце: окно продолжается, даём время прочитать вердикт
+        if (room.ready) room.ready.delete(seat);
+        room.deadline = Math.max(room.deadline, Date.now() + AFTER_VERDICT + 6000);
+        clearTimeout(room.timer); room.timer = setTimeout(() => finalize(room), room.deadline - Date.now());
+        broadcast(room, evs);
+        return;
+      } else schedule(room, AFTER_VERDICT);
       broadcast(room, evs);
+      return;
+    }
+    case 'ready': {
+      if (room.phase !== 'closing') return;
+      room.ready.add(seat);
+      if (room.seats.every((x, i) => room.ready.has(i) || (x && !x.bot && !x.conns.size))) return finalize(room);
+      broadcast(room, [{ type: 'talk', seat, text: pick(['Чисто, считаем', 'Всё ровно, подбивай', 'Претензий нет', '<i>*кивает: считаем*</i>']) }]);
       return;
     }
     case 'next':
@@ -275,6 +331,16 @@ function act(room, seat, body) {
       s.xp = xpOk(body.xp);
       broadcast(room, []);
       return;
+    case 'gesture': {
+      const g = String(body.g);
+      if (!GESTURES.includes(g)) throw new Error('Нет такого жеста');
+      const now = Date.now();
+      s.gest = s.gest || {};
+      if (now - (s.gest[g] || 0) < GESTURE_MS) return;
+      s.gest[g] = now;
+      broadcast(room, [{ type: 'gesture', seat, g }]);
+      return;
+    }
     case 'emote': {
       const i = Number(body.i);
       if (!EMOTES[i]) throw new Error('Нет такой эмоции');
@@ -296,6 +362,7 @@ function act(room, seat, body) {
         for (const res of s.conns) res.end();
         if (!humans(room).length) { clearTimeout(room.timer); rooms.delete(room.code); return; }
         if (room.host === seat) room.host = room.seats.findIndex((x) => x && !x.bot);
+        if (room.ready) room.ready.add(seat);
         broadcast(room, [{ type: 'talk', seat, text: '<i>*свалил, за него бот*</i>' }]);
         schedule(room, 0);
       }
@@ -375,16 +442,16 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-// Перебранка за столом по сети: раз в 20-40 секунд кто-то кого-то цепляет
+// Перебранка за столом по сети: примерно раз в минуту кто-то кого-то цепляет
 setInterval(() => {
   const now = Date.now();
   for (const room of rooms.values()) {
     if (room.phase !== 'playing' || !room.round || room.round.over) continue;
-    if (!room.nextBanter) room.nextBanter = now + 28000 + Math.random() * 20000;
+    if (!room.nextBanter) room.nextBanter = now + 40000 + Math.random() * 30000;
     if (now < room.nextBanter) continue;
-    room.nextBanter = now + 28000 + Math.random() * 20000;
-    const seats = room.seats.map((s) => (s ? { char: s.char, name: s.name.replace(' (бот)', '') } : null));
-    const evs = KL.banter(seats).map((c) => ({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0 }));
+    room.nextBanter = now + 50000 + Math.random() * 35000;
+    const ctx = { pen: room.match.penalties, limit: room.match.limit };
+    const evs = KL.banter(seatsInfo(room), ctx).map((c) => ({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0 }));
     if (evs.length) broadcast(room, evs);
   }
 }, 3000);

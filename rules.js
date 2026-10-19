@@ -124,12 +124,13 @@
   // Раздача целиком: ходы, взятки, скрытая история, проверки.
   function newRound(match) {
     const r = startRound(match);
-    return Object.assign(r, { turn: r.leader, trick: [], tricks: [], taken: [0, 0], log: [], over: false, end: null });
+    return Object.assign(r, { turn: r.leader, trick: [], tricks: [], taken: [0, 0], log: [], over: false, closing: false, end: null });
   }
 
   // Сыграть карту. Нарушение масти разрешено, но тайно записывается в историю.
   function play(match, round, seat, cardId) {
     if (round.over) throw new Error('Раздача уже закончена');
+    if (round.closing) throw new Error('Карты сыграны, идёт последняя предъява');
     if (seat !== round.turn) throw new Error('Сейчас не твой ход');
     const hand = round.hands[seat];
     const i = hand.findIndex((c) => c.id === cardId);
@@ -148,12 +149,20 @@
     round.tricks.push({ plays: round.trick, winner, points });
     round.trick = [];
     round.turn = winner; // следующую взятку начинает тот, кто взял
-    if (round.tricks.length === 9) {
-      const h = round.taken[teamOf(round.hvalSeat)];
-      round.over = true;
-      round.end = Object.assign({ type: 'cards', h }, applyRound(match, round.hvalSeat, h));
-    }
-    return { trickDone: true, winner, points };
+    // Все 9 взяток сыграны: раздачу ещё не считаем, сначала окно «последней предъявы»
+    if (round.tricks.length === 9) { round.closing = true; round.turn = -1; }
+    return { trickDone: true, winner, points, closing: !!round.closing };
+  }
+
+  // Подсчёт раздачи после последней предъявы (если никого не спалили)
+  function finishRound(match, round) {
+    if (round.over) return round.end;
+    if (!round.closing) throw new Error('Раздача ещё идёт');
+    const h = round.taken[teamOf(round.hvalSeat)];
+    round.closing = false;
+    round.over = true;
+    round.end = Object.assign({ type: 'cards', h }, applyRound(match, round.hvalSeat, h));
+    return round.end;
   }
 
   // Проверка: соперник указывает конкретный ход. Сервер смотрит в скрытую историю.
@@ -167,7 +176,7 @@
     const guilty = e.violation;
     const team = guilty ? teamOf(accused) : teamOf(accuser);
     match.penalties[team] += 3;
-    if (guilty) { round.over = true; round.end = { type: 'caught', team, accused, trickNo }; }
+    if (guilty) { round.over = true; round.closing = false; round.end = { type: 'caught', team, accused, trickNo }; }
     return { guilty, team };
   }
 
@@ -175,7 +184,7 @@
 
   const api = { SUITS, SUIT_SYMBOL, RANKS, POINTS, opposite, teamOf, createDeck, shuffle,
     dealHands, holderOf, newMatch, assignPraise, startRound, roundPenalties, applyRound, matchLoser,
-    isTrump, effSuit, power, legalCards, trickWinner, newRound, play, accuse };
+    isTrump, effSuit, power, legalCards, trickWinner, newRound, play, accuse, finishRound };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Kozel = api;
 })(typeof window !== 'undefined' ? window : globalThis);
