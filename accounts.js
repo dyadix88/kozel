@@ -69,15 +69,28 @@ function cleanProgress(p) {
   for (const [k, v] of Object.entries(p.stats || {})) if (/^[a-zA-Z]{1,20}$/.test(k)) stats[k] = num(v);
   const ach = {};
   for (const [k, v] of Object.entries(p.ach || {})) if (/^[a-z0-9]{1,12}$/.test(k)) ach[k] = num(v) || 1;
-  return { xp: num(p.xp), stats, ach, char: CHARS.includes(p.char) ? p.char : null };
+  const out = { xp: num(p.xp), stats, ach, char: CHARS.includes(p.char) ? p.char : null };
+  if (p.roster && typeof p.roster === 'object') { // у каждого персонажа свой прогресс
+    out.roster = {};
+    for (const id of CHARS) if (p.roster[id]) { const c = cleanProgress({ xp: p.roster[id].xp, stats: p.roster[id].stats, ach: p.roster[id].ach }); out.roster[id] = { xp: c.xp, stats: c.stats, ach: c.ach }; }
+  }
+  return out;
 }
 function merge(a, b) {
   const out = { xp: Math.max(a.xp || 0, b.xp || 0), stats: Object.assign({}, a.stats), ach: Object.assign({}, a.ach), char: b.char || a.char || null };
   for (const [k, v] of Object.entries(b.stats || {})) out.stats[k] = Math.max(out.stats[k] || 0, v);
   for (const [k, v] of Object.entries(b.ach || {})) out.ach[k] = out.ach[k] ? Math.min(out.ach[k], v) : v;
+  if (a.roster || b.roster) {
+    out.roster = JSON.parse(JSON.stringify(a.roster || {}));
+    for (const [id, d] of Object.entries(b.roster || {})) out.roster[id] = merge(out.roster[id] || { xp: 0, stats: {}, ach: {} }, d);
+    for (const d of Object.values(out.roster)) { delete d.char; delete d.roster; }
+    // верхний уровень = активный персонаж
+    const act = b.char || a.char;
+    if (act && out.roster[act]) { out.xp = out.roster[act].xp; out.stats = Object.assign({}, out.roster[act].stats); out.ach = Object.assign({}, out.roster[act].ach); }
+  }
   return out;
 }
-const publicProfile = (u) => ({ nick: u.nick, xp: u.xp, stats: u.stats, ach: u.ach, char: u.char });
+const publicProfile = (u) => ({ nick: u.nick, xp: u.xp, stats: u.stats, ach: u.ach, char: u.char, roster: u.roster || null });
 
 async function newSession(key) {
   const tok = crypto.randomBytes(24).toString('hex');
@@ -157,7 +170,8 @@ async function yard(body, tableOf) {
   const list = [...users.entries()].map(([k, x]) => {
     const s = seen.get(k), on = s && now - s.at < 25000;
     const t = on ? tableOf(k) : null;
-    return { nick: x.nick, char: x.char, xp: x.xp, wins: (x.stats && x.stats.wins) || 0, rounds: (x.stats && x.stats.rounds) || 0,
+    const sx = x.stats || {}, pick = ['wins', 'rounds', 'totalPts', 'best', 'caught', 'gotCaught', 'lusya'];
+    return { nick: x.nick, char: x.char, xp: x.xp, wins: sx.wins || 0, rounds: sx.rounds || 0, stats: Object.fromEntries(pick.map((k) => [k, sx[k] || 0])), roster: x.roster ? Object.fromEntries(Object.entries(x.roster).map(([id, d]) => [id, { xp: d.xp }])) : null,
       status: !on ? 'off' : t ? (t.phase === 'lobby' ? 'lobby' : 'playing') : 'yard', table: t, seenAgo: s ? Math.round((now - s.at) / 1000) : null, me: k === key };
   }).sort((a, b) => (b.me - a.me) || (rank(b.status) - rank(a.status)) || (a.seenAgo === null) - (b.seenAgo === null) || (a.seenAgo || 0) - (b.seenAgo || 0));
   const inv = (invites.get(key) || []).filter((i) => now - i.at < 60000);
