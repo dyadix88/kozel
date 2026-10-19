@@ -43,9 +43,9 @@ const token = () => crypto.randomBytes(16).toString('hex');
 const humans = (room) => room.seats.filter((s) => s && !s.bot);
 const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
-function createRoom(name, mode, ch, xp, acct) {
+function createRoom(name, mode, ch, xp, acct, loc) {
   const code = newCode();
-  const room = { code, mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
+  const room = { code, loc: ['yard', 'office', 'space'].includes(loc) ? loc : 'yard', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
@@ -61,7 +61,7 @@ function viewFor(room, my) {
   const rot = (arr) => [0, 1, 2, 3].map((r) => arr[(r + my) % 4]);
   const t = my % 2;
   const v = {
-    code: room.code, phase: room.phase, mode: room.mode, host: R(room.host), now: Date.now(),
+    code: room.code, phase: room.phase, mode: room.mode, loc: room.loc, host: R(room.host), now: Date.now(),
     seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0 } : null)),
   };
   if (room.match) {
@@ -202,7 +202,7 @@ function chatter(room, evs, res) {
     else if (x < .7 && bot(mate)) gest(mate, 'clap', 900);
     else if (bot(res.winner)) gest(res.winner, 'wink', 700);
   }
-  if (room.bomzhAt === r.tricks.length && !r.closing && !r.over) {
+  if (room.loc === 'yard' && room.bomzhAt === r.tricks.length && !r.closing && !r.over) {
     const b = KL.bomzh(seatsInfo(room), r.hands, r.trump);
     evs.push({ type: 'bomzh', text: b.text, seat: b.reply.seat, reply: b.reply.text, delay: 2500 });
   }
@@ -319,6 +319,15 @@ function act(room, seat, body) {
       broadcast(room, [{ type: 'talk', seat, text: pick(['Чисто, считаем', 'Всё ровно, подбивай', 'Претензий нет', '<i>*кивает: считаем*</i>']) }]);
       return;
     }
+    case 'loc': {
+      // хозяин стола выбирает место: в лобби и между раздачами
+      if (seat !== room.host) throw new Error('Место выбирает хозяин стола');
+      if (!['lobby', 'roundEnd', 'matchEnd'].includes(room.phase)) throw new Error('Пересядем после раздачи');
+      if (!['yard', 'office', 'space'].includes(body.loc)) throw new Error('Нет такого места');
+      room.loc = body.loc;
+      broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { yard: 'во двор', office: 'в кабинет', space: 'в космос' }[body.loc] + '*</i>' }]);
+      return;
+    }
     case 'next':
       if (room.phase !== 'roundEnd') return;
       startRound(room);
@@ -408,7 +417,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
       const u = await A.userByToken(b.acct).catch(() => null);
-      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null);
+      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {
