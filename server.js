@@ -86,7 +86,7 @@ function viewFor(room, my) {
 }
 function convEvent(ev, my) {
   const e = Object.assign({}, ev);
-  for (const k of ['seat', 'winner', 'accuser', 'accused']) if (e[k] !== undefined) e[k] = (e[k] - my + 4) % 4;
+  for (const k of ['seat', 'winner', 'accuser', 'accused', 'mate']) if (e[k] !== undefined) e[k] = (e[k] - my + 4) % 4;
   if (e.team !== undefined) e.team = (e.team - (my % 2) + 2) % 2;
   return e;
 }
@@ -99,12 +99,35 @@ function broadcast(room, events) {
   });
 }
 
+// Лёгкие события без вида стола (рот по микрофону, общие сценки): клиент показывает сразу
+function blast(room, events) {
+  room.seats.forEach((s, i) => {
+    if (!s || s.bot || !s.conns.size) return;
+    const msg = 'data: ' + JSON.stringify({ fx: events.map((e) => convEvent(e, i)) }) + '\n\n';
+    for (const res of s.conns) res.write(msg);
+  });
+}
+// Приколы (гости, бабка, соседи) по сети: сервер выбирает момент и зерно, у всех на экране одно и то же
+function sceneLoop(room) {
+  clearTimeout(room.sceneT);
+  room.sceneT = setTimeout(() => {
+    if (!rooms.has(room.code)) return;
+    if (room.phase === 'playing' && room.seats.some((x) => x && !x.bot && x.conns.size)) {
+      const r = Math.random();
+      const kind = room.loc === 'yard' ? (r < .5 ? 'guest' : r < .8 ? 'babka' : 'neigh') : 'guest';
+      blast(room, [{ type: 'scene', kind, seed: Math.floor(Math.random() * 2 ** 31), seat: Math.floor(Math.random() * 4) }]);
+    }
+    sceneLoop(room);
+  }, 70000 + Math.random() * 60000);
+}
+
 // ---------- Ход игры ----------
 function startMatch(room) {
   const free = Object.keys(CHARS).filter((c) => !room.seats.some((s) => s && s.char === c)).sort(() => Math.random() - .5);
   room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(Object.keys(CHARS)); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 8000), bot: true, conns: new Set() }; } });
   room.match = K.newMatch(room.mode === 'turbo' ? 6 : 12);
   startRound(room);
+  if (!room.sceneT) sceneLoop(room);
 }
 function startRound(room) {
   room.round = K.newRound(room.match); room.round.honest = !!room.honest;
@@ -162,6 +185,7 @@ function doPlay(room, seat, cardId) {
     evs.push({ type: 'trick', winner: res.winner, points: room.mode !== 'hard' ? res.points : null });
     chatter(room, evs, res);
   }
+  if (res.trickDone && room.mode !== 'hard') { const m = checkMayak(room, res); if (m) { evs.push(m); delay = Math.max(delay, AFTER_VERDICT); } }
   if (r.over) evs.push(endRound(room));
   else if (r.closing && room.honest) { K.finishRound(room.match, r); evs.push(endRound(room)); }
   else if (r.closing) { startClosing(room, delay); evs.push({ type: 'closing' }); broadcast(room, evs); return; }
@@ -217,6 +241,32 @@ function verdictEvent(room, accuser, trickNo, accused, evidenceCard) {
   return { type: 'verdict', accuser, accused, trickNo, guilty: res.guilty, team: res.team, card: e.card,
     suit: K.effSuit(ledEntry.card, r.trump), evidence: evidenceCard || null,
     talk: room.seats[accused].bot ? pick(res.guilty ? LINES.caught : LINES.clean) : null };
+}
+
+// Маяки. Хардкор: во время раздачи смайлы и жесты закрыты.
+// Лайт и Турбо: если живой игрок маякнул (смайл или жест) в этой или прошлой взятке,
+// а живой кореш после этого накинул ему туза или десятку (не козырь) во взятку, которую тот забрал, команде 1 штрафная (раз за раздачу).
+const signalBlocked = (room) => room.mode === 'hard' && room.phase === 'playing';
+function markSignal(room, s) {
+  if (room.phase !== 'playing' || !room.round || s.bot) return;
+  s.sig = { trick: room.round.tricks.length, n: room.round.log.length };
+}
+function checkMayak(room, res) {
+  const r = room.round, w = res.winner, mate = (w + 2) % 4, W = room.seats[w], M = room.seats[mate];
+  if (!W || !M || W.bot || M.bot || !W.sig) return null;
+  r.mayak = r.mayak || [];
+  if (r.mayak.includes(K.teamOf(w))) return null;
+  const done = r.tricks.length - 1; // индекс только что сыгранной взятки
+  if (W.sig.trick < done - 1) return null;
+  const i = r.log.findIndex((e, k) => k >= W.sig.n && e.seat === mate && e.trickNo === done);
+  if (i < 0) return null;
+  const card = r.log[i].card;
+  if (card.points < 10 || K.isTrump(card, r.trump)) return null;
+  r.mayak.push(K.teamOf(w));
+  W.sig = null;
+  room.match.penalties[K.teamOf(w)] += 1;
+  if (K.matchLoser(room.match) !== null) { r.over = true; r.closing = false; r.end = r.end || { type: 'penalty' }; }
+  return { type: 'mayak', seat: w, mate, card, team: K.teamOf(w) };
 }
 
 function endRound(room) {
@@ -348,21 +398,32 @@ function act(room, seat, body) {
       broadcast(room, []);
       return;
     case 'gesture': {
+      if (signalBlocked(room)) throw new Error('Хардкор: маяки запрещены, жесты между раздачами');
       const g = String(body.g);
       if (!GESTURES.includes(g)) throw new Error('Нет такого жеста');
       const now = Date.now();
       s.gest = s.gest || {};
       if (now - (s.gest[g] || 0) < GESTURE_MS) return;
       s.gest[g] = now;
+      markSignal(room, s);
       broadcast(room, [{ type: 'gesture', seat, g }]);
+      return;
+    }
+    case 'mic': {
+      const on = !!body.on, now = Date.now();
+      if (on === !!s.mic) return;
+      s.mic = on; s.micAt = now;
+      blast(room, [{ type: 'mic', seat, on }]);
       return;
     }
     case 'emote': {
       const i = Number(body.i);
       if (!EMOTES[i]) throw new Error('Нет такой эмоции');
+      if (signalBlocked(room)) throw new Error('Хардкор: маяки запрещены, смайлы между раздачами');
       const now = Date.now();
       if (s.lastEmote && now - s.lastEmote < 1500) return;
       s.lastEmote = now;
+      markSignal(room, s);
       broadcast(room, [{ type: 'talk', seat, text: EMOTES[i] }]);
       return;
     }
@@ -500,4 +561,4 @@ setInterval(() => {
 }, 10 * 60 * 1000);
 
 server.listen(PORT, () => console.log('KOZEL сервер слушает порт ' + PORT));
-module.exports = { server, rooms };
+module.exports = { server, rooms, checkMayak, markSignal };

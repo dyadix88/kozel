@@ -141,6 +141,11 @@ button{font:inherit;color:inherit}
 .honest[aria-pressed="true"]{border-style:solid;border-color:var(--red);background:rgba(179,36,28,.12)}
 .honest[aria-pressed="true"] b::after{content:' вкл';color:var(--red)}
 .hand .card.no{filter:brightness(.55) saturate(.6);transform:translateY(.4em)}
+.hand .card.queued{transform:translateY(-1.3em);box-shadow:0 0 0 .18em #ffb33b,0 0 1.2em rgba(255,179,59,.9),0 .4em .9em rgba(0,0,0,.55)!important;z-index:5}
+.hand .card.queued::after{content:'СЛЕДУЮЩАЯ';position:absolute;left:50%;top:-1.5em;transform:translateX(-50%);font:400 .55em 'Russo One',sans-serif;color:#ffb33b;white-space:nowrap;text-shadow:0 .1em .3em #000;letter-spacing:.05em}
+.emonote{position:absolute;z-index:60;max-width:16em;padding:.5em .8em;background:rgba(20,10,8,.92);color:var(--cream);border:.1em solid var(--red);border-radius:.3em;font-size:.85em;line-height:1.3;pointer-events:none;animation:fadeout 3.2s forwards}
+@keyframes fadeout{0%,80%{opacity:1}100%{opacity:0}}
+#emoQuick.locked{filter:grayscale(1);opacity:.55}
 .hand .card.nope{animation:nope .35s}
 @keyframes nope{25%{translate:-.35em 0}75%{translate:.35em 0}}
 .mode{flex:1;cursor:pointer;padding:.7em .8em;border:.12em solid rgba(111,20,15,.45);border-radius:.2em;background:rgba(255,255,255,.35);text-align:left;line-height:1.35}
@@ -201,6 +206,19 @@ button{font:inherit;color:inherit}
 .fig img{display:block;width:100%;filter:brightness(.93) saturate(.9) sepia(.12) contrast(1.02)}
 .fig .body{position:relative}
 .fig.flip img{transform:scaleX(-1)}
+/* Рот: нижняя челюсть копией картинки отъезжает вниз, под ней тёмная дыра */
+.fig .jaw{position:absolute;left:0;top:0;width:100%;pointer-events:none;display:none}
+.fig .jaw img{width:100%}
+.fig.mouthy .jaw{display:block}
+.fig .mh{position:absolute;left:var(--mx);top:var(--my);width:var(--mw);height:0;transform:translateX(-50%);border-radius:0 0 50% 50%/0 0 100% 100%;background:radial-gradient(ellipse at 50% 20%,#1c0504,#3d0c09 65%,#5c1712);display:none}
+.fig.mouthy.talking .mh{display:block;animation:mh var(--mt,.24s) ease-in-out infinite alternate}
+.fig.mouthy.talking .jaw{animation:jaw var(--mt,.24s) ease-in-out infinite alternate}
+@keyframes jaw{0%{transform:translateY(0)}30%{transform:translateY(calc(var(--md,2%) * .5))}100%{transform:translateY(var(--md,2%))}}
+@keyframes mh{0%{height:0}30%{height:calc(var(--md,2%) * .5)}100%{height:var(--md,2%)}}
+.fig .wave{position:absolute;left:58%;top:6%;width:9%;aspect-ratio:1;border:.18em solid rgba(255,230,170,.9);border-color:transparent rgba(255,230,170,.9) transparent transparent;border-radius:50%;display:none;pointer-events:none}
+.fig.talking .wave{display:block;animation:wave .7s ease-out infinite}
+.fig.talking .wave.w2{animation-delay:.35s}
+@keyframes wave{0%{transform:scale(.5);opacity:1}100%{transform:scale(1.8);opacity:0}}
 .fig.fade img{-webkit-mask-image:linear-gradient(to bottom,#000 78%,transparent 99%);mask-image:linear-gradient(to bottom,#000 78%,transparent 99%)}
 .fig.turn{filter:drop-shadow(0 .25em .35em rgba(20,10,3,.5)) drop-shadow(0 0 .3em rgba(255,190,80,.7))}
 #f1::after,#f2::after{content:'';position:absolute;left:4%;right:4%;bottom:-.6em;height:1.6em;background:radial-gradient(ellipse at 50% 30%,rgba(15,8,2,.55),transparent 70%);pointer-events:none}
@@ -392,6 +410,7 @@ details.sets summary::-webkit-details-marker{display:none}
 .talk{position:absolute;z-index:3;transform:translate(-50%,-100%);background:#fffaf0;color:var(--ink);border:.14em solid var(--ink);border-radius:.9em;padding:.35em .75em;font-size:1.02em;max-width:15em;text-align:center;line-height:1.25;box-shadow:0 .3em .8em rgba(0,0,0,.35);pointer-events:none;animation:pop .22s ease-out}
 .talk::after{content:"";position:absolute;left:50%;bottom:-.62em;margin-left:-.45em;border:.45em solid transparent;border-top:.5em solid var(--ink)}
 .talk i{color:var(--ink-soft)}
+.talk.mine{border-color:var(--red-dk);background:#fff3df}
 @keyframes pop{from{transform:translate(-50%,-80%) scale(.6);opacity:0}to{transform:translate(-50%,-100%) scale(1);opacity:1}}
 .babka{position:absolute;left:94%;top:26.2%;width:0;height:0;z-index:2;pointer-events:none}
 .bk-win{position:absolute;left:-2.4em;bottom:0;width:4.8em;height:5.6em;overflow:hidden}
@@ -503,7 +522,7 @@ details.sets summary::-webkit-details-marker{display:none}
 </g></svg></div>
   <div id="fxbg"></div>
   <div id="guests"></div>
-  <div id="figs"><div class="fig" id="f1" hidden><div class="body"><img alt=""></div></div><div class="fig" id="f2" hidden><div class="body"><img alt=""></div></div><div class="fig" id="f3" hidden><div class="body"><img alt=""></div></div><div class="fig" id="f0" hidden><div class="body"><img alt=""></div></div></div>
+  <div id="figs"><div class="fig" id="f1" hidden><div class="body"><img alt=""><i class="mh"></i><div class="jaw"><img alt=""></div></div></div><div class="fig" id="f2" hidden><div class="body"><img alt=""><i class="mh"></i><div class="jaw"><img alt=""></div></div></div><div class="fig" id="f3" hidden><div class="body"><img alt=""><i class="mh"></i><div class="jaw"><img alt=""></div></div></div><div class="fig" id="f0" hidden><div class="body"><img alt=""><i class="mh"></i><div class="jaw"><img alt=""></div><i class="wave"></i><i class="wave w2"></i></div></div></div>
   <div class="seat plate" id="s1" style="left:11%;top:60%"></div>
   <div class="seat plate" id="s2" style="left:50%;top:46%"></div>
   <div class="seat plate" id="s3" style="left:89%;top:60%"></div>
@@ -538,7 +557,7 @@ details.sets summary::-webkit-details-marker{display:none}
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.25</div></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.27</div></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -563,7 +582,7 @@ details.sets summary::-webkit-details-marker{display:none}
         </div>
         <details class="sets"><summary>⚙ Звук и музыка</summary>
           <div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="music"></button><button class="btn alt" data-toggle="amb"></button></div>
-          <div class="mus"><span>Трек:</span><select data-track></select><span>Громкость:</span><input type="range" min="0" max="100" data-mvol></div><div class="mus"><span>Голос:</span><select data-voice></select><button class="btn alt" data-vtest style="font-size:.85em;padding:.3em .7em">Послушать</button></div>
+          <div class="mus"><span>Трек:</span><select data-track></select><span>Громкость:</span><input type="range" min="0" max="100" data-mvol></div><div class="mus"><span>Голос:</span><select data-voice></select><button class="btn alt" data-vtest style="font-size:.85em;padding:.3em .7em">Послушать</button></div><button class="btn alt wide" data-mic></button>
         </details>
       </div>
     </div>
@@ -634,6 +653,8 @@ details.sets summary::-webkit-details-marker{display:none}
         <h3>Очки</h3><p>Туз 11, десятка 10, король 4, дама 3, валет 2, мелочь 0. Всего на кону 120.</p>
         <h3>Штрафы до 12</h3><p>Хвалились и взяли 0: люся, 12 штрафных, сразу на выход. До 29: 3 штрафных. От 30 до 59: 2. Ровно 60: 2 штрафных и яйца. Хвалившие взяли 61 и больше: штрафы прилетают соперникам. У соперников от 30 до 59: 1 штрафной, до 29: 2, ноль (люся): 6. Кто первым набрал 12 (в Турбо 6), тот и козёл.</p>
         <h3>Крысятничество</h3><p>Не кинул масть, хотя была? Полез на трояк, значит крыса. Игра не мешает, но любой из соперников может предъявить. Спалили: команде крысы 3 штрафных, раздача всё. Предъявил зря: 3 штрафных себе, за базар надо отвечать. После последней взятки есть 20 секунд на последнюю предъяву, и только потом подбиваем очки.</p>
+        <h3>Маяки</h3><p>Маякнуть корешу смайлом, чтобы он накинул тебе туза или десятку, не по понятиям. В Хардкоре смайлы и жесты закрыты, пока идёт раздача: только между раздачами. В Лайте и Турбо можно, но если маякнул, а кореш сразу после этого кинул туза или десятку (не козырь) в твою взятку и ты её забрал, «Маяк спалили»: команде 1 штрафная (не больше раза за раздачу). Это за столом с пацанами, с ботами не считается.</p>
+        <h3>Карта заранее</h3><p>Пока ходят другие, тыкни свою карту: она поднимется с надписью «следующая» и пойдёт сама, когда дойдёт очередь. Ещё тык по ней снимает выбор. Если к твоему ходу её класть нельзя (есть масть), она не пойдёт, выберешь сам. Спрятать карты: смахни их вниз. Открыть: тык по колоде. Заряженная карта при этом не сбрасывается.</p>
         <button class="btn" data-close="rules" style="margin-top:1.1em">Всё ясно</button>
       </div>
     </div>
@@ -1036,7 +1057,7 @@ details.sets summary::-webkit-details-marker{display:none}
     { c: ['elvis', 'vitaha'], l: [[0, '<i>*напевает*</i> Шакалинный пу-у-ух...'], [1, 'ЖАРА!'], [0, 'ИЮЛЬ!'], [1, 'Ахахах, я обожаю эту песню']] },
     { c: ['elvis', 'lysy'], l: [[1, 'Элвис, какой ещё шакалинный пух? Тополиный'], [0, 'Тополиный у тебя. А у меня шакалинный. ЖАРА! ИЮЛЬ!'], [1, 'Филологически это преступление']] },
     { c: ['elvis', 'dantl'], l: [[1, 'Элвис, ты на прошлой неделе кому пасть порвать обещал?'], [0, 'Всем'], [1, 'И как?'], [0, 'Пасти целы. Пока']] },
-    { c: ['elvis', 'oleg'], l: [[1, 'Элвис, давай сегодня без «пасть порву»?'], [0, 'Давай'], [1, '...'], [0, 'ПАСТЬ ПОРВУ! ГААА-ГААА!'], [1, 'Четыре секунды. Рекорд']] },
+    { c: ['elvis', 'oleg'], l: [[1, 'Элвис, давай сегодня без «пасть порву»?'], [0, 'Давай'], [1, '...'], [0, 'Пасть порву!'], [1, 'Четыре секунды. Рекорд']] },
     { c: ['elvis', 'zema'], l: [[0, 'Факт: Зёма курил больше, чем играл'], [1, 'Факт: Элвис ржёт больше, чем думает'], [0, 'Справедливо']] },
     { c: ['elvis', 'vitaha', 'oleg'], l: [[0, 'ГААА-ГААА!'], [1, 'Ахахаха!'], [2, 'Два сапога пара. Я вас в патче замучу']] },
     { c: ['elvis', 'dantl', 'oleg'], l: [[1, 'Элвис, только не ржи'], [0, 'Я и не собирался'], [2, 'Он уже покраснел, щас будет'], [0, 'ГААА-ГААА-ГААА!'], [1, 'Я же просил, бля']] },
@@ -1115,7 +1136,7 @@ details.sets summary::-webkit-details-marker{display:none}
 
   // ---------- Перебранка: раз в минуту кто-то кого-то цепляет ----------
   // Темп: каждая следующая реплика ждёт, пока прочитают предыдущую
-  const readMs = (t) => Math.min(7000, 2800 + String(t).replace(/<[^>]+>/g, '').length * 60);
+  const readMs = (t) => Math.min(11000, 4200 + String(t).replace(/<[^>]+>/g, '').length * 85);
   function pace(list, start) {
     let t = start || 0;
     return (list || []).map((x) => { const o = Object.assign({}, x, { delay: t }); t += readMs(x.text) + 500; return o; });
@@ -1152,8 +1173,19 @@ details.sets summary::-webkit-details-marker{display:none}
   // plays: [{seat, card}] одной взятки по порядку. seats: [{char, name, bot}] по местам (можно null).
   // hands: оставшиеся руки (для «роговой», только про ботов, чтобы не палить живых). Вернёт [{seat, text, delay}].
   const charOf = (seats, s) => (seats && seats[s] && seats[s].char) || null;
+  // Крылатые фразы: только у своего хозяина, звучат на своих взятках и потерях
+  const CATCH = {
+    elvis: { win: ['Пасть порву!', 'Шакалинный пух, ЖАРА ИЮЛЬ!', 'По фактам: моё'], lose: ['Пасть порву, кто это сделал?!', 'Не по фактам это'] },
+    zema: { win: ['Ксерокопия ключа, а дверь открыла', 'Трёхочковый!'], lose: ['Мучёнка немытая...', 'Ксерокопия ключа. Не открывает'] },
+    oleg: { win: ['Так и задумано разработчиком', 'Логи не врут'], lose: ['Это не баг, это фича', 'Для себя я эту взятку выиграл'] },
+    lysy: { win: ['Панчлайн: взятка моя', 'Интеллект не пропьёшь'], lose: ['Интеллектуально я её выиграл', 'Шопенгауэр предупреждал'] },
+    dantl: { win: ['А чё такого?', 'Прочитай меня, если сможешь'], lose: ['Это был блеф. Длинный', 'Я специально отдал. Наверное'] },
+    vitaha: { win: ['Ору с вас!', 'Обнимашки за взятку!'], lose: ['Ахах, ну и ладно!', 'Забирай, я тебя всё равно люблю'] },
+  };
   function react(seats, s, kind, fallback) {
-    const c = CHAR[charOf(seats, s)];
+    const ch = charOf(seats, s), cc = CATCH[ch];
+    if (cc && cc[kind] && Math.random() < .28) return pickNR('catch:' + kind + ch, cc[kind]);
+    const c = CHAR[ch];
     if (c && c[kind] && Math.random() < .55) return pickNR(kind + ':' + charOf(seats, s), c[kind]);
     return pickNR('L:' + fallback, L[fallback]);
   }
@@ -1266,7 +1298,7 @@ details.sets summary::-webkit-details-marker{display:none}
     return { seat: s, text: pickNR('bomzh:back:' + (BOMZH.back[c] && pool === BOMZH.back[c] ? c : 'def'), pool) };
   }
 
-  const api = { L, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
+  const api = { L, CATCH, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -1336,6 +1368,7 @@ const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sortHand = (h) => h.slice().sort((a, b) =>
   K.SUITS.indexOf(a.suit) - K.SUITS.indexOf(b.suit) || K.RANKS.indexOf(b.rank) - K.RANKS.indexOf(a.rank));
 
+let MODE = 'hard', queued = null, lastTap = 0;
 let match = null, round = null, lite = false, busy = false, voids = [], pending = null, gen = 0;
 const OVERLAYS = ['menu', 'pause', 'rules', 'verdict', 'net', 'lobby', 'acctBox', 'yard', 'newChar'];
 let online = false;
@@ -1383,16 +1416,21 @@ function enableDrag(d, c, mine) {
   d.onpointerdown = (e) => {
     if (e.button) return;
     const sx = e.clientX, sy = e.clientY;
-    let drag = false;
+    let drag = false, swipe = false;
     try { d.setPointerCapture(e.pointerId); } catch (x) {}
     const move = (ev) => {
       const dx = ev.clientX - sx, dy = ev.clientY - sy;
-      if (!drag && !folded && Math.hypot(dx, dy) > 10) { drag = true; dragging = true; d.classList.add('dragging'); }
+      if (!drag && !swipe && !folded) {
+        if (dy > 14 && dy > Math.abs(dx)) swipe = true; // смахнул вниз: прятать
+        else if (Math.hypot(dx, dy) > 10) { drag = true; dragging = true; d.classList.add('dragging'); }
+      }
+      if (swipe) { $('hand').style.transform = 'translateY(' + Math.max(0, Math.min(70, dy)) + 'px)'; return; }
       if (drag && !folded) d.style.transform = 'translate(' + dx + 'px,' + Math.min(0, dy) + 'px)';
     };
     const up = (ev) => {
       d.removeEventListener('pointermove', move); d.removeEventListener('pointerup', up); d.removeEventListener('pointercancel', up);
-      if (!drag) { if (ev.type !== 'pointerup') return; if (mine) myPlay(c.id, d); else setFold(!folded); return; }
+      if (swipe) { $('hand').style.transform = ''; if (ev.type === 'pointerup' && ev.clientY - sy > 40 && !mine) setFold(true); return; }
+      if (!drag) { if (ev.type !== 'pointerup') return; if (mine) myPlay(c.id, d); else handTap(c.id); return; }
       const others = [...$('hand').children].filter((el) => el !== d);
       const x = ev.clientX;
       const before = others.find((el) => { const r = el.getBoundingClientRect(); return x < r.left + r.width / 2; });
@@ -1405,6 +1443,88 @@ function enableDrag(d, c, mine) {
     d.addEventListener('pointermove', move); d.addEventListener('pointerup', up); d.addEventListener('pointercancel', up);
   };
 }
+
+// ---------- Рот открывается, когда персонаж говорит ----------
+// Где рот на картинке позы (в % от квадрата 640x640): x, y линии губ
+const MOUTH = {
+  front: { oleg: [46.9, 33.1], elvis: [53.8, 46.9], lysy: [48.8, 46.3], zema: [51.3, 46], dantl: [51.3, 41.9], vitaha: [46.9, 36.3] },
+  side: { oleg: [56.9, 33.5], elvis: [58.1, 42.5], lysy: [55, 43.1], zema: [65, 44.4], dantl: [54.4, 36.3], vitaha: [55.6, 39.4] },
+};
+function setMouth(fig, ch, poseName, src, flip) {
+  const m = MOUTH[poseName] && MOUTH[poseName][ch];
+  fig.classList.toggle('mouthy', !!m);
+  if (!m) return;
+  const key = ch + poseName + flip;
+  if (fig.dataset.mk === key) return;
+  fig.dataset.mk = key;
+  const jw = poseName === 'front' ? 15 : 12, jh = poseName === 'front' ? 9.5 : 8.5, mw = poseName === 'front' ? 7.5 : 6;
+  const jimg = fig.querySelector('.jaw img'); jimg.src = src;
+  // челюсть: от линии губ вниз до подбородка, низ скруглён
+  jimg.style.clipPath = 'inset(' + m[1] + '% ' + (100 - m[0] - jw / 2) + '% ' + (100 - m[1] - jh) + '% ' + (m[0] - jw / 2) + '% round 0 0 48% 48%)';
+  fig.style.setProperty('--mx', (flip ? 100 - m[0] : m[0]) + '%');
+  fig.style.setProperty('--my', m[1] + '%');
+  fig.style.setProperty('--mw', mw + '%');
+}
+const talkUntil = [0, 0, 0, 0], micOn = [false, false, false, false], talkT = [];
+function updTalk(seat) {
+  const f = $('f' + seat); if (!f) return;
+  const on = micOn[seat] || Date.now() < talkUntil[seat];
+  if (on && !f.classList.contains('talking')) { f.style.setProperty('--mt', (.17 + Math.random() * .12).toFixed(2) + 's'); f.style.setProperty('--md', (1.6 + Math.random() * 1.2).toFixed(1) + '%'); }
+  f.classList.toggle('talking', on);
+}
+// реплика в пузыре: рот шевелится, пока «проговаривает» текст
+function mouthTalk(seat, text) {
+  const t = String(text || '');
+  if ([...t].length <= 2 || /^<i>/.test(t)) return;
+  const ms = Math.max(700, Math.min(3800, t.replace(/<[^>]+>/g, '').length * 70));
+  talkUntil[seat] = Date.now() + ms; updTalk(seat);
+  clearTimeout(talkT[seat]); talkT[seat] = setTimeout(() => updTalk(seat), ms + 20);
+}
+function micTalk(seat, on) { micOn[seat] = !!on; updTalk(seat); }
+
+// ---------- Микрофон: рот открывается, когда ты говоришь (звук никуда не уходит, только громкость) ----------
+const Mic = (() => {
+  let on = false, stream = null, ctx = null, an = null, buf = null, timer = null, talking = false, lastLoud = 0, floor = .01;
+  try { on = localStorage.getItem('kozel-mic') === 'on'; } catch (e) {}
+  async function start() {
+    if (stream) return true;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+    } catch (e) { stream = null; return false; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    ctx = new AC(); an = ctx.createAnalyser(); an.fftSize = 1024; buf = new Float32Array(an.fftSize);
+    ctx.createMediaStreamSource(stream).connect(an);
+    timer = setInterval(tick, 50);
+    return true;
+  }
+  function stop() {
+    clearInterval(timer); timer = null;
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    stream = null; if (ctx) ctx.close().catch(() => {}); ctx = null;
+    if (talking) set(false);
+  }
+  function set(t) { talking = t; micTalk(0, t); if (online) Net.send('mic', { on: t }); }
+  function tick() {
+    if (ctx && ctx.state === 'suspended') ctx.resume();
+    an.getFloatTimeDomainData(buf);
+    let sum = 0; for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+    const rms = Math.sqrt(sum / buf.length), now = Date.now();
+    floor = rms < floor ? floor * .7 + rms * .3 : floor * .998 + rms * .002; // фон комнаты
+    if (rms > Math.max(.015, floor * 3.2)) lastLoud = now;
+    const t = now - lastLoud < 260;
+    if (t !== talking) set(t);
+  }
+  async function toggle() {
+    if (on) { on = false; stop(); }
+    else { on = await start(); if (!on) say('Микрофон не дали: разреши доступ в браузере'); }
+    try { localStorage.setItem('kozel-mic', on ? 'on' : 'off'); } catch (e) {}
+    syncToggles();
+  }
+  // включён с прошлого раза: стартуем по первому касанию (браузер требует)
+  document.addEventListener('pointerdown', function first() { document.removeEventListener('pointerdown', first); if (on) start().then((ok) => { if (!ok) { on = false; syncToggles(); } }); });
+  return { toggle, get on() { return on; } };
+})();
+document.addEventListener('click', (e) => { if (e.target.closest('[data-mic]')) Mic.toggle(); });
 
 // ---------- Ранги ----------
 // Уровни: первые идут быстро, каждый следующий дороже в 1.35 раза
@@ -1504,6 +1624,7 @@ function render() {
       fig.style.left = f.cx + '%'; fig.style.width = w + '%';
       fig.style.top = (f.bottom - w * stage.clientWidth / stage.clientHeight) + '%';
       const img = fig.querySelector('img'); if (img.getAttribute('src') !== pose) img.src = pose;
+      setMouth(fig, SEATCH[s], f.pose, pose, !!f.flip);
       fig.classList.toggle('flip', !!f.flip);
       fig.classList.toggle('fade', !!f.fade);
       fig.classList.toggle('turn', turn);
@@ -1545,6 +1666,7 @@ function render() {
   const hand = $('hand');
   hand.classList.toggle('my', mine);
   $('checkBtn').style.display = honest ? 'none' : '';
+  $('emoQuick').classList.toggle('locked', !!signalsLocked());
   hand.classList.toggle('folded', folded);
   if (dragging) return;
   const cards = orderedHand();
@@ -1552,14 +1674,17 @@ function render() {
     const d = cardEl(c);
     if (led && K.effSuit(c, round.trump) === led) d.classList.add('suit');
     if (honest && mine && round.trick.length && !canPlay(c.id)) { d.classList.add('no'); d.title = 'Масть есть, эту нельзя'; }
+    if (!mine && queued === c.id) { d.classList.add('queued'); d.title = 'Заряжена: пойдёт сама, когда будет твой ход'; }
     d.dataset.id = c.id;
     enableDrag(d, c, mine);
-    if (!mine) d.title = folded ? 'Тыкни, чтобы открыть карты' : 'Тыкни, чтобы спрятать карты';
+    if (!mine && queued !== c.id) d.title = folded ? 'Тыкни, чтобы открыть карты' : 'Тыкни, чтобы зарядить карту на свой ход. Смахни вниз, чтобы спрятать карты';
     if (mine) { d.tabIndex = 0; d.onkeydown = (e) => { if (e.key === 'Enter') myPlay(c.id, d); }; }
     return d;
   }));
   if (cards.length) { const n = document.createElement('span'); n.className = 'n'; n.textContent = cards.length; hand.lastElementChild.appendChild(n); }
   placeFold(mine);
+  if (mine && queued) fireQueued();
+  if (queued && !round.hands[0].some((x) => x.id === queued)) queued = null;
 }
 // Веер рубашек: сколько карт у соперника на самом деле
 function fanHtml(n) {
@@ -1603,6 +1728,23 @@ function addWho(el, seat) { const w = document.createElement('span'); w.classNam
 let folded = false;
 const FOLD_ICO = { open: '<svg viewBox="0 0 24 24"><g stroke="#6f140f" stroke-width="1.4" fill="#fffaf0"><rect x="9" y="4" width="8" height="12" rx="1.4" transform="rotate(18 13 10)"/><rect x="8" y="4" width="8" height="12" rx="1.4"/><rect x="7" y="4" width="8" height="12" rx="1.4" transform="rotate(-18 11 10)"/></g><path d="M5 20 H19" stroke="#6f140f" stroke-width="1.6" stroke-linecap="round"/></svg>',
   shut: '<svg viewBox="0 0 24 24"><g stroke="#6f140f" stroke-width="1.4"><rect x="7" y="6" width="10" height="14" rx="1.6" fill="#b3241c"/><rect x="7.5" y="4.5" width="10" height="14" rx="1.6" fill="#b3241c"/><rect x="8" y="3" width="10" height="14" rx="1.6" fill="#cc3326"/></g><path d="M10.5 10 C10.5 8 15.5 8 15.5 10 C15.5 12 13 12 13 14" stroke="#f2e7c9" stroke-width="1.3" fill="none" stroke-linecap="round"/></svg>' };
+// Заранее выбрать карту: тык на чужом ходу. Ещё тык по ней же снимает. Смахнуть карты вниз = спрятать, тык по спрятанным = открыть.
+function handTap(id) {
+  if (folded) { setFold(false); return; }
+  queued = queued === id ? null : id;
+  if (queued) Snd.flick();
+  render();
+}
+// Пришла очередь: кидаем заряженную карту, если её можно класть
+function fireQueued() {
+  if (!queued || !round || round.over || round.turn !== 0 || busy || paused()) return;
+  const id = queued, c = round.hands[0].find((x) => x.id === id);
+  if (!c) { queued = null; return; }
+  const legal = K.legalCards(round.hands[0], round.trick.map((e) => e.card), round.trump).some((x) => x.id === id);
+  if (!legal) { queued = null; talk(2, pickOne(['Не, заряженную нельзя: масть есть, выбирай сам', 'Твоя заготовка не катит, масть есть'])); render(); return; }
+  queued = null;
+  setTimeout(() => { if (round && round.turn === 0 && !busy) { const el = document.querySelector('#hand .card[data-id="' + id + '"]'); myPlay(id, el); } }, 380);
+}
 function setFold(v) {
   folded = v;
   Snd.flick(); setTimeout(() => Snd.flick(), 90);
@@ -2008,7 +2150,7 @@ function finish(keepMsg) {
 }
 
 function clearTable() {
-  $('emoQuick').hidden = true; $('emoPanel').classList.remove('open'); $('foldBtn').hidden = true; folded = false;
+  queued = null; $('emoQuick').hidden = true; $('emoPanel').classList.remove('open'); $('foldBtn').hidden = true; folded = false;
   for (const i of [0, 1, 2, 3]) $('f' + i).hidden = true;
   $('logPanel').classList.remove('open'); $('logBtn').hidden = true;
   for (const id of ['pile', 'fx', 'hand', 's1', 's2', 's3', 'me']) $(id).replaceChildren();
@@ -2052,7 +2194,7 @@ function newMatch() {
   setLoc(LOC);
   closePanel();
   const mode = document.querySelector('.mode[aria-pressed="true"]').dataset.mode;
-  lite = mode !== 'hard';
+  lite = mode !== 'hard'; MODE = mode; queued = null;
   honest = $('honestBtn').getAttribute('aria-pressed') === 'true';
   TURN_MS = mode === 'turbo' ? 45000 : 60000;
   try { localStorage.setItem('kozel-mode', mode); } catch (e) {}
@@ -2078,7 +2220,7 @@ function showPause(html, title) {
 }
 function pauseMenu() {
   showPause((online ? '<p class="note">Игра по сети не ждёт: время на ход тикает.</p>' : '') + '<button class="btn wide" id="resume">Обратно за стол</button><button class="btn wide alt" id="pRules">Понятия</button>' +
-    '<button class="btn wide alt" id="exit">Свалить в меню</button><div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="music"></button><button class="btn alt" data-toggle="amb"></button></div><div class="mus"><span>Трек:</span><select data-track></select><span>Громкость:</span><input type="range" min="0" max="100" data-mvol></div><div class="mus"><span>Голос:</span><select data-voice></select><button class="btn alt" data-vtest style="font-size:.85em;padding:.3em .7em">Послушать</button></div>');
+    '<button class="btn wide alt" id="exit">Свалить в меню</button><div class="row2 snd"><button class="btn alt" data-toggle="sfx"></button><button class="btn alt" data-toggle="music"></button><button class="btn alt" data-toggle="amb"></button></div><div class="mus"><span>Трек:</span><select data-track></select><span>Громкость:</span><input type="range" min="0" max="100" data-mvol></div><div class="mus"><span>Голос:</span><select data-voice></select><button class="btn alt" data-vtest style="font-size:.85em;padding:.3em .7em">Послушать</button></div><button class="btn alt wide" data-mic></button>');
   bindToggles();
   $('resume').onclick = () => hide('pause');
   $('pRules').onclick = () => open('rules');
@@ -2248,8 +2390,17 @@ function talk(seat, text, chatter) {
   const s = stage.getBoundingClientRect(), r = plate.getBoundingClientRect();
   el.style.left = (r.left - s.left + r.width / 2) + 'px';
   el.style.top = (r.top - s.top - 8) + 'px';
-  if (seat === 0) { el.style.left = (r.right - s.left + 14) + 'px'; el.style.top = (r.top - s.top + r.height * .8) + 'px'; el.style.transform = 'translate(0,-100%)'; el.style.animation = 'none'; }
+  if (seat === 0) {
+    const f0 = $('f0');
+    if (!f0.hidden) { const q = f0.getBoundingClientRect(); el.style.left = (q.left - s.left + q.width * .55) + 'px'; el.style.top = (q.top - s.top + q.height * .05) + 'px'; el.classList.add('mine'); }
+    else { el.style.left = (r.right - s.left + 14) + 'px'; el.style.top = (r.top - s.top + r.height * .8) + 'px'; el.style.transform = 'translate(0,-100%)'; el.style.animation = 'none'; }
+  } else {
+    // над головой персонажа, а не над табличкой
+    const f = $('f' + seat);
+    if (f && !f.hidden) { const q = f.getBoundingClientRect(); el.style.top = Math.min(r.top - s.top - 8, q.top - s.top + q.height * .02) + 'px'; }
+  }
   stage.appendChild(el);
+  mouthTalk(seat, text);
   setTimeout(() => el.remove(), KozelLines.readMs(text));
 }
 const seatInfo = () => SEATCH.map((id, i) => ({ char: id, name: NAMES[i], bot: online ? !!(Net.view && Net.view.seats[i] && Net.view.seats[i].bot) : i !== 0 }));
@@ -2728,6 +2879,7 @@ Snd.onTrack = (t) => {
   if (round && !round.over && Math.random() < .7 && TRACK_TALK[t]) setTimeout(() => talk(pickOne([1, 2, 3]), pickOne(TRACK_TALK[t])), 1800);
 };
 function syncToggles() {
+  document.querySelectorAll('[data-mic]').forEach((b) => { b.textContent = Mic.on ? '🎙 Рот по микрофону: вкл' : '🎙 Рот по микрофону: выкл'; b.title = 'Когда говоришь (хоть в Дискорде), у твоего пацана шевелится рот у всех на экране. Звук никуда не отправляется, игра смотрит только громкость'; });
   document.querySelectorAll('[data-toggle="music"]').forEach((b) => { b.textContent = Snd.music ? 'Музыка: играет' : 'Музыка: нет'; });
   document.querySelectorAll('[data-track]').forEach((sel) => {
     sel.innerHTML = Object.keys(Snd.TRACKS).map((k) => '<option value="' + k + '"' + (k === Snd.track ? ' selected' : '') + '>' + Snd.TRACKS[k] + ((k === 'auto' || k === 'shuffle') && k === Snd.track ? ' (' + Snd.TRACKS[Snd.trackNow] + ')' : '') + '</option>').join('');
@@ -2754,15 +2906,19 @@ document.addEventListener('pointerdown', () => Snd.init(), { once: true });
 document.addEventListener('click', (e) => { if (e.target.closest('.btn,.mode')) Snd.click(); });
 if (window.speechSynthesis) { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => syncToggles(); }
 
+// Случайность по общему зерну: по сети у всех выпадает одно и то же
+const seeded = (a) => () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+const rngKit = (R) => ({ pk: (a) => a[Math.floor(R() * a.length)], pn: (k, a) => (R === Math.random ? KozelLines.pickNR(k, a) : a[Math.floor(R() * a.length)]) });
 // ---------- Бабка с балкона ----------
 const BABKA = ['Опять расселись, ироды!', 'Щас милицию вызову!', 'Влад! Домой, жопу мыть!', 'А ну бегом домой! Гомно за собой не смыл, падаль!', 'Влад! Я кому сказала, домой!', 'Не орите, внуки спят!', 'Тунеядцы! Шли бы работать!',
   'Карты им! А мусор кто выносить будет?!', 'Я всё вижу! Кто там крысит?!', 'Лавочку не ломайте, ироды!'];
 let yelling = false;
-async function babka() {
+async function babka(R = Math.random, rs = null) {
+  const { pk, pn } = rngKit(R);
   const b = $('babka');
   if (yelling || !round || paused() || !Snd.amb || document.hidden || !LAY.yard) return;
   yelling = true;
-  const text = KozelLines.pickNR('babka', BABKA);
+  const text = pn('babka', BABKA);
   Snd.creak();
   b.classList.add('out');
   await sleep(550);
@@ -2770,7 +2926,7 @@ async function babka() {
   b.classList.add('talking');
   await sleep(3800);
   b.classList.remove('talking');
-  if (round && Math.random() < .55) talk(pickOne([1, 2, 3]), pickOne(LINES.babka));
+  if (round && R() < .55) talk(rs === null ? pk([1, 2, 3]) : rs, pk(LINES.babka));
   await sleep(400);
   b.classList.remove('out');
   yelling = false;
@@ -2785,12 +2941,13 @@ const NEIGHBORS = [
   { name: 'Генка', pitch: 1.05, svg: '<path d="M6 70 C6 52 16 46 30 46 C44 46 54 52 54 70 Z" fill="#2b2b2b"/><path d="M14 52 L18 70 M46 52 L42 70" stroke="#fff" stroke-width="2"/><circle cx="30" cy="30" r="14" fill="' + SKIN + '"/><path d="M15 26 C15 15 45 15 45 26 Z" fill="#3a3a3a"/><path d="M15 25 H8" stroke="#3a3a3a" stroke-width="3" stroke-linecap="round"/><circle cx="25" cy="30" r="1.2" fill="#2a2018"/><circle cx="35" cy="30" r="1.2" fill="#2a2018"/><path d="M25 37 C28 40 33 39 36 36" stroke="#6b3a2a" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="37" cy="37" rx="1.4" ry=".8" fill="#222"/>',
     lines: ['Раздайте на пятерых, я тоже хочу!', 'Опа, кто там на трояк лезет? Я всё видел!', 'Пацаны, пиво будет?', 'Сразу видно, кто тут козёл!'] },
 ];
-async function neighbor() {
+async function neighbor(R = Math.random) {
+  const { pk, pn } = rngKit(R);
   if (yelling || !round || paused() || !Snd.amb || document.hidden || !LAY.yard) return;
   yelling = true;
-  const n = KozelLines.pickNR('neigh', NEIGHBORS), b = $('neigh');
+  const n = pn('neigh', NEIGHBORS), b = $('neigh');
   $('neighWin').innerHTML = '<svg viewBox="0 0 60 70">' + n.svg + '</svg>';
-  const text = KozelLines.pickNR('neigh:' + n.name, n.lines);
+  const text = pn('neigh:' + n.name, n.lines);
   Snd.creak();
   await sleep(30);
   b.classList.add('out');
@@ -2803,9 +2960,9 @@ async function neighbor() {
   b.classList.remove('out');
   yelling = false;
 }
-(function neighLoop() { setTimeout(() => { neighbor(); neighLoop(); }, 150000 + Math.random() * 150000); })();
+(function neighLoop() { setTimeout(() => { if (!online) neighbor(); neighLoop(); }, 150000 + Math.random() * 150000); })();
 let babkaFirst = true;
-(function babkaLoop() { setTimeout(() => { babka(); babkaLoop(); }, babkaFirst ? (babkaFirst = false, 70000 + Math.random() * 40000) : 160000 + Math.random() * 120000); })();
+(function babkaLoop() { setTimeout(() => { if (!online) babka(); babkaLoop(); }, babkaFirst ? (babkaFirst = false, 70000 + Math.random() * 40000) : 160000 + Math.random() * 120000); })();
 
 // ---------- Игра по сети ----------
 const Net = (() => {
@@ -2831,7 +2988,7 @@ const Net = (() => {
     ['menu', 'net', 'pause'].forEach(hide);
     if (es) es.close();
     es = new EventSource('/api/events?code=' + encodeURIComponent(code) + '&token=' + encodeURIComponent(tok));
-    es.onmessage = (m) => { queue.push(JSON.parse(m.data)); pump(); };
+    es.onmessage = (m) => { const j = JSON.parse(m.data); if (j.fx) { j.fx.forEach(fxEvent); return; } queue.push(j); pump(); };
     es.onerror = () => { if (online) say('Связь пропала, подключаемся...'); };
     try { history.replaceState(null, '', '?r=' + code); } catch (e) {}
   }
@@ -2841,6 +2998,10 @@ const Net = (() => {
     es = null; online = false; code = null; view = null; queue = []; round = null; match = null;
     try { localStorage.removeItem('kozel-net'); history.replaceState(null, '', location.pathname); } catch (e) {}
     ['lobby', 'pause', 'verdict'].forEach(hide); closePanel(); clearTable(); open('menu');
+  }
+  function fxEvent(ev) {
+    if (ev.type === 'mic') { if (ev.seat !== 0) micTalk(ev.seat, ev.on); }
+    else if (ev.type === 'scene') netScene(ev);
   }
   function send(type, extra) {
     return api('/api/action', Object.assign({ code, token: tok, type }, extra || {}))
@@ -2853,7 +3014,7 @@ const Net = (() => {
     running = false;
   }
   function apply(v) {
-    view = v; skew = v.now - Date.now(); lite = v.mode !== 'hard';
+    view = v; skew = v.now - Date.now(); lite = v.mode !== 'hard'; MODE = v.mode;
     if (v.loc && v.loc !== LOC) setLoc(v.loc); TURN_MS = v.mode === 'turbo' ? 45000 : 60000; honest = !!v.honest;
     NAMES = v.seats.map((s, i) => (s ? s.name : (i === 0 ? 'Ты' : 'свободно')));
     SEATCH = v.seats.map((s) => (s && s.char) || '');
@@ -2912,6 +3073,14 @@ const Net = (() => {
       case 'verdict':
         await netVerdict(ev);
         break;
+      case 'mayak': {
+        const us = K.teamOf(ev.seat) === 0;
+        Snd.whistle();
+        figFx(ev.seat, 'shake'); figFx(ev.mate, 'shake');
+        const who = (x) => (x === 0 ? 'ты' : NAMES[x]);
+        await verdict('Маяк спалили!', us ? 'bad' : 'good', who(ev.seat).replace(/^./, (m) => m.toUpperCase()) + ' маякнул смайлом, и ' + who(ev.mate) + ' тут же накинул ' + short(ev.card) + ' в его взятку. ' + (us ? 'Нам' : 'Им') + ' 1 штрафная за маяк.', 4500);
+        break;
+      }
       case 'roundEnd':
         $('pile').replaceChildren();
         hideClosing(); closePanel();
@@ -3045,14 +3214,14 @@ $('emoPanel').innerHTML = '<div class="gh">Жесты</div>' + Object.keys(GESTS
 $('emoPanel').querySelectorAll('[data-g]').forEach((b) => {
   b.onclick = () => {
     const g = b.dataset.g, now = Date.now();
-    if (!round || now - (gestAt[g] || 0) < GEST_MS) return;
+    if (!round || now - (gestAt[g] || 0) < GEST_MS || signalsLocked()) return;
     gestAt[g] = now;
     STATS.gest = (STATS.gest || 0) + 1; saveStats(); checkAch();
     $('emoPanel').classList.remove('open');
     if (online) return Net.send('gesture', { g });
     gesture(0, g);
     // боты отвечают
-    if (Math.random() < .5) setTimeout(() => { const s = pickOne([1, 2, 3]); talk(s, pickOne(g === 'fuck' ? ['Сам такой!', 'Ах ты ж...', 'Пасть порву!', '<i>*показывает в ответ*</i>'] : g === 'clap' ? ['Спасибо, спасибо', 'Ой, засмущал', 'То-то же'] : ['Чё подмигиваешь?', 'Ты на что намекаешь?', 'Подозрительно...'])); }, 1600);
+    if (Math.random() < .5) setTimeout(() => { const s = pickOne([1, 2, 3]); talk(s, pickOne(g === 'fuck' ? ['Сам такой!', 'Ах ты ж...', SEATCH[s] === 'elvis' ? 'Пасть порву!' : 'Ну всё, ты попал', '<i>*показывает в ответ*</i>'] : g === 'clap' ? ['Спасибо, спасибо', 'Ой, засмущал', 'То-то же'] : ['Чё подмигиваешь?', 'Ты на что намекаешь?', 'Подозрительно...'])); }, 1600);
   };
 });
 setInterval(() => {
@@ -3153,14 +3322,15 @@ const GUESTS = {
       replies: ['Чё он сказал?', 'Улетай, зелёный', 'О, ещё один крысятник', 'Сфоткайте его кто-нибудь!', 'Козёл это мы, если проиграем'] }],
 };
 let guestBusy = false;
-function guestReply(g) { if (!round) return; const r = g.replies && pickOne(g.replies); if (r) talk(pickOne([1, 2, 3]), r); }
-async function runGuest(g) {
+function guestReply(g, R = Math.random, rs = null) { if (!round) return; const { pk } = rngKit(R); const r = g.replies && pk(g.replies); if (r) talk(rs === null ? pk([1, 2, 3]) : rs, r); }
+async function runGuest(g, R = Math.random, rs = null) {
+  const { pk, pn } = rngKit(R);
   if (guestBusy || yelling || !round || paused() || document.hidden) return;
   guestBusy = true;
   const box = $('guests'), W = stage.clientWidth;
   try {
     if (g.kind === 'walk') {
-      const ls = KozelLines.pickNR('guest:' + g.who[0], g.lines), right = g.from === 'right';
+      const ls = pn('guest:' + g.who[0], g.lines), right = g.from === 'right';
       const els = g.svgs.map((sv, i) => {
         const e = document.createElement('div'); e.className = 'walker walk' + (right ? ' rev' : '') + (g.who[0] === 'Толян' ? ' sway' : '');
         e.innerHTML = sv; box.appendChild(e); return e;
@@ -3179,15 +3349,15 @@ async function runGuest(g) {
         if (g.sound && i === 0) Snd[g.sound]();
         await sleep(KozelLines.readMs(ls[i]) + 300); bub.remove();
       }
-      if (Math.random() < .75) guestReply(g);
+      if (R() < .75) guestReply(g, R, rs);
       await sleep(900);
       els.forEach((e) => { e.classList.add('walk'); e.classList.toggle('rev', !right); });
       await Promise.all(els.map((e, i) => go(e, x1, x0, 3400, i * W * .055)));
       els.forEach((e) => e.remove());
     } else if (g.kind === 'npc') {
       // Нарисованный персонаж: маленький, на дальнем плане, проходит, останавливается, говорит
-      const n = NPCS[pickOne(g.ids)], text = KozelLines.pickNR('npc:' + n.name, n.lines);
-      const right = Math.random() < .5, e = document.createElement('div');
+      const n = NPCS[pk(g.ids)], text = pn('npc:' + n.name, n.lines);
+      const right = R() < .5, e = document.createElement('div');
       e.className = 'npc walk' + (right ? ' rev' : '');
       e.innerHTML = '<img alt="" src="' + NPC_IMG[n.img] + '">';
       e.style.height = n.h + '%'; e.style.bottom = (NPC_FLOOR[LOC] || 36) + '%';
@@ -3204,13 +3374,13 @@ async function runGuest(g) {
       stage.appendChild(bub); requestAnimationFrame(() => bub.classList.add('on'));
       Snd.npcVoice(text, n.voice[0], n.voice[1]);
       await sleep(KozelLines.readMs(text) + 500); bub.remove();
-      if (Math.random() < .75) guestReply(n);
+      if (R() < .75) guestReply(n, R, rs);
       await sleep(900);
       e.classList.add('walk'); e.classList.toggle('rev', !right);
       await go(x1, x0, 3800); e.remove();
     } else if (g.kind === 'peek') {
       // выглядывает снизу из-за края экрана, тянет руку к столу
-      const n = NPCS[pickOne(g.ids)], text = KozelLines.pickNR('npc:' + n.name, n.lines), right = Math.random() < .5;
+      const n = NPCS[pk(g.ids)], text = pn('npc:' + n.name, n.lines), right = R() < .5;
       const e = document.createElement('div'); e.className = 'peek' + (right ? ' l' : ' r');
       e.innerHTML = '<img alt="" src="' + NPC_IMG[n.win] + '">';
       e.style[right ? 'right' : 'left'] = '1%'; e.style.transform = 'translateY(110%)';
@@ -3222,20 +3392,20 @@ async function runGuest(g) {
       stage.appendChild(bub); requestAnimationFrame(() => bub.classList.add('on'));
       Snd.npcVoice(text, n.voice[0], n.voice[1]);
       await sleep(KozelLines.readMs(text) + 500); bub.remove();
-      if (Math.random() < .7) guestReply(n);
+      if (R() < .7) guestReply(n, R, rs);
       e.style.transform = 'translateY(110%)'; await sleep(700); e.remove();
     } else if (g.kind === 'window') {
-      const n = Math.floor(Math.random() * g.who.length), [x, y] = g.at[n], b = $('neigh');
-      const text = KozelLines.pickNR('win', g.lines)[0];
+      const n = Math.floor(R() * g.who.length), [x, y] = g.at[n], b = $('neigh');
+      const text = pn('win', g.lines)[0];
       b.style.left = x + '%'; b.style.top = y + '%'; b.classList.toggle('neigh', x < 50);
-      const wn = NPCS[pickOne(['zaharych', 'valera', 'petrovich'])], useImg = Math.random() < .6;
-      $('neighWin').innerHTML = useImg ? '<img class="winnpc" alt="" src="' + NPC_IMG[wn.win] + '">' : '<svg viewBox="0 0 60 70">' + pickOne(NEIGHBORS).svg + '</svg>';
+      const wn = NPCS[pk(['zaharych', 'valera', 'petrovich'])], useImg = R() < .6;
+      $('neighWin').innerHTML = useImg ? '<img class="winnpc" alt="" src="' + NPC_IMG[wn.win] + '">' : '<svg viewBox="0 0 60 70">' + pk(NEIGHBORS).svg + '</svg>';
       Snd.creak(); await sleep(30); b.classList.add('out'); await sleep(550);
-      const who = useImg ? wn.name : g.who[n], said = useImg ? KozelLines.pickNR('npc:' + wn.name, wn.lines) : text;
+      const who = useImg ? wn.name : g.who[n], said = useImg ? pn('npc:' + wn.name, wn.lines) : text;
       $('neighSay').innerHTML = '<b>' + who + ':</b> ' + said; b.classList.add('talking');
       if (useImg) Snd.npcVoice(said, wn.voice[0], wn.voice[1]);
       await sleep(KozelLines.readMs(said) + 400); b.classList.remove('talking');
-      if (Math.random() < .7) guestReply(g);
+      if (R() < .7) guestReply(g, R, rs);
       await sleep(400); b.classList.remove('out'); await sleep(500); b.style.left = ''; b.style.top = ''; b.classList.add('neigh');
     } else if (g.kind === 'ufo') {
       const e = document.createElement('div'); e.className = 'ufo';
@@ -3248,9 +3418,9 @@ async function runGuest(g) {
       const go = (a, b, ms) => e.animate([{ transform: 'translate(' + a[0] + 'px,' + a[1] + 'px)' }, { transform: 'translate(' + b[0] + 'px,' + b[1] + 'px)' }], { duration: ms, easing: 'cubic-bezier(.3,.1,.3,1)', fill: 'forwards' }).finished.catch(() => {});
       Snd.ufo(); await go([-W * .15, -40], [W * .44, 60], 3000);
       e.classList.add('beaming'); await sleep(700);
-      const ls = KozelLines.pickNR('ufo', g.lines);
+      const ls = pn('ufo', g.lines);
       for (const l of ls) { e.querySelector('.gsay').innerHTML = '<b>' + g.who[0] + '</b>' + l; e.classList.add('talking'); await sleep(KozelLines.readMs(l) + 300); e.classList.remove('talking'); }
-      if (Math.random() < .8) guestReply(g);
+      if (R() < .8) guestReply(g, R, rs);
       e.classList.remove('beaming'); await sleep(600);
       Snd.ufo(); await go([W * .44, 60], [W * 1.1, -60], 1600); e.remove();
     }
@@ -3260,10 +3430,19 @@ async function runGuest(g) {
 (function guestLoop() {
   setTimeout(() => {
     const list = GUESTS[LOC];
-    if (list && Snd.amb) runGuest(LOC === 'baza' ? list[Math.random() < .6 ? 0 : 1] : pickOne(list));
+    if (list && Snd.amb && !online) runGuest(LOC === 'baza' ? list[Math.random() < .6 ? 0 : 1] : pickOne(list));
     guestLoop();
   }, 90000 + Math.random() * 80000);
 })();
+// Сценка от сервера: зерно общее, поэтому у всех тот же гость, те же слова, тот же, кто отвечает
+function netScene(ev) {
+  if (!Snd.amb) return;
+  const R = seeded(ev.seed), rs = ev.seat;
+  if (ev.kind === 'babka' && LAY.yard) return babka(R, rs);
+  if (ev.kind === 'neigh' && LAY.yard) return neighbor(R);
+  const list = GUESTS[LOC]; if (!list) return;
+  runGuest(LOC === 'baza' ? list[R() < .6 ? 0 : 1] : list[Math.floor(R() * list.length)], R, rs);
+}
 // ---------- Частицы под локацию ----------
 const LEAF_C = ['#d8892c', '#c25a1c', '#e4b33a', '#9a4a18'];
 setInterval(() => {
@@ -3308,7 +3487,7 @@ $('emoPanel').querySelectorAll('[data-emo]').forEach((b) => {
   b.onclick = () => {
     const i = +b.dataset.emo, now = Date.now();
     $('emoPanel').classList.remove('open');
-    if (now - lastEmo < 1500 || !round) return;
+    if (now - lastEmo < 1500 || !round || signalsLocked()) return;
     lastEmo = now;
     if (online) return Net.send('emote', { i });
     talk(0, EMOTES[i]);
@@ -3475,7 +3654,14 @@ function showProfile() {
 }
 $('me').onclick = showProfile;
 document.querySelectorAll('[data-myrank]').forEach((p) => { p.style.cursor = 'pointer'; p.title = 'Открыть досье'; p.onclick = showProfile; });
-$('emoQuick').onclick = (e) => { e.stopPropagation(); const p = $('emoPanel'); p.style.top = $('emoQuick').offsetTop + 'px'; p.classList.toggle('open'); };
+// Хардкор: пока идёт раздача, смайлы и жесты закрыты, чтобы не маячить
+const signalsLocked = () => MODE === 'hard' && round && !round.over && !round.closing;
+function emoNote(text) {
+  const n = document.createElement('div'); n.className = 'emonote'; n.innerHTML = text;
+  const b = $('emoQuick'); n.style.left = (b.offsetLeft + b.offsetWidth + 10) + 'px'; n.style.top = b.offsetTop + 'px';
+  stage.appendChild(n); setTimeout(() => n.remove(), 3300);
+}
+$('emoQuick').onclick = (e) => { e.stopPropagation(); if (signalsLocked()) { emoNote('<b>Хардкор: маяки запрещены.</b><br>Смайлы и жесты между раздачами.'); return; } const p = $('emoPanel'); p.style.top = $('emoQuick').offsetTop + 'px'; p.classList.toggle('open'); };
 
 // ---------- Свои: аккаунт по нику и PIN, прогресс в облаке, «Двор» ----------
 const Acct = (() => {
