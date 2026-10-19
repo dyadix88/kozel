@@ -353,6 +353,12 @@ details.sets summary::-webkit-details-marker{display:none}
 .roster .rc img{width:1.9em;height:1.9em;border-radius:50%;object-fit:cover}
 .roster .rc i{font-style:normal;color:var(--red-dk);font-family:'Russo One',sans-serif}
 .roster .rc:hover{background:rgba(179,36,28,.12)}
+.rcw{position:relative;display:inline-flex}
+.rdel{font:inherit;cursor:pointer;border:none;background:none;color:var(--ink-soft);font-size:.8em;padding:0 .3em}
+.rcw .rdel{position:absolute;top:-.45em;right:-.35em;width:1.35em;height:1.35em;border-radius:50%;background:var(--red-dk);color:var(--cream);font-size:.8em;line-height:1;padding:0;display:none}
+.rcw:hover .rdel,.rcw:focus-within .rdel{display:block}
+@media (hover:none){.rcw .rdel{display:block}}
+.rdel.rdelme{text-decoration:underline;margin-left:auto}
 .roster .add{border-style:dashed;padding:.35em .8em;color:var(--red-dk);font-family:'Russo One',sans-serif}
 .yr{cursor:pointer}.yr:hover{background:rgba(255,255,255,.6)}
 .ystat{display:none;grid-template-columns:repeat(4,1fr);gap:.3em .6em;padding:.45em .7em .55em 4em;margin:-.3em 0 .1em;font-size:.88em;background:rgba(255,255,255,.3);border-radius:0 0 .25em .25em}
@@ -523,7 +529,7 @@ details.sets summary::-webkit-details-marker{display:none}
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.22</div></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.23</div></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -2093,7 +2099,10 @@ try { const m = localStorage.getItem('kozel-mode'), el = m && document.querySele
 // ---------- Мои пацаны: у каждого персонажа свой опыт, статистика и ачивки ----------
 let ROSTER = {};
 try { ROSTER = JSON.parse(localStorage.getItem('kozel-roster') || 'null') || null; } catch (e) { ROSTER = null; }
-const snap = () => ({ xp: myXp, stats: Object.assign({}, STATS), ach: Object.assign({}, ACHS) });
+let PENDING_DEL = [];
+try { PENDING_DEL = JSON.parse(localStorage.getItem('kozel-del') || '[]'); } catch (e) {}
+function saveDel() { try { localStorage.setItem('kozel-del', JSON.stringify(PENDING_DEL)); } catch (e) {} }
+const snap = () => ({ xp: myXp, stats: Object.assign({}, STATS), ach: Object.assign({}, ACHS), created: (ROSTER && ROSTER[myChar] && ROSTER[myChar].created) || 0 });
 function rosterSave() { ROSTER[myChar] = snap(); try { localStorage.setItem('kozel-roster', JSON.stringify(ROSTER)); } catch (e) {} }
 function loadChar(id) {
   const d = ROSTER[id] || { xp: 0, stats: {}, ach: {} };
@@ -2107,7 +2116,7 @@ function switchChar(id) {
   rosterSave();
   const old = charById(myChar).name;
   myChar = id;
-  if (!ROSTER[id]) ROSTER[id] = { xp: 0, stats: {}, ach: {} };
+  if (!ROSTER[id]) { ROSTER[id] = { xp: 0, stats: {}, ach: {}, created: Date.now() }; PENDING_DEL = PENDING_DEL.filter((x) => x !== id); saveDel(); }
   loadChar(id);
   try { localStorage.setItem('kozel-char', myChar); localStorage.setItem('kozel-roster', JSON.stringify(ROSTER)); } catch (e) {}
   const ni = $('netName'); if (ni && (!ni.value.trim() || ni.value.trim() === old)) ni.value = charById(myChar).name;
@@ -2124,6 +2133,22 @@ function openNewChar() {
   open('newChar');
 }
 $('ncBack').onclick = () => hide('newChar');
+// Удалить пацана: прогресс пропадает насовсем (и в облаке тоже)
+function deleteChar(id) {
+  const ids = Object.keys(ROSTER);
+  if (ids.length <= 1) { showPause('<h2>Нельзя</h2><p>Это твой единственный пацан. Сначала создай нового.</p><button class="btn wide" id="dOk">Ясно</button>', 'УДАЛЕНИЕ'); $('dOk').onclick = () => hide('pause'); return; }
+  const c = charById(id), lv = rankOf((ROSTER[id] && ROSTER[id].xp) || 0).lvl;
+  showPause('<h2>Удалить ' + c.name + '?</h2><p>Уровень ' + lv + ', ачивки и вся статистика этого пацана пропадут насовсем, на всех устройствах.</p><div class="row2"><button class="btn" id="dYes">Удалить</button><button class="btn alt" id="dNo">Оставить</button></div>', 'УДАЛЕНИЕ');
+  $('dNo').onclick = () => hide('pause');
+  $('dYes').onclick = () => {
+    hide('pause');
+    if (id === myChar) { const next = ids.find((x) => x !== id); rosterSave(); delete ROSTER[id]; myChar = next; loadChar(next); try { localStorage.setItem('kozel-char', myChar); } catch (e) {} }
+    else delete ROSTER[id];
+    if (!PENDING_DEL.includes(id)) PENDING_DEL.push(id); saveDel();
+    try { localStorage.setItem('kozel-roster', JSON.stringify(ROSTER)); } catch (e) {}
+    applyPerks(); renderPickers(); Acct.dirty();
+  };
+}
 function renderPickers() {
   if (!ROSTER) { ROSTER = {}; ROSTER[myChar] = snap(); }
   if (!ROSTER[myChar]) ROSTER[myChar] = snap();
@@ -2133,10 +2158,12 @@ function renderPickers() {
     box.innerHTML = '<div class="mychar"><img class="big ' + frameOf(myXp) + '" alt="" src="' + CHAR_IMG[myChar] + '" title="Открыть досье"><div class="mi"><b>' + c.name + '</b>' +
       '<div class="lv">Ур. ' + r.lvl + ' · ' + r.name + '</div><div class="xpbar"><i style="width:' + r.pct + '%"></i></div><small>до уровня ' + (r.lvl + 1) + ' ещё ' + (r.next - myXp) + ' опыта</small>' +
       '<p>' + c.desc + '</p></div></div>' +
-      '<div class="roster">' + others.map((id) => '<button class="rc" data-sw="' + id + '" title="Переключиться"><img alt="" src="' + CHAR_IMG[id] + '">' + charById(id).name + ' <i>' + rankOf(ROSTER[id].xp || 0).lvl + '</i></button>').join('') +
+      '<div class="roster">' + others.map((id) => '<span class="rcw"><button class="rc" data-sw="' + id + '" title="Переключиться"><img alt="" src="' + CHAR_IMG[id] + '">' + charById(id).name + ' <i>' + rankOf(ROSTER[id].xp || 0).lvl + '</i></button><button class="rdel" data-del="' + id + '" title="Удалить пацана">×</button></span>').join('') +
+      (Object.keys(ROSTER).length > 1 ? '<button class="rdel rdelme" data-del="' + myChar + '" title="Удалить текущего пацана">Удалить ' + c.name + '</button>' : '') +
       (CHARS.some((x) => !ROSTER[x.id]) ? '<button class="rc add" data-newchar>+ Новый пацан</button>' : '') + '</div>';
     box.querySelector('.big').onclick = showProfile;
     box.querySelectorAll('[data-sw]').forEach((b) => { b.onclick = () => switchChar(b.dataset.sw); });
+    box.querySelectorAll('[data-del]').forEach((b) => { b.onclick = () => deleteChar(b.dataset.del); });
     box.querySelectorAll('[data-newchar]').forEach((b) => { b.onclick = openNewChar; });
   });
 }
@@ -3435,22 +3462,21 @@ const Acct = (() => {
     if (!r.ok) throw new Error(j.error || 'Ошибка');
     return j;
   }
-  const progress = () => { rosterSave(); return { xp: myXp, stats: STATS, ach: ACHS, char: myChar, roster: ROSTER }; };
+  const progress = () => { rosterSave(); return { xp: myXp, stats: STATS, ach: ACHS, char: myChar, roster: ROSTER, del: PENDING_DEL.slice() }; };
   // Облачный прогресс + то, что на этом устройстве: берём лучшее
   function apply(p) {
     if (!p) return;
-    if (p.roster) { // объединяем по каждому пацану, берём лучшее
+    if (p.roster) { // объединяем по каждому пацану отдельно, ничего не перемешивая
+      rosterSave(); // то, что на этом устройстве, остаётся у своего персонажа
+      for (const [id, ts] of Object.entries(p.deleted || {})) if (ROSTER[id] && !((ROSTER[id].created || 0) > ts)) delete ROSTER[id];
       for (const [id, d] of Object.entries(p.roster)) {
-        const m = ROSTER[id] || (ROSTER[id] = { xp: 0, stats: {}, ach: {} });
-        m.xp = Math.max(m.xp || 0, d.xp || 0);
+        const m = ROSTER[id] || (ROSTER[id] = { xp: 0, stats: {}, ach: {}, created: d.created || 0 });
+        m.xp = Math.max(m.xp || 0, d.xp || 0); m.created = Math.max(m.created || 0, d.created || 0);
         for (const [k, v] of Object.entries(d.stats || {})) m.stats[k] = Math.max(m.stats[k] || 0, v);
         for (const [k, v] of Object.entries(d.ach || {})) if (!m.ach[k]) m.ach[k] = v;
       }
-      if (p.char && p.char !== myChar && ROSTER[p.char]) { rosterSave(); myChar = p.char; }
-      ROSTER[myChar] = ROSTER[myChar] || snap();
-      const cur = ROSTER[myChar], s0 = snap();
-      cur.xp = Math.max(cur.xp || 0, s0.xp); for (const [k, v] of Object.entries(s0.stats)) cur.stats[k] = Math.max(cur.stats[k] || 0, v); for (const [k, v] of Object.entries(s0.ach)) if (!cur.ach[k]) cur.ach[k] = v;
-      loadChar(myChar);
+      const act = p.char && ROSTER[p.char] ? p.char : ROSTER[myChar] ? myChar : Object.keys(ROSTER)[0];
+      if (act) { myChar = act; loadChar(act); }
       try { localStorage.setItem('kozel-char', myChar); localStorage.setItem('kozel-roster', JSON.stringify(ROSTER)); } catch (e) {}
       applyPerks(); renderPickers(); return;
     }
@@ -3470,7 +3496,9 @@ const Acct = (() => {
     const n = $('acNick').value.trim(), pin = $('acPin').value.trim();
     $('acErr').textContent = '';
     try {
-      const j = await api(kind, { nick: n, pin, progress: progress() });
+      const pr = progress();
+      const j = await api(kind, { nick: n, pin, progress: pr });
+      PENDING_DEL = PENDING_DEL.filter((x) => !pr.del.includes(x)); saveDel();
       apply(j.profile); setSession(j.token, j.profile.nick);
       hide('acctBox'); $('acPin').value = '';
       achQueue.push({ i: '🤝', n: kind === 'register' ? 'Добро пожаловать, ' + j.profile.nick : 'С возвращением, ' + j.profile.nick, d: 'Прогресс теперь хранится в облаке', plain: true }); if (!achShowing) showAch();
@@ -3480,7 +3508,7 @@ const Acct = (() => {
     try { if (ROSTER) rosterSave(); } catch (e) {}
     if (!token) return;
     clearTimeout(saveT);
-    saveT = setTimeout(() => api('save', { token, progress: progress() }).catch(onErr), 3000);
+    saveT = setTimeout(() => { const pr = progress(); api('save', { token, progress: pr }).then(() => { PENDING_DEL = PENDING_DEL.filter((x) => !pr.del.includes(x)); saveDel(); }).catch(onErr); }, 3000);
   }
   function onErr(e) { if (/войти заново/.test(e.message)) { setSession(null, null); } }
   function bar() {
@@ -3512,7 +3540,7 @@ const Acct = (() => {
   let openYS = null;
   function renderYard() {
     $('yardList').innerHTML = last.list.map((x) => {
-      const r = rankOf(x.xp || 0), img = CHAR_IMG[x.char || 'oleg'];
+      const r = rankOf(x.xp || 0), img = CHAR_IMG[x.char] || CHAR_IMG[x.roster && Object.keys(x.roster)[0]] || '';
       let act = '';
       if (!x.me && x.status === 'yard') act = '<button class="btn" data-inv="' + x.nick + '">Позвать</button>';
       if (!x.me && x.table && x.table.free > 0 && x.table.code !== Net.code) act = '<button class="btn alt" data-sit="' + x.table.code + '">Подсесть</button>';

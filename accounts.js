@@ -64,7 +64,7 @@ const CHARS = ['lysy', 'zema', 'dantl', 'vitaha', 'elvis', 'oleg'];
 // Прогресс: опыт, статистика, ачивки, персонаж. Объединяем по максимуму, ничего не теряется.
 function cleanProgress(p) {
   p = p || {};
-  const num = (x) => Math.max(0, Math.min(1e8, Math.floor(Number(x) || 0)));
+  const num = (x) => Math.max(0, Math.min(1e13, Math.floor(Number(x) || 0)));
   const stats = {};
   for (const [k, v] of Object.entries(p.stats || {})) if (/^[a-zA-Z]{1,20}$/.test(k)) stats[k] = num(v);
   const ach = {};
@@ -72,25 +72,37 @@ function cleanProgress(p) {
   const out = { xp: num(p.xp), stats, ach, char: CHARS.includes(p.char) ? p.char : null };
   if (p.roster && typeof p.roster === 'object') { // у каждого персонажа свой прогресс
     out.roster = {};
-    for (const id of CHARS) if (p.roster[id]) { const c = cleanProgress({ xp: p.roster[id].xp, stats: p.roster[id].stats, ach: p.roster[id].ach }); out.roster[id] = { xp: c.xp, stats: c.stats, ach: c.ach }; }
+    for (const id of CHARS) if (p.roster[id]) { const c = cleanProgress({ xp: p.roster[id].xp, stats: p.roster[id].stats, ach: p.roster[id].ach }); out.roster[id] = { xp: c.xp, stats: c.stats, ach: c.ach, created: num(p.roster[id].created) }; }
   }
+  if (Array.isArray(p.del)) out.del = p.del.filter((id) => CHARS.includes(id));
   return out;
 }
-function merge(a, b) {
-  const out = { xp: Math.max(a.xp || 0, b.xp || 0), stats: Object.assign({}, a.stats), ach: Object.assign({}, a.ach), char: b.char || a.char || null };
-  for (const [k, v] of Object.entries(b.stats || {})) out.stats[k] = Math.max(out.stats[k] || 0, v);
-  for (const [k, v] of Object.entries(b.ach || {})) out.ach[k] = out.ach[k] ? Math.min(out.ach[k], v) : v;
-  if (a.roster || b.roster) {
-    out.roster = JSON.parse(JSON.stringify(a.roster || {}));
-    for (const [id, d] of Object.entries(b.roster || {})) out.roster[id] = merge(out.roster[id] || { xp: 0, stats: {}, ach: {} }, d);
-    for (const d of Object.values(out.roster)) { delete d.char; delete d.roster; }
-    // верхний уровень = активный персонаж
-    const act = b.char || a.char;
-    if (act && out.roster[act]) { out.xp = out.roster[act].xp; out.stats = Object.assign({}, out.roster[act].stats); out.ach = Object.assign({}, out.roster[act].ach); }
-  }
-  return out;
+// Прогресс одного пацана: берём лучшее
+function mergeOne(a, b) {
+  const o = { xp: Math.max(a.xp || 0, b.xp || 0), stats: Object.assign({}, a.stats), ach: Object.assign({}, a.ach), created: Math.max(a.created || 0, b.created || 0) };
+  for (const [k, v] of Object.entries(b.stats || {})) o.stats[k] = Math.max(o.stats[k] || 0, v);
+  for (const [k, v] of Object.entries(b.ach || {})) o.ach[k] = o.ach[k] ? Math.min(o.ach[k], v) : v;
+  return o;
 }
-const publicProfile = (u) => ({ nick: u.nick, xp: u.xp, stats: u.stats, ach: u.ach, char: u.char, roster: u.roster || null });
+// Старый формат (без ростера): весь прогресс принадлежит одному персонажу
+const asRoster = (x) => x.roster || (x.char && (x.xp || Object.keys(x.stats || {}).length) ? { [x.char]: { xp: x.xp || 0, stats: x.stats || {}, ach: x.ach || {}, created: 0 } } : {});
+function merge(a, b, keepChar) {
+  const deleted = Object.assign({}, a.deleted);
+  for (const id of b.del || []) deleted[id] = Date.now();
+  const roster = JSON.parse(JSON.stringify(asRoster(a)));
+  for (const [id, d] of Object.entries(asRoster(b))) {
+    if (!roster[id] && !(d.xp > 0) && !Object.keys(d.stats || {}).length) continue; // пустой пацан с нового устройства
+    if (deleted[id] && !((d.created || 0) > deleted[id])) continue; // этот пацан удалён, не воскрешаем
+    roster[id] = mergeOne(roster[id] || { xp: 0, stats: {}, ach: {} }, d);
+    if (deleted[id] && d.created > deleted[id]) delete deleted[id];
+  }
+  for (const id of Object.keys(deleted)) delete roster[id];
+  const pref = keepChar ? [a.char, b.char] : [b.char, a.char];
+  let act = roster[pref[0]] ? pref[0] : roster[pref[1]] ? pref[1] : Object.keys(roster)[0] || b.char || a.char || null;
+  const cur = (act && roster[act]) || { xp: 0, stats: {}, ach: {} };
+  return { xp: cur.xp, stats: Object.assign({}, cur.stats), ach: Object.assign({}, cur.ach), char: act, roster, deleted };
+}
+const publicProfile = (u) => ({ nick: u.nick, xp: u.xp, stats: u.stats, ach: u.ach, char: u.char, roster: u.roster || null, deleted: u.deleted || {} });
 
 async function newSession(key) {
   const tok = crypto.randomBytes(24).toString('hex');
@@ -122,7 +134,7 @@ async function register(body) {
   if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN: от 4 до 6 цифр');
   if (users.has(key)) throw new Error('Такой ник уже занят. Если это ты, жми «Войти»');
   const salt = crypto.randomBytes(12).toString('hex');
-  const u = Object.assign({ nick, salt, pin: hashPin(pin, salt), created: Date.now() }, cleanProgress(body.progress));
+  const u = Object.assign({ nick, salt, pin: hashPin(pin, salt), created: Date.now() }, merge({}, cleanProgress(body.progress)));
   users.set(key, u);
   await store.set('user:' + key, u);
   await store.sadd('users', key);
@@ -135,7 +147,7 @@ async function login(body) {
   if (!u || hashPin(String(body.pin || ''), u.salt) !== u.pin) { addFail(key); throw new Error('Неверный ник или PIN'); }
   fails.delete(key);
   // прогресс с этого устройства не теряем: объединяем с облачным
-  if (body.progress) { Object.assign(u, merge(u, cleanProgress(body.progress))); await store.set('user:' + key, u); }
+  if (body.progress) { Object.assign(u, merge(u, cleanProgress(body.progress), true)); await store.set('user:' + key, u); }
   return { token: await newSession(key), profile: publicProfile(u) };
 }
 async function me(body) {
@@ -171,7 +183,8 @@ async function yard(body, tableOf) {
     const s = seen.get(k), on = s && now - s.at < 25000;
     const t = on ? tableOf(k) : null;
     const sx = x.stats || {}, pick = ['wins', 'rounds', 'totalPts', 'best', 'caught', 'gotCaught', 'lusya'];
-    return { nick: x.nick, char: x.char, xp: x.xp, wins: sx.wins || 0, rounds: sx.rounds || 0, stats: Object.fromEntries(pick.map((k) => [k, sx[k] || 0])), roster: x.roster ? Object.fromEntries(Object.entries(x.roster).map(([id, d]) => [id, { xp: d.xp }])) : null,
+    const ch = x.char || (x.roster && Object.keys(x.roster)[0]) || null;
+    return { nick: x.nick, char: ch, xp: x.xp, wins: sx.wins || 0, rounds: sx.rounds || 0, stats: Object.fromEntries(pick.map((k) => [k, sx[k] || 0])), roster: x.roster ? Object.fromEntries(Object.entries(x.roster).map(([id, d]) => [id, { xp: d.xp }])) : null,
       status: !on ? 'off' : t ? (t.phase === 'lobby' ? 'lobby' : 'playing') : 'yard', table: t, seenAgo: s ? Math.round((now - s.at) / 1000) : null, me: k === key };
   }).sort((a, b) => (b.me - a.me) || (rank(b.status) - rank(a.status)) || (a.seenAgo === null) - (b.seenAgo === null) || (a.seenAgo || 0) - (b.seenAgo || 0));
   const inv = (invites.get(key) || []).filter((i) => now - i.at < 60000);
