@@ -134,6 +134,15 @@ button{font:inherit;color:inherit}
 .box .in{padding:0 1.6em}
 .box h2{font-size:1.6em}
 .modes{display:flex;gap:.7em;margin-bottom:.4em}
+.honest{display:flex;align-items:center;gap:.7em;width:100%;cursor:pointer;margin:0 0 .7em;padding:.5em .8em;border:.12em dashed rgba(111,20,15,.45);border-radius:.2em;background:rgba(255,255,255,.25);text-align:left;font:inherit;color:var(--ink);line-height:1.3}
+.honest b{font-family:'Russo One',sans-serif;font-weight:400;white-space:nowrap;color:var(--red-dk)}
+.honest span{font-size:.8em;color:var(--ink-soft)}
+.honest b::after{content:' выкл';font-family:'PT Sans',sans-serif;font-size:.8em;color:var(--ink-soft)}
+.honest[aria-pressed="true"]{border-style:solid;border-color:var(--red);background:rgba(179,36,28,.12)}
+.honest[aria-pressed="true"] b::after{content:' вкл';color:var(--red)}
+.hand .card.no{filter:brightness(.55) saturate(.6);transform:translateY(.4em)}
+.hand .card.nope{animation:nope .35s}
+@keyframes nope{25%{translate:-.35em 0}75%{translate:.35em 0}}
 .mode{flex:1;cursor:pointer;padding:.7em .8em;border:.12em solid rgba(111,20,15,.45);border-radius:.2em;background:rgba(255,255,255,.35);text-align:left;line-height:1.35}
 .mode b{display:block;font-family:"Russo One",sans-serif;font-weight:400;font-size:1.2em;color:var(--red-dk);margin-bottom:.15em}
 .mode span{color:var(--ink-soft);font-size:.95em}
@@ -529,7 +538,7 @@ details.sets summary::-webkit-details-marker{display:none}
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.23</div></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><div style="position:absolute;right:.6em;bottom:.3em;font-size:.8em;opacity:.7">версия 2.25</div></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -547,6 +556,7 @@ details.sets summary::-webkit-details-marker{display:none}
               <button class="mode" data-mode="lite" aria-pressed="false"><b>Лайт</b><span>Для игры под пивко</span></button>
               <button class="mode" data-mode="turbo" aria-pressed="false"><b>Турбо</b><span>До 6, 45 сек на ход</span></button>
             </div>
+            <button class="honest" id="honestBtn" aria-pressed="false"><b>🤝 Честняк</b><span>На трояк не залезешь: игра не даст положить не ту карту. Боты тоже играют честно, «Предъявить» не нужно.</span></button>
             <button class="btn wide big" id="playNet" disabled>Позвать пацанов (на сайте игры)</button>
             <button class="btn wide" id="playBots">Раскинуть с ботами</button>
           </div>
@@ -931,12 +941,12 @@ details.sets summary::-webkit-details-marker{display:none}
     elvis: {
       name: 'Элвис',
       desc: 'Трушный паренёк. Напас действует как баф и активирует режим ГААА-ГААА!',
-      lines: ['ГААА-ГААА!', 'Пасть порву!', 'Шакалинный пух, ЖАРА ИЮЛЬ!', '<i>*напевает*</i> Шакалинный пу-у-ух... ЖАРА! ИЮЛЬ!', 'По фактам, пацаны', 'Чётко, по делу',
-        '<i>*поправляет кок*</i>', 'Баф активирован. ГААА-ГААА!', 'Факт первый: взятка моя. Факт второй: смотри факт первый', 'Ещё раз так сходишь, пасть порву'],
-      win: ['ГААА-ГААА! Моё!', 'ЖАРА! ИЮЛЬ!', 'Пасть порву, но сначала взятку заберу', 'Шакалинный пух летит, взятка ко мне', 'По фактам: забрал', 'Баф работает. ГААА-ГААА!'],
+      lines: ['Пасть порву!', 'Шакалинный пух, ЖАРА ИЮЛЬ!', '<i>*напевает*</i> Шакалинный пу-у-ух... ЖАРА! ИЮЛЬ!', 'По фактам, пацаны', 'Чётко, по делу',
+        '<i>*поправляет кок*</i>', 'Баф активирован', 'Факт первый: взятка моя. Факт второй: смотри факт первый', 'Ещё раз так сходишь, пасть порву'],
+      win: ['Моё! По фактам', 'ЖАРА! ИЮЛЬ!', 'Пасть порву, но сначала взятку заберу', 'Шакалинный пух летит, взятка ко мне', 'По фактам: забрал', 'Баф работает'],
       lose: ['Пасть порву, кто это сделал?!', 'Э, ты чё?! Пасть порву!', 'Не, ну это не по фактам', 'Июль не жаркий в этот раз', 'Баф кончился, пацаны'],
-      tease: ['{n}, ещё раз так сходишь, пасть порву', '{n}, по фактам: ты лох. ГААА-ГААА!', '{n}, давай разберём, где ты обосрался', '{n}, факт: так играть нельзя',
-        'ГААА-ГААА, {n}, ну ты и пельмень', '{n}, скажи честно, ты карты первый раз видишь?', '{n}, ты жара в июле: все от тебя устали'],
+      tease: ['{n}, ещё раз так сходишь, пасть порву', '{n}, по фактам: ты лох', '{n}, давай разберём, где ты обосрался', '{n}, факт: так играть нельзя',
+        '{n}, ну ты и пельмень', '{n}, скажи честно, ты карты первый раз видишь?', '{n}, ты жара в июле: все от тебя устали'],
     },
     oleg: {
       name: 'Олег',
@@ -953,9 +963,9 @@ details.sets summary::-webkit-details-marker{display:none}
   // Персональные подколы: кто → кому
   const PAIR = {
     'elvis>zema': ['Зёма, ты опять курить? Игра две минуты как началась', 'Зёма, ещё раз пропадёшь посреди раздачи, пасть порву'],
-    'elvis>dantl': ['Дантл, по фактам: ты фрик. Это даже в описании написано', 'Дантл, хорош блефовать, у тебя лицо всё палит. ГААА-ГААА!'],
+    'elvis>dantl': ['Дантл, по фактам: ты фрик. Это даже в описании написано', 'Дантл, хорош блефовать, у тебя лицо всё палит'],
     'elvis>oleg': ['Олег, ты автор, а проигрываешь как тестер', 'Олег, протри очки, трояк у тебя под носом'],
-    'elvis>lysy': ['Лысый, умный, а козыря считать не умеет. ГААА!', 'Лысый, голову протри, солнце слепит'],
+    'elvis>lysy': ['Лысый, умный, а козыря считать не умеет', 'Лысый, голову протри, солнце слепит'],
     'elvis>vitaha': ['Витаха, хватит ржать, ржать тут буду я. ГААА-ГААА!', 'Витаха, подпевай: шакалинный пух...'],
     'zema>elvis': ['Элвис, ты без напаса вообще играть умеешь?', 'Элвис, ты шакалинный пух, а не игрок'],
     'zema>dantl': ['Дантл, я пока курил, ты три раза сблефовал и три раза спалился', 'Дантл, ты ксерокопия ключа от покера'],
@@ -985,7 +995,7 @@ details.sets summary::-webkit-details-marker{display:none}
   };
   // Ответы на подколы: у каждого свой характер
   const REPLY_BY = {
-    elvis: ['Пасть порву!', 'Ещё слово, и пасть порву', 'По фактам ты не прав', 'ГААА! Смешно. Нет'],
+    elvis: ['Пасть порву!', 'Ещё слово, и пасть порву', 'По фактам ты не прав', 'Смешно. Нет'],
     zema: ['Мучёнка немытая', 'Ксерокопия ключа', 'Пойду покурю от вас', 'Сверху видней, не спорь'],
     dantl: ['Ну и хер с тобой', 'Обиделся? Я нет', 'Сам фрик', 'Запомнил. Отомщу в раздаче'],
     lysy: ['Аргументируй', 'Слабый панч', 'Ты даже оскорбить нормально не можешь', 'Быдло, но без интеллекта'],
@@ -996,6 +1006,8 @@ details.sets summary::-webkit-details-marker{display:none}
     'Ага, щас', 'Ой, всё', 'Базар фильтруй', 'Договоришься сейчас', '<i>*показывает фак под столом*</i>', 'Смешно. Нет', 'За базар ответишь', 'Ахах, сам ты козёл'];
   const CHIME = ['Ахаха, жёстко', 'Ну всё, начинается', 'Пацаны, по картам давайте', 'Заткнулись оба и ходим', 'Попкорн несите',
     'Записываю в протокол', 'Красиво приложил', 'Ща подерутся', '<i>*ржёт в кулак*</i>'];
+  let gaaT = -1e9;
+  const gaa = (p) => { const now = Date.now(); if (now - gaaT < 240000 || Math.random() >= p) return false; gaaT = now; return true; };
   const ELVIS_LAUGH = ['ГААА-ГААА!', 'ГААА-ГААА-ГААА!', 'ГАААААА! Жёстко', 'ГААА-ГААА, по фактам приложил'];
   const TABLE = ['Кто последний проиграет, тот за пивом', 'Пацаны, а кто вообще помнит, кто хвалит?', 'Я напоминаю: проигравший козёл, без обид',
     'Тише, бабка смотрит', 'Кто опять крысит, признавайтесь', 'Сыграем ещё одну и по домам. Ну, ещё две', 'Мне кажется, кто-то подглядывает'];
@@ -1008,7 +1020,7 @@ details.sets summary::-webkit-details-marker{display:none}
     // Зёма и его логика
     { c: ['zema', 'lysy'], l: [[0, 'Ксерокопия ключа.'], [1, 'Зёма, это к чему?'], [0, 'К тому, что карта вроде есть, а взятку не открывает'], [1, '...Сука, а ведь гениально']] },
     { c: ['zema', 'oleg'], l: [[0, 'Мучёнка немытая'], [1, 'Зёма, это кто?'], [0, 'Все, кто сейчас ходил'], [1, 'И я?'], [0, 'Ты особенно']] },
-    { c: ['zema', 'elvis'], l: [[0, 'Шнурки от сланцев'], [1, 'По фактам: не понял'], [0, 'Вот и я про твой ход'], [1, 'ГААА-ГААА! Пасть порву!']] },
+    { c: ['zema', 'elvis'], l: [[0, 'Шнурки от сланцев'], [1, 'По фактам: не понял'], [0, 'Вот и я про твой ход'], [1, 'Пасть порву!']] },
     { c: ['zema', 'dantl'], l: [[1, 'Зёма, ты сейчас что сказал?'], [0, 'Тапки для бега'], [1, 'Это про меня?'], [0, 'Про твой блеф. Бежать в нём нельзя']] },
     { c: ['zema', 'vitaha'], l: [[1, 'Зёма, скажи что-нибудь умное'], [0, 'Гарантийный талон на облако'], [1, 'Ахахаха, я ничего не понял, но ору']] },
     { c: ['zema', 'lysy', 'elvis'], l: [[0, 'Батарейка от пульта, которого нет'], [1, 'Это метафора бессмысленности бытия'], [2, 'Это метафора того, что Зёма накурился'], [0, 'Вы оба мучёнки немытые']] },
@@ -1025,16 +1037,13 @@ details.sets summary::-webkit-details-marker{display:none}
     { c: ['elvis', 'lysy'], l: [[1, 'Элвис, какой ещё шакалинный пух? Тополиный'], [0, 'Тополиный у тебя. А у меня шакалинный. ЖАРА! ИЮЛЬ!'], [1, 'Филологически это преступление']] },
     { c: ['elvis', 'dantl'], l: [[1, 'Элвис, ты на прошлой неделе кому пасть порвать обещал?'], [0, 'Всем'], [1, 'И как?'], [0, 'Пасти целы. Пока']] },
     { c: ['elvis', 'oleg'], l: [[1, 'Элвис, давай сегодня без «пасть порву»?'], [0, 'Давай'], [1, '...'], [0, 'ПАСТЬ ПОРВУ! ГААА-ГААА!'], [1, 'Четыре секунды. Рекорд']] },
-    { c: ['elvis', 'zema'], l: [[0, 'Факт: Зёма курил больше, чем играл'], [1, 'Факт: Элвис ржёт больше, чем думает'], [0, 'ГААА! Справедливо']] },
+    { c: ['elvis', 'zema'], l: [[0, 'Факт: Зёма курил больше, чем играл'], [1, 'Факт: Элвис ржёт больше, чем думает'], [0, 'Справедливо']] },
     { c: ['elvis', 'vitaha', 'oleg'], l: [[0, 'ГААА-ГААА!'], [1, 'Ахахаха!'], [2, 'Два сапога пара. Я вас в патче замучу']] },
     { c: ['elvis', 'dantl', 'oleg'], l: [[1, 'Элвис, только не ржи'], [0, 'Я и не собирался'], [2, 'Он уже покраснел, щас будет'], [0, 'ГААА-ГААА-ГААА!'], [1, 'Я же просил, бля']] },
-    { c: ['elvis', 'zema', 'dantl'], l: [[2, 'Зёма, ты опять курить?'], [1, 'Только после взятки'], [0, 'По фактам: взяток у него нет, значит, не уйдёт'], [1, 'Сука, логично'], [0, 'ГААА-ГААА!']] },
-    { c: ['dantl', 'elvis'], l: [[0, 'Элвис, ты под бафом сейчас?'], [1, 'А ты как думаешь?'], [0, 'Судя по глазам, ульта готова'], [1, 'ЖАРА! ИЮЛЬ! ГААА-ГААА!']] },
+    { c: ['elvis', 'zema', 'dantl'], l: [[2, 'Зёма, ты опять курить?'], [1, 'Только после взятки'], [0, 'По фактам: взяток у него нет, значит, не уйдёт'], [1, 'Сука, логично'], [0, 'Факт']] },
+    { c: ['dantl', 'elvis'], l: [[0, 'Элвис, ты под бафом сейчас?'], [1, 'А ты как думаешь?'], [0, 'Судя по глазам, ульта готова'], [1, 'ЖАРА! ИЮЛЬ!']] },
     { c: ['elvis', 'dantl'], l: [[1, 'Элвис, ты без бафа играешь, как пенсионер'], [0, 'А ты с бафом, без бафа, всё равно фрик'], [1, 'Зато не ржу, как гусь'], [0, 'ГААА-ГААА! Это не гусь, это стиль']] },
     { c: ['vitaha', 'elvis'], l: [[0, 'Элвис, скажи «пасть порву»'], [1, 'Пасть порву!'], [0, 'Ахаха, всё, день прожит не зря']] },
-    // Те самые «мыча», которые никто не понял
-    { c: ['lysy', 'elvis'], l: [[0, 'Элвис, а что такое «мыча»?'], [1, 'Никто не понял. Даже я'], [0, 'Вот поэтому из описания и убрали']] },
-    { c: ['oleg', 'dantl'], l: [[1, 'Олег, а помнишь, ты Элвису «мыча» в описание написал?'], [0, 'Помню. Никто не понял'], [1, 'Ты сам понял?'], [0, 'Это была фича']] },
     // Дантл и наглость
     { c: ['dantl', 'oleg'], l: [[1, 'Дантл, в описании написано, что ты фрик'], [0, 'Кто писал?'], [1, 'Я. Я создатель игры'], [0, 'Ну и мудак ты, создатель']] },
     { c: ['dantl', 'lysy'], l: [[1, 'Дантл, у тебя покерфейс или ты просто не понял расклад?'], [0, 'Это называется блеф, интеллигент'], [1, 'Это называется «завис»']] },
@@ -1044,7 +1053,7 @@ details.sets summary::-webkit-details-marker{display:none}
     { c: ['lysy', 'dantl'], l: [[0, 'Дантл, ты читал что-нибудь кроме мемов?'], [1, 'Твоё описание. Там написано «быдло»'], [0, '«Интеллигентное», дебил']] },
     // Олег, автор
     { c: ['oleg', 'lysy'], l: [[1, 'Олег, по-честному, ты себе в игре читы прописал?'], [0, 'Нет'], [1, 'А чё глаза за очками прячешь?'], [0, 'Чтоб трояки видеть']] },
-    { c: ['oleg', 'elvis'], l: [[1, 'Олег, ты проиграл'], [0, 'Для себя я выиграл'], [1, 'ГААА-ГААА, по фактам ты козёл']] },
+    { c: ['oleg', 'elvis'], l: [[1, 'Олег, ты проиграл'], [0, 'Для себя я выиграл'], [1, 'По фактам ты козёл']] },
     { c: ['oleg', 'dantl'], l: [[1, 'Олег, а ты в своей игре себе фору дал?'], [0, 'Мне фора не нужна, я разработчик'], [1, 'Разработчик, а проиграл боту'], [0, 'Это был тест']] },
     { c: ['oleg', 'zema'], l: [[1, 'Олег, я посчитал: ты три раза сегодня сказал «это баг»'], [0, 'Четыре'], [1, 'Вот видишь, даже считаешь с багом']] },
     { c: ['vitaha', 'oleg'], l: [[0, 'Олег, ты же проиграл в прошлый раз'], [1, 'Нет'], [0, 'Да!'], [1, 'Для себя нет']] },
@@ -1065,8 +1074,8 @@ details.sets summary::-webkit-details-marker{display:none}
 
   // Вспоминают тех, кого нет за столом
   const ABOUT = {
-    elvis: ['Чё-то тихо без Элвиса, никто не орёт «ГААА-ГААА»', 'Элвис бы сейчас заржал: ГААА-ГААА!', 'Элвиса бы сюда, он бы уже всем пасть порвать пообещал',
-      'Где Элвис? Опять баф набирает?', 'Помните, как Элвис пел «шакалинный пух, жара июль»? Я до сих пор не понял, что это', 'Олег Элвису «мыча» в описании написал, и полдвора неделю гадало, что это'],
+    elvis: ['Чё-то тихо без Элвиса, никто не орёт «ГААА-ГААА»', 'Элвиса бы сюда, он бы уже всем пасть порвать пообещал',
+      'Где Элвис? Опять баф набирает?', 'Помните, как Элвис пел «шакалинный пух, жара июль»? Я до сих пор не понял, что это'],
     zema: ['Зёма бы уже два раза курить сходил', 'Зёма бы сейчас сказал «ксерокопия ключа», и все бы молчали', 'Где Зёма? Курит, где ещё', 'Без Зёмы никто не называет нас мучёнками немытыми. Скучно'],
     dantl: ['Дантл бы тут сейчас блефанул, и мы бы поверили', 'Без Дантла никто не наглеет, скукота', 'Хорошо, что Дантла нет, этого фрика хрен прочитаешь'],
     lysy: ['Лысый бы сейчас Канта процитировал', 'Без Лысого тут никто умных слов не знает', 'Лысого бы сюда, он под бит такие взятки забирает'],
@@ -1134,7 +1143,7 @@ details.sets summary::-webkit-details-marker{display:none}
     // Третий смеётся: Элвис, если сидит, ржёт громче всех
     const others = live.filter((i) => i !== a && i !== b);
     const e = others.find((i) => seats[i].char === 'elvis');
-    if (e !== undefined && Math.random() < .6) out.push({ seat: e, text: pickNR('elaugh', ELVIS_LAUGH) });
+    if (e !== undefined && gaa(.2)) out.push({ seat: e, text: pickNR('elaugh', ELVIS_LAUGH) });
     else if (others.length && Math.random() < .4) out.push({ seat: pick(others), text: pickNR('chime', CHIME) });
     return out;
   }
@@ -1164,7 +1173,7 @@ details.sets summary::-webkit-details-marker{display:none}
     const fatLoser = losers.filter((p) => p.card.points >= 10 && !K.isTrump(p.card, trump)).sort((a, b) => b.card.points - a.card.points)[0];
     const elvis = seats ? seats.findIndex((x) => x && x.char === 'elvis') : -1;
     const laughBy = (exclude) => {
-      if (elvis >= 0 && !exclude.includes(elvis) && Math.random() < .7) return { seat: elvis, text: pickNR('elaugh', ELVIS_LAUGH) };
+      if (elvis >= 0 && !exclude.includes(elvis) && gaa(.35)) return { seat: elvis, text: pickNR('elaugh', ELVIS_LAUGH) };
       const free = [0, 1, 2, 3].filter((s) => !exclude.includes(s) && (!seats || seats[s]));
       return free.length && Math.random() < .5 ? { seat: pick(free), text: pickNR('L:laugh', L.laugh) } : null;
     };
@@ -1238,7 +1247,7 @@ details.sets summary::-webkit-details-marker{display:none}
       '{n}, у тебя мать... <i>*щурится*</i> ...или это пятно от пива', 'Мужики, мать у этого... как его... {n}! Я в картах прочитал. Читать я умею, я ж не всегда таким был'],
     gone: ['Где мать? Мать ушла... как и моя Люська <i>*ик*</i>', 'Пацаны, а мать уже вышла, я видел. Или не видел. Налейте', 'Мамки нет, пацаны. Есть только пиво. Есть пиво?'],
     back: { def: ['Вали отсюда, Валера', 'Валера, не пали контору!', 'Не слушайте его, он и в прошлый раз врал', 'Валер, иди проспись', 'Ага, а у тебя совесть, Валер?'],
-      elvis: ['Валера, пасть порву! ГААА!', 'Валера, по фактам ты пьяный'], zema: ['Мучёнка немытая, иди отсюда', 'Валера, ты ксерокопия человека'],
+      elvis: ['Валера, пасть порву!', 'Валера, по фактам ты пьяный'], zema: ['Мучёнка немытая, иди отсюда', 'Валера, ты ксерокопия человека'],
       vitaha: ['Ахаха, Валера, держи сигаретку, только иди'], oleg: ['Валера, ты баг, тебя в игре быть не должно'], lysy: ['Валера, ты как Диоген, только без бочки'], dantl: ['Валера, блефуешь хуже меня'] },
   };
   // hands: руки по местам, trump: козырь, seats: [{name, char}]. Вернёт { text, about, reply: {seat, text} }
@@ -1535,12 +1544,14 @@ function render() {
   const led = mine && round.trick.length ? K.effSuit(round.trick[0].card, round.trump) : null;
   const hand = $('hand');
   hand.classList.toggle('my', mine);
+  $('checkBtn').style.display = honest ? 'none' : '';
   hand.classList.toggle('folded', folded);
   if (dragging) return;
   const cards = orderedHand();
   hand.replaceChildren(...cards.map((c) => {
     const d = cardEl(c);
     if (led && K.effSuit(c, round.trump) === led) d.classList.add('suit');
+    if (honest && mine && round.trick.length && !canPlay(c.id)) { d.classList.add('no'); d.title = 'Масть есть, эту нельзя'; }
     d.dataset.id = c.id;
     enableDrag(d, c, mine);
     if (!mine) d.title = folded ? 'Тыкни, чтобы открыть карты' : 'Тыкни, чтобы спрятать карты';
@@ -1709,12 +1720,23 @@ async function doPlay(seat, id, fromXY, g) {
   if (g !== gen) return;
   busy = false;
   if (round.over) return finish();
+  if (round.closing && honest) { K.finishRound(match, round); return finish(); }
   if (round.closing) return closingStart();
   render();
 }
 
+let honest = false;
+try { honest = localStorage.getItem('kozel-honest') === '1'; } catch (e) {}
+const honestBtnSync = () => $('honestBtn').setAttribute('aria-pressed', String(honest));
+// Честняк: можно ли эту карту класть
+const canPlay = (id) => !honest || K.legalCards(round.hands[0], round.trick.map((e) => e.card), round.trump).some((c) => c.id === id);
 async function myPlay(id, el) {
   if (busy || paused() || !round || round.over || round.turn !== 0) return;
+  if (!canPlay(id)) {
+    if (el) { el.classList.remove('nope'); void el.offsetWidth; el.classList.add('nope'); }
+    if (performance.now() - (myPlay.nagT || 0) > 4000) { myPlay.nagT = performance.now(); talk(2, pickOne(['Масть есть, клади масть', 'Честняк, братан: трояк не прокатит', 'Не, так нельзя: масть на руке'])); }
+    return;
+  }
   { const legal = K.legalCards(round.hands[0], round.trick.map((e) => e.card), round.trump); if (!legal.some((c) => c.id === id)) bumpStat('troyak'); }
   if (online) { Net.from(el ? centerOf(el) : null); stopTimer(); busy = true; render(); Net.send('play', { card: id }); return; }
   const g = gen;
@@ -1769,7 +1791,7 @@ function botMove(s) {
   const best = pw(trickCards[cur]);
   const partnerWins = K.teamOf(round.trick[cur].seat) === K.teamOf(s);
   const onTable = trickCards.reduce((x, c) => x + c.points, 0);
-  if (!partnerWins && onTable >= 10 && legal.length < hand.length && Math.random() < 0.18) {
+  if (!honest && !partnerWins && onTable >= 10 && legal.length < hand.length && Math.random() < 0.18) {
     const cheat = hand.filter((c) => !legal.includes(c) && pw(c) > best);
     if (cheat.length) return cheat.reduce((a, b) => (pw(a) < pw(b) ? a : b)).id;
   }
@@ -2031,6 +2053,7 @@ function newMatch() {
   closePanel();
   const mode = document.querySelector('.mode[aria-pressed="true"]').dataset.mode;
   lite = mode !== 'hard';
+  honest = $('honestBtn').getAttribute('aria-pressed') === 'true';
   TURN_MS = mode === 'turbo' ? 45000 : 60000;
   try { localStorage.setItem('kozel-mode', mode); } catch (e) {}
   const others = CHARS.map((c) => c.id).filter((id) => id !== myChar).sort(() => Math.random() - .5);
@@ -2082,6 +2105,8 @@ const LOC_THUMB = { yard: (window.YARD_BG || getComputedStyle(stage).backgroundI
 document.querySelector('.loccards').innerHTML = Object.keys(LAYOUTS).map((l) => '<button class="lcard2" data-loc="' + l + '" style="background-image:url(' + (LOCS[LAYOUTS[l].bg] || LOC_THUMB.yard) + ')">' + (LAYOUTS[l].base ? '<small>ТОП-1</small>' : '') + '<b>' + LAYOUTS[l].name + '</b></button>').join('');
 document.querySelectorAll('[data-loc]').forEach((b) => { b.onclick = () => { try { localStorage.setItem('kozel-loc', b.dataset.loc); } catch (e) {} setLoc(b.dataset.loc); }; });
 setLoc(LOC);
+honestBtnSync();
+$('honestBtn').onclick = () => { honest = !honest; honestBtnSync(); try { localStorage.setItem('kozel-honest', honest ? '1' : '0'); } catch (e) {} };
 document.querySelectorAll('.mode').forEach((b) => {
   b.onclick = () => document.querySelectorAll('.mode').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
 });
@@ -2794,7 +2819,7 @@ const Net = (() => {
   async function available() { try { const r = await fetch('/api/ping', { cache: 'no-store' }); return r.ok; } catch (e) { return false; } }
   const saved = () => { try { return JSON.parse(localStorage.getItem('kozel-net') || 'null'); } catch (e) { return null; } };
   function save() { try { localStorage.setItem('kozel-net', JSON.stringify({ code, tok })); } catch (e) {} }
-  async function create(name, mode) { const j = await api('/api/create', { name, mode, loc: LOC, char: myChar, xp: myXp, acct: Acct.token }); code = j.code; tok = j.token; save(); connect(); }
+  async function create(name, mode) { const j = await api('/api/create', { name, mode, honest: $('honestBtn').getAttribute('aria-pressed') === 'true', loc: LOC, char: myChar, xp: myXp, acct: Acct.token }); code = j.code; tok = j.token; save(); connect(); }
   async function join(c, name) {
     const old = saved();
     const j = await api('/api/join', { code: c, name, char: myChar, xp: myXp, acct: Acct.token, token: old && old.code === c ? old.tok : undefined });
@@ -2829,7 +2854,7 @@ const Net = (() => {
   }
   function apply(v) {
     view = v; skew = v.now - Date.now(); lite = v.mode !== 'hard';
-    if (v.loc && v.loc !== LOC) setLoc(v.loc); TURN_MS = v.mode === 'turbo' ? 45000 : 60000;
+    if (v.loc && v.loc !== LOC) setLoc(v.loc); TURN_MS = v.mode === 'turbo' ? 45000 : 60000; honest = !!v.honest;
     NAMES = v.seats.map((s, i) => (s ? s.name : (i === 0 ? 'Ты' : 'свободно')));
     SEATCH = v.seats.map((s) => (s && s.char) || '');
     match = v.match || null; round = v.round || null;
@@ -2966,7 +2991,7 @@ const Net = (() => {
     };
     const link = location.origin + location.pathname + '?r=' + v.code;
     $('lobbyBox').innerHTML = '<div class="head"><h1 style="font-size:2.4em">СТОЛ НАКРЫТ</h1></div><div class="in">' +
-      '<div class="bigcode">' + v.code + '</div><p class="note">' + (LAYOUTS[v.loc] ? 'Место: ' + LAYOUTS[v.loc].name + '. ' : '') + 'Режим: ' + (v.mode === 'lite' ? 'Лайт, для игры под пивко' : v.mode === 'turbo' ? 'Турбо, до 6 и 45 секунд на ход' : 'Хардкор, вся инфа в бошке') + '</p>' +
+      '<div class="bigcode">' + v.code + '</div><p class="note">' + (LAYOUTS[v.loc] ? 'Место: ' + LAYOUTS[v.loc].name + '. ' : '') + 'Режим: ' + (v.mode === 'lite' ? 'Лайт, для игры под пивко' : v.mode === 'turbo' ? 'Турбо, до 6 и 45 секунд на ход' : 'Хардкор, вся инфа в бошке') + (v.honest ? '. 🤝 Честняк: на трояк не залезешь' : '') + '</p>' +
       '<p style="margin:.6em 0 .2em">Кинь пацанам ссылку, пусть садятся:</p>' +
       '<div class="linkrow"><input id="linkIn" readonly value="' + link + '"><button class="btn" id="copyLink">Скопировать</button></div>' +
       '<div class="tbl">' + seat(2, 'top') + seat(1, 'left') + '<div class="mid">стол</div>' + seat(3, 'right') + seat(0, 'me') + '</div>' +

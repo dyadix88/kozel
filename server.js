@@ -43,9 +43,9 @@ const token = () => crypto.randomBytes(16).toString('hex');
 const humans = (room) => room.seats.filter((s) => s && !s.bot);
 const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
-function createRoom(name, mode, ch, xp, acct, loc) {
+function createRoom(name, mode, ch, xp, acct, loc, honest) {
   const code = newCode();
-  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
+  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', honest: !!honest, seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
@@ -61,7 +61,7 @@ function viewFor(room, my) {
   const rot = (arr) => [0, 1, 2, 3].map((r) => arr[(r + my) % 4]);
   const t = my % 2;
   const v = {
-    code: room.code, phase: room.phase, mode: room.mode, loc: room.loc, host: R(room.host), now: Date.now(),
+    code: room.code, phase: room.phase, mode: room.mode, honest: !!room.honest, loc: room.loc, host: R(room.host), now: Date.now(),
     seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0 } : null)),
   };
   if (room.match) {
@@ -107,7 +107,7 @@ function startMatch(room) {
   startRound(room);
 }
 function startRound(room) {
-  room.round = K.newRound(room.match);
+  room.round = K.newRound(room.match); room.round.honest = !!room.honest;
   room.bomzhAt = Math.random() < .5 ? 2 + Math.floor(Math.random() * 5) : -1; // бомж заходит примерно раз в две раздачи
   room.voids = [];
   room.phase = 'playing';
@@ -163,6 +163,7 @@ function doPlay(room, seat, cardId) {
     chatter(room, evs, res);
   }
   if (r.over) evs.push(endRound(room));
+  else if (r.closing && room.honest) { K.finishRound(room.match, r); evs.push(endRound(room)); }
   else if (r.closing) { startClosing(room, delay); evs.push({ type: 'closing' }); broadcast(room, evs); return; }
   schedule(room, delay);
   broadcast(room, evs);
@@ -257,7 +258,7 @@ function botMove(r, s) {
   const best = pw(trickCards[cur]);
   const partnerWins = K.teamOf(r.trick[cur].seat) === K.teamOf(s);
   const onTable = trickCards.reduce((x, c) => x + c.points, 0);
-  if (!partnerWins && onTable >= 10 && legal.length < hand.length && Math.random() < 0.18) {
+  if (!r.honest && !partnerWins && onTable >= 10 && legal.length < hand.length && Math.random() < 0.18) {
     const cheat = hand.filter((c) => !legal.includes(c) && pw(c) > best);
     if (cheat.length) return cheat.reduce((a, b) => (pw(a) < pw(b) ? a : b)).id;
   }
@@ -291,9 +292,14 @@ function act(room, seat, body) {
       return;
     case 'play':
       if (room.phase !== 'playing') throw new Error('Сейчас не играем');
+      if (room.honest) {
+        const r = room.round, c = r && r.turn === seat && K.legalCards(r.hands[seat], r.trick.map((e) => e.card), r.trump).find((x) => x.id === String(body.card));
+        if (r && r.turn === seat && !c) throw new Error('Честняк: масть есть, клади масть');
+      }
       doPlay(room, seat, String(body.card));
       return;
     case 'accuse': {
+      if (room.honest) throw new Error('Честняк: предъявлять некому');
       if (room.phase !== 'playing' && room.phase !== 'closing') throw new Error('Сейчас не играем');
       const closing = room.phase === 'closing';
       const ev = verdictEvent(room, seat, Number(body.trickNo), abs(body.seat), null);
@@ -417,7 +423,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
       const u = await A.userByToken(b.acct).catch(() => null);
-      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc);
+      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {
