@@ -7,8 +7,13 @@
   // ---------- Без повторов ----------
   // Из каждого набора берём то, что давно не звучало. Повтор только когда почти всё уже сказали.
   const USED = {};
+  // Элвис в жизни адекватный: «ГААА-ГААА» только когда бафнулся (редко, на несколько минут)
+  let buffUntil = 0;
+  const buffed = () => Date.now() < buffUntil;
+  const noGaa = (x) => !/ГАА/.test(typeof x === 'string' ? x : JSON.stringify(x));
   function pickNR(key, arr) {
     if (!arr || !arr.length) return null;
+    if (!buffed()) { const calm = arr.filter(noGaa); if (calm.length) arr = calm; }
     const u = USED[key] || (USED[key] = []);
     let pool = arr.filter((x) => !u.includes(x));
     if (!pool.length) { u.length = 0; pool = arr.slice(); }
@@ -166,7 +171,7 @@
   const CHIME = ['Ахаха, жёстко', 'Ну всё, начинается', 'Пацаны, по картам давайте', 'Заткнулись оба и ходим', 'Попкорн несите',
     'Записываю в протокол', 'Красиво приложил', 'Ща подерутся', '<i>*ржёт в кулак*</i>'];
   let gaaT = -1e9;
-  const gaa = (p) => { const now = Date.now(); if (now - gaaT < 240000 || Math.random() >= p) return false; gaaT = now; return true; };
+  const gaa = (p) => { const now = Date.now(); if (!buffed() || now - gaaT < 90000 || Math.random() >= p) return false; gaaT = now; return true; };
   const ELVIS_LAUGH = ['ГААА-ГААА!', 'ГААА-ГААА-ГААА!', 'ГАААААА! Жёстко', 'ГААА-ГААА, по фактам приложил'];
   const TABLE = ['Пацаны, а помните, как Гудок по Кирово с тележкой гонял?', 'Гудок сегодня ещё не проходил. Подозрительно', 'Если Витя Гудок придёт, мать прячьте',
     'Помните, Гудок в школе за нами до остановки гудел?', 'Гудок, кстати, жив-здоров, на рынке видел', 'Кто последний проиграет, тот за пивом', 'Пацаны, а кто вообще помнит, кто хвалит?', 'Я напоминаю: проигравший козёл, без обид',
@@ -282,6 +287,14 @@
   }
   function banter(seats, ctx) { return pace(banterRaw(seats, ctx)); }
   function banterRaw(seats, ctx) {
+    // изредка Элвис отходит «подышать» и возвращается под бафом на 4 минуты
+    const ev = seats.findIndex((x) => x && x.char === 'elvis');
+    if (ev >= 0 && !buffed() && Math.random() < .06) {
+      buffUntil = Date.now() + 240000;
+      const others = seats.map((x, i) => (x && i !== ev ? i : -1)).filter((i) => i >= 0);
+      return [{ seat: ev, text: pick(['Пацаны, я на пять минут... <i>*возвращается довольный*</i>', 'Пойду подышу. <i>*вернулся, глаза узкие*</i> Ну что, продолжим?', '<i>*отходит за дерево, возвращается*</i> Всё, я готов. Полностью']) }]
+        .concat(others.length ? [{ seat: pick(others), text: pick(['О, Элвис бафнулся, щас начнётся', 'Всё, пацаны, режим ГААА активирован', 'Элвиса бафнуло, держитесь']) }] : []);
+    }
     const rr = Math.random();
     if (rr < .15) { const s = scoreTalk(seats, ctx); if (s) return s; }
     if (rr < .55) { const d = duo(seats); if (d) return d; }
@@ -483,7 +496,35 @@
     if (!pool) return null;
     return { seat, text: pool[Math.floor(R() * pool.length)] };
   }
-  const api = { L, CATCH, wxLine, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
+  // ---------- Находки во дворе ----------
+  // Редкость: 0 обычная, 1 редкая, 2 эпик, 3 легенда
+  const FIND_TABLE = [
+    [['semki', 4, 8], ['kryshki', 2, 4]],
+    [['medyak', 2, 3], ['pirog', 1, 1]],
+    [['zub', 2, 3], ['fiksa', 1, 1]],
+    [['klyuch', 1, 1], ['vkladysh', 1, 1]],
+  ];
+  function rollFind(R) {
+    R = R || Math.random;
+    const r = R(), rar = r < .6 ? 0 : r < .88 ? 1 : r < .98 ? 2 : 3;
+    const opt = FIND_TABLE[rar][Math.floor(R() * FIND_TABLE[rar].length)];
+    let x = 6 + R() * 88, y = 44 + R() * 30;
+    if (x > 36 && y > 64) y = 44 + R() * 18; // не под рукой с картами
+    return { rar, item: opt[0], qty: opt[1] + Math.floor(R() * (opt[2] - opt[1] + 1)), x: +x.toFixed(1), y: +y.toFixed(1), hint: R() < .55 };
+  }
+  // Подсказка от Вити Гудка: примерно где, но не точно
+  function findHint(x, y, R) {
+    R = R || Math.random;
+    const side = x < 30 ? 'слева' : x > 70 ? 'справа' : 'где-то посерёдке', far = y < 56;
+    const place = far ? pick(['подальше, у деревьев', 'там, за столом', 'ближе к дорожке']) : pick(['у лавки', 'под ногами у вас', 'возле стола, внизу']);
+    const T = ['Пацаны... <i>*шепчет*</i> что-то блестит. ' + place + ', ' + side + '. Я не говорил',
+      'Ту-ту! Видел, как что-то упало ' + side + '. Или показалось',
+      'Слышь, там ' + place + ' валяется что-то. Кто первый, того и тапки',
+      'Я бы на вашем месте глянул ' + side + '. Но я не на вашем месте, ТУУУ!',
+      'Там ' + place + ' блеснуло. Может, крышка. Может, судьба'];
+    return T[Math.floor(R() * T.length)];
+  }
+  const api = { L, CATCH, wxLine, rollFind, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -74,9 +74,11 @@ button{font:inherit;color:inherit}
 .me.turn img.av{border-color:var(--amber);box-shadow:0 0 0 .18em var(--amber),0 0 1.4em .3em rgba(255,179,59,.85);animation:avglow 1.2s ease-in-out infinite}
 @keyframes avglow{0%,100%{box-shadow:0 0 0 .18em var(--amber),0 0 .8em .1em rgba(255,179,59,.6)}50%{box-shadow:0 0 0 .22em #ffd27a,0 0 1.8em .5em rgba(255,179,59,.95)}}
 .emoq{position:absolute;left:1em;z-index:3;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif;font-size:1.8em;padding:.15em .4em;cursor:pointer;background:var(--cream);border:.1em solid var(--red-dk);border-radius:.4em;box-shadow:0 .2em .5em rgba(0,0,0,.4)}
-.achs{display:grid;grid-template-columns:1fr 1fr;gap:.35em;text-align:left;margin:0 0 1em;max-height:15em;overflow:auto}
+.achs{display:grid;grid-template-columns:1fr 1fr;gap:.35em;text-align:left;margin:0 0 1em;max-height:26em;overflow:auto}
 .achs div{display:flex;gap:.45em;align-items:center;padding:.3em .4em;border-radius:.2em;background:rgba(255,255,255,.4);border:.1em solid rgba(111,20,15,.2);font-size:.88em;line-height:1.2}
-.achs div.off{opacity:.42;filter:grayscale(1)}.achs i{font-style:normal;font-size:1.6em}.achs small{display:block;color:var(--ink-soft)}.achs em{font-style:normal;color:var(--good);font-weight:700}
+.achs div.off{opacity:.62;filter:grayscale(.85)}.achs div{cursor:pointer}.achs div.show{opacity:1;filter:none;border-color:var(--red)}
+.achs .apb{display:block;height:.38em;margin:.25em 0 .1em;background:rgba(0,0,0,.15);border-radius:1em;overflow:hidden}.achs .apb i{display:block;height:100%;background:linear-gradient(90deg,#e0a400,#5aa548);font-size:0}
+.achs .apn,.achs .apd{font-weight:700;color:var(--red-dk)!important}.achs .apd{color:var(--good)!important}.achs .apl{color:var(--ink)!important;font-weight:700}.achs i{font-style:normal;font-size:1.6em}.achs small{display:block;color:var(--ink-soft)}.achs em{font-style:normal;color:var(--good);font-weight:700}
 .achtoast{position:absolute;left:50%;top:6.4em;transform:translateX(-50%);z-index:7;display:flex;gap:.6em;align-items:center;padding:.5em 1.1em;font-size:1.1em;animation:achin .35s ease-out both;pointer-events:none}
 @keyframes achin{from{opacity:0;transform:translate(-50%,-.8em)}to{opacity:1;transform:translate(-50%,0)}}
 .achtoast i{font-style:normal;font-size:1.8em}.achtoast b{font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk)}
@@ -152,6 +154,41 @@ button{font:inherit;color:inherit}
 .netpause b{font:400 2.2em 'Russo One',sans-serif;color:var(--red-dk);letter-spacing:.06em}
 .netpause span{color:var(--ink-soft)}
 .netpause[hidden]{display:none}
+/* добыча */
+.inv{display:flex;flex-wrap:wrap;gap:.3em .7em;margin:.5em 0;font-size:.95em}.inv span{display:inline-flex;align-items:center;gap:.2em}.inv b{font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk)}
+.lootrow{display:flex;gap:.5em;margin-top:.3em}.lootrow .btn{flex:1;font-size:.85em;padding:.45em .5em}
+.crg{display:grid;grid-template-columns:repeat(auto-fill,minmax(10.5em,1fr));gap:.5em;margin-bottom:.6em}
+.crc{display:flex;flex-direction:column;align-items:center;gap:.15em;padding:.55em .4em;text-align:center;border:.14em solid var(--rc,rgba(111,20,15,.3));border-radius:.35em;background:rgba(255,255,255,.4)}
+.crc>i{font-style:normal;font-size:1.8em}.crc b{font-size:.9em;line-height:1.15}.crc small{font-size:.75em;color:var(--ink-soft)}.crc .rr{color:var(--rc);filter:brightness(.6);font-weight:700}
+.crc .cost span{display:inline-block;margin:0 .15em}.crc .cost .ok{color:var(--good);font-weight:700}.crc .cost .no{color:#a33}
+.crc .btn{font-size:.78em;padding:.3em .6em;margin-top:.2em}.crc.on{background:rgba(90,165,72,.18)}.crc.have:not(.on){opacity:.95}
+#craftIn h3,#farmIn h3{text-align:left;margin:.5em 0 .3em;font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk)}
+.pvw{margin-top:.6em}.fpend{margin:.5em 0 .8em;padding:.5em .7em;background:rgba(90,165,72,.15);border-radius:.3em;text-align:left}.fpend .btn{font-size:.8em;padding:.25em .7em;margin-left:.4em}
+.badge{margin-right:.25em}
+.find{position:absolute;z-index:5;transform:translate(-50%,-50%);font-size:1.05em;color:#fff8e0;opacity:.5;cursor:pointer;text-shadow:0 0 .35em rgba(255,255,220,.8);animation:twinkle 2.2s ease-in-out infinite;padding:.4em;user-select:none}
+.find.r1{color:#cfe8ff}.find.r2{color:#ead6ff}.find.r3{color:#fff0b0;animation-duration:1.4s}
+.find:hover{opacity:1;transform:translate(-50%,-50%) scale(1.4)}
+.find.took{animation:took .6s forwards}.find.gone{transition:opacity .5s;opacity:0}
+@keyframes twinkle{0%,100%{opacity:.18;transform:translate(-50%,-50%) scale(.7) rotate(0)}45%{opacity:.6;transform:translate(-50%,-50%) scale(1.05) rotate(20deg)}55%{opacity:.25}}
+@keyframes took{to{opacity:0;transform:translate(-50%,-160%) scale(2.2)}}
+/* украшения оправы */
+.pfr .dchain{position:absolute;left:-4%;bottom:-6%;width:108%;z-index:4;pointer-events:none;filter:drop-shadow(0 .1em .15em rgba(0,0,0,.6))}
+.pfr .dchain.big{bottom:-10%;transform:scale(1.08)}
+.pfr .dfix{position:absolute;left:50%;bottom:-1.2em;transform:translateX(-50%);z-index:6;font-size:1.2em}
+.pfr .dbulbs i{position:absolute;width:.5em;height:.5em;border-radius:50%;z-index:4;background:hsl(calc(var(--k) * 47),95%,60%);box-shadow:0 0 .5em hsl(calc(var(--k) * 47),95%,60%);animation:bulb 1.2s calc(var(--k) * -.17s) infinite alternate;left:calc(min(var(--k),7) * 14% - 3%);top:-.35em}
+.pfr .dbulbs i:nth-child(n+8){top:auto;bottom:-.35em;left:calc((var(--k) - 7) * 14% - 3%)}
+@keyframes bulb{from{opacity:.35}to{opacity:1}}
+.pfr.m-cneon>img{animation:neon 2.5s linear infinite;border-color:#fff}
+@keyframes neon{0%{box-shadow:0 0 .6em #ff2fd0,0 0 1.4em #ff2fd0}33%{box-shadow:0 0 .6em #2fd8ff,0 0 1.4em #2fd8ff}66%{box-shadow:0 0 .6em #7dff4a,0 0 1.4em #7dff4a}100%{box-shadow:0 0 .6em #ff2fd0,0 0 1.4em #ff2fd0}}
+/* фоны досье (поверх цвета оправы) */
+.pc.bg-btiles{background:linear-gradient(45deg,rgba(255,255,255,.08) 25%,transparent 25% 75%,rgba(255,255,255,.08) 75%) 0 0/1.6em 1.6em,linear-gradient(160deg,#2f5f73,#1d3a48);color:#eaf6ff}
+.pc.bg-bcarpet{background:radial-gradient(circle at 50% 50%,#d9a441 0 .35em,transparent .4em) 0 0/2.4em 2.4em,radial-gradient(circle at 0 0,#3b0d0b 0 .9em,transparent 1em) 0 0/2.4em 2.4em,repeating-linear-gradient(45deg,#8e1f17 0 .6em,#701711 .6em 1.2em);color:#fff0d8}
+.pc.bg-bgarage{background:repeating-linear-gradient(90deg,#3a3f45 0 .25em,#4b5158 .25em 2.6em),linear-gradient(#2a2d31,#1b1d20);background-blend-mode:multiply;color:#e8ecef}
+.pc.bg-bstars{background:radial-gradient(1px 1px at 10% 20%,#fff,transparent),radial-gradient(1px 1px at 30% 70%,#fff,transparent),radial-gradient(1.5px 1.5px at 60% 30%,#fff,transparent),radial-gradient(1px 1px at 80% 80%,#fff,transparent),radial-gradient(1.5px 1.5px at 90% 15%,#ffe9a0,transparent),radial-gradient(ellipse at 70% 120%,#3a2a7a,transparent 60%),linear-gradient(#0b0f2a,#1a1040);color:#f2eaff}
+.pc[class*=" bg-"] .prk{color:#ffd45a}
+.xclose{position:sticky;top:0;float:right;z-index:5;margin:-.3em -.3em 0 .5em;width:2em;height:2em;border-radius:50%;border:.12em solid var(--red-dk);background:var(--cream);color:var(--red-dk);font:700 1.1em sans-serif;cursor:pointer;box-shadow:0 .2em .5em rgba(0,0,0,.3)}
+.xclose:hover{background:#fff}
+.ypc{padding:.4em .6em 0}.ypc .pc{margin:.3em 0 .6em}
 .vbtn{position:absolute;right:.6em;bottom:.35em;font:inherit;font-size:.8em;color:var(--cream);background:rgba(0,0,0,.25);border:.08em solid rgba(255,240,210,.5);border-radius:1em;padding:.15em .7em;cursor:pointer}
 .vbtn:hover{background:rgba(0,0,0,.45)}
 .undobox b{font-size:1.6em}
@@ -652,14 +689,14 @@ details.sets summary::-webkit-details-marker{display:none}
   <!-- Главное меню -->
   <div class="ov open" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.36</button></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.38</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
           <div class="mmcol">
             <div class="mmh">1. Твой пацан</div>
             <div data-mychar></div>
-            <div class="mmrow"><button class="btn alt" id="profBtn">Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button></div>
+            <div class="mmrow"><button class="btn alt wide" id="profBtn">Мой профиль</button></div>
           </div>
           <div class="mmcol">
             <div class="mmh">2. Где играем</div>
@@ -751,6 +788,7 @@ details.sets summary::-webkit-details-marker{display:none}
         <h3>Крысятничество</h3><p>Не кинул масть, хотя была? Полез на трояк, значит крыса. Игра не мешает, но любой из соперников может предъявить. Спалили: команде крысы 3 штрафных, раздача всё. Предъявил зря: 3 штрафных себе, за базар надо отвечать. После последней взятки есть 20 секунд на последнюю предъяву, и только потом подбиваем очки.</p>
         <h3>Хардкор и «Предъявить»</h3><p>В Хардкоре журнала нет, и подсмотреть ходы через «Предъявить» не выйдет: открыл список ходов, значит обязан кому-то предъявить. Если зря, 3 штрафных себе.</p>
         <h3>Маяки</h3><p>Маякнуть корешу смайлом, чтобы он накинул тебе туза или десятку, не по-пацански. В Хардкоре смайлы и жесты во время раздачи закрыты. Перед игрой можно выключить смайлы совсем (кнопка «😎 Смайлы»), тогда они только между раздачами. Если смайлы включены и кто-то маякнул, а кореш сразу накинул ему туза или десятку: «Маяк спалили!», свист, обзывалки и какашки в маячника. Штрафа нет.</p>
+        <h3>Добыча</h3><p>За игру капают ресурсы: 🌻 семки за раздачу, 🍺 крышки за жирные взятки, 🥟 пирожки за взятку матерью, 🦷 зубы за спаленную крысу, 🪙 медяки за победу, 🥇 фикса за люсю, иногда 💌 вкладыш. Во дворе иногда еле заметно блестит находка: кто первый тыкнул, тот забрал (бывает обычная, редкая, эпик и легенда). Витя Гудок иногда подсказывает, где искать, но не точно. Пока ты не играешь, пацан работает на «Точке». Из добычи на «Верстаке» крафтятся украшения профиля: оправа, фон досье, значок у ника. Пацаны видят их во «Дворе».</p>
         <h3>Забрать карту</h3><p>Кинул не ту карту? Пока после тебя никто не походил (и не больше 15 секунд), жми «↩ Забрать карту». Остальные трое голосуют: если все не против, карта возвращается в руку. Боты всегда не против. Один «нет», и карта остаётся на столе. Только в игре по сети.</p>
         <h3>Карта заранее</h3><p>Пока ходят другие, тыкни свою карту: она поднимется с надписью «следующая» и пойдёт сама, когда дойдёт очередь. Ещё тык по ней снимает выбор. Если к твоему ходу её класть нельзя (есть масть), она не пойдёт, выберешь сам. Спрятать карты: смахни их вниз. Открыть: тык по колоде. Заряженная карта при этом не сбрасывается.</p>
         <button class="btn" data-close="rules" style="margin-top:1.1em">Всё ясно</button>
@@ -762,7 +800,9 @@ details.sets summary::-webkit-details-marker{display:none}
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.36 · Сегодня</h3><ul><li>📰 Кнопка «Обновления» в шапке меню и «Что нового» в меню паузы, чтобы смотреть прямо во время игры</li></ul>
+        <h3>Версия 2.38 · Сегодня</h3><ul><li>🎒 Добыча: за игру капают семки, крышки, медяки, пирожки, зубы, фикса, вкладыши</li><li>✨ Находки во дворе: еле заметно блестит, кто первый тыкнул, тот забрал. Редкость от обычной до легенды. Витя Гудок подсказывает, где искать, но не точно</li><li>🏚 Точка: пока ты не в игре, пацан сдаёт бутылки, торгует семками, крутится в гаражах или качается на турнике (до 12 часов)</li><li>🧰 Верстак: крафт украшений профиля (цепура, гирлянда, неон, золотая цепь, ковёр на стену, гаражи, звёзды над Кирово, значки у ника). Видно во «Дворе»</li></ul>
+        <h3>Версия 2.37</h3><ul><li>Ачивки с прогрессом: полоска и «7 / 10», тыкни на ачивку, и видно, сколько осталось</li><li>Во «Дворе» тык по пацану: его досье с оправой, званием и статистикой</li><li>В досье крестик «закрыть» сверху, не надо листать вниз</li></ul>
+        <h3>Версия 2.36</h3><ul><li>📰 Кнопка «Обновления» в шапке меню и «Что нового» в меню паузы, чтобы смотреть прямо во время игры</li></ul>
         <h3>Версия 2.35</h3><ul><li>↩ Забрать карту: кинул не ту, жмёшь кнопку, и если трое не против, карта возвращается в руку (по сети)</li><li>Челюсть вырезана точно по контуру лица у каждого пацана: нижняя губа с подбородком отваливается целиком, без «второго подбородка»</li></ul>
         <h3>Версия 2.34</h3><ul><li>Исправлен баг: маяк засчитывался из-за смайла из прошлых раздач</li><li>За маяк больше нет штрафа: свист, обзывалки и какашки в маячника 💩</li><li>Перед игрой кнопка «😎 Смайлы»: выключил, и смайлы только между раздачами</li></ul>
         <h3>Версия 2.33</h3><ul><li>Хардкор: «Предъявить» больше не журнал. Открыл ходы, значит обязан предъявить</li></ul>
@@ -779,6 +819,9 @@ details.sets summary::-webkit-details-marker{display:none}
       </div>
     </div>
   </div>
+
+  <div class="ov" id="craft"><div class="box plate" style="width:46em"><div class="head"><h1 style="font-size:2.4em">🧰 ВЕРСТАК</h1><p>Крафт украшений для профиля из добычи</p></div><div class="in"><button class="xclose" data-close="craft" title="Закрыть">✕</button><div id="craftIn"></div><button class="btn wide" data-close="craft" style="margin-top:.8em">Закрыть</button></div></div></div>
+  <div class="ov" id="farm"><div class="box plate" style="width:40em"><div class="head"><h1 style="font-size:2.4em">🏚 ТОЧКА</h1><p>Чем занят твой пацан, пока тебя нет</p></div><div class="in"><button class="xclose" data-close="farm" title="Закрыть">✕</button><div id="farmIn"></div><button class="btn wide" data-close="farm" style="margin-top:.8em">Закрыть</button></div></div></div>
 
   <!-- Вердикт проверки -->
   <div class="ov verdict" id="verdict">
@@ -989,8 +1032,13 @@ details.sets summary::-webkit-details-marker{display:none}
   // ---------- Без повторов ----------
   // Из каждого набора берём то, что давно не звучало. Повтор только когда почти всё уже сказали.
   const USED = {};
+  // Элвис в жизни адекватный: «ГААА-ГААА» только когда бафнулся (редко, на несколько минут)
+  let buffUntil = 0;
+  const buffed = () => Date.now() < buffUntil;
+  const noGaa = (x) => !/ГАА/.test(typeof x === 'string' ? x : JSON.stringify(x));
   function pickNR(key, arr) {
     if (!arr || !arr.length) return null;
+    if (!buffed()) { const calm = arr.filter(noGaa); if (calm.length) arr = calm; }
     const u = USED[key] || (USED[key] = []);
     let pool = arr.filter((x) => !u.includes(x));
     if (!pool.length) { u.length = 0; pool = arr.slice(); }
@@ -1148,7 +1196,7 @@ details.sets summary::-webkit-details-marker{display:none}
   const CHIME = ['Ахаха, жёстко', 'Ну всё, начинается', 'Пацаны, по картам давайте', 'Заткнулись оба и ходим', 'Попкорн несите',
     'Записываю в протокол', 'Красиво приложил', 'Ща подерутся', '<i>*ржёт в кулак*</i>'];
   let gaaT = -1e9;
-  const gaa = (p) => { const now = Date.now(); if (now - gaaT < 240000 || Math.random() >= p) return false; gaaT = now; return true; };
+  const gaa = (p) => { const now = Date.now(); if (!buffed() || now - gaaT < 90000 || Math.random() >= p) return false; gaaT = now; return true; };
   const ELVIS_LAUGH = ['ГААА-ГААА!', 'ГААА-ГААА-ГААА!', 'ГАААААА! Жёстко', 'ГААА-ГААА, по фактам приложил'];
   const TABLE = ['Пацаны, а помните, как Гудок по Кирово с тележкой гонял?', 'Гудок сегодня ещё не проходил. Подозрительно', 'Если Витя Гудок придёт, мать прячьте',
     'Помните, Гудок в школе за нами до остановки гудел?', 'Гудок, кстати, жив-здоров, на рынке видел', 'Кто последний проиграет, тот за пивом', 'Пацаны, а кто вообще помнит, кто хвалит?', 'Я напоминаю: проигравший козёл, без обид',
@@ -1264,6 +1312,14 @@ details.sets summary::-webkit-details-marker{display:none}
   }
   function banter(seats, ctx) { return pace(banterRaw(seats, ctx)); }
   function banterRaw(seats, ctx) {
+    // изредка Элвис отходит «подышать» и возвращается под бафом на 4 минуты
+    const ev = seats.findIndex((x) => x && x.char === 'elvis');
+    if (ev >= 0 && !buffed() && Math.random() < .06) {
+      buffUntil = Date.now() + 240000;
+      const others = seats.map((x, i) => (x && i !== ev ? i : -1)).filter((i) => i >= 0);
+      return [{ seat: ev, text: pick(['Пацаны, я на пять минут... <i>*возвращается довольный*</i>', 'Пойду подышу. <i>*вернулся, глаза узкие*</i> Ну что, продолжим?', '<i>*отходит за дерево, возвращается*</i> Всё, я готов. Полностью']) }]
+        .concat(others.length ? [{ seat: pick(others), text: pick(['О, Элвис бафнулся, щас начнётся', 'Всё, пацаны, режим ГААА активирован', 'Элвиса бафнуло, держитесь']) }] : []);
+    }
     const rr = Math.random();
     if (rr < .15) { const s = scoreTalk(seats, ctx); if (s) return s; }
     if (rr < .55) { const d = duo(seats); if (d) return d; }
@@ -1465,7 +1521,35 @@ details.sets summary::-webkit-details-marker{display:none}
     if (!pool) return null;
     return { seat, text: pool[Math.floor(R() * pool.length)] };
   }
-  const api = { L, CATCH, wxLine, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
+  // ---------- Находки во дворе ----------
+  // Редкость: 0 обычная, 1 редкая, 2 эпик, 3 легенда
+  const FIND_TABLE = [
+    [['semki', 4, 8], ['kryshki', 2, 4]],
+    [['medyak', 2, 3], ['pirog', 1, 1]],
+    [['zub', 2, 3], ['fiksa', 1, 1]],
+    [['klyuch', 1, 1], ['vkladysh', 1, 1]],
+  ];
+  function rollFind(R) {
+    R = R || Math.random;
+    const r = R(), rar = r < .6 ? 0 : r < .88 ? 1 : r < .98 ? 2 : 3;
+    const opt = FIND_TABLE[rar][Math.floor(R() * FIND_TABLE[rar].length)];
+    let x = 6 + R() * 88, y = 44 + R() * 30;
+    if (x > 36 && y > 64) y = 44 + R() * 18; // не под рукой с картами
+    return { rar, item: opt[0], qty: opt[1] + Math.floor(R() * (opt[2] - opt[1] + 1)), x: +x.toFixed(1), y: +y.toFixed(1), hint: R() < .55 };
+  }
+  // Подсказка от Вити Гудка: примерно где, но не точно
+  function findHint(x, y, R) {
+    R = R || Math.random;
+    const side = x < 30 ? 'слева' : x > 70 ? 'справа' : 'где-то посерёдке', far = y < 56;
+    const place = far ? pick(['подальше, у деревьев', 'там, за столом', 'ближе к дорожке']) : pick(['у лавки', 'под ногами у вас', 'возле стола, внизу']);
+    const T = ['Пацаны... <i>*шепчет*</i> что-то блестит. ' + place + ', ' + side + '. Я не говорил',
+      'Ту-ту! Видел, как что-то упало ' + side + '. Или показалось',
+      'Слышь, там ' + place + ' валяется что-то. Кто первый, того и тапки',
+      'Я бы на вашем месте глянул ' + side + '. Но я не на вашем месте, ТУУУ!',
+      'Там ' + place + ' блеснуло. Может, крышка. Может, судьба'];
+    return T[Math.floor(R() * T.length)];
+  }
+  const api = { L, CATCH, wxLine, rollFind, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -1552,7 +1636,7 @@ let wxOn = true, wxKind = 'clear', wxSeed = 1, wxR = Math.random, wxDrops = [], 
 try { wxOn = localStorage.getItem('kozel-wx') !== 'off'; } catch (e) {}
 
 let match = null, round = null, lite = false, busy = false, voids = [], pending = null, gen = 0;
-const OVERLAYS = ['menu', 'pause', 'rules', 'news', 'verdict', 'net', 'lobby', 'acctBox', 'yard', 'newChar'];
+const OVERLAYS = ['menu', 'pause', 'rules', 'news', 'verdict', 'net', 'lobby', 'acctBox', 'yard', 'newChar', 'craft', 'farm'];
 let online = false;
 const paused = () => $('panel').classList.contains('open') || OVERLAYS.some((o) => $(o).classList.contains('open'));
 async function waitPlay(g) { while (paused() && g === gen) await sleep(120); }
@@ -1729,6 +1813,135 @@ function poopRain(seat, R) {
   }, k * 120);
 }
 
+// ---------- Добыча: ресурсы, находки во дворе, точка, верстак ----------
+const RES = {
+  semki: { i: '🌻', n: 'Семки' }, kryshki: { i: '🍺', n: 'Крышки' }, medyak: { i: '🪙', n: 'Медяки' }, pirog: { i: '🥟', n: 'Пирожки' },
+  zub: { i: '🦷', n: 'Зубы' }, fiksa: { i: '🥇', n: 'Золотая фикса' }, vkladysh: { i: '💌', n: 'Вкладыш «Love is»' }, klyuch: { i: '🗝️', n: 'Ключ от гаража' },
+};
+const RAR = [{ n: 'Обычная', c: '#e8e2d0' }, { n: 'Редкая', c: '#7fc4ff' }, { n: 'Эпик', c: '#c58cff' }, { n: 'Легенда', c: '#ffd45a' }];
+// баланс = заработано минус потрачено (оба только растут: так прогресс не теряется между устройствами)
+const rk = (t, r) => t + r[0].toUpperCase() + r.slice(1);
+const bal = (r) => (STATS[rk('e', r)] || 0) - (STATS[rk('s', r)] || 0);
+let lootRound = {};
+function gain(r, n) { if (!n) return; STATS[rk('e', r)] = (STATS[rk('e', r)] || 0) + n; lootRound[r] = (lootRound[r] || 0) + n; }
+function lootToast(title) {
+  const ks = Object.keys(lootRound).filter((k) => lootRound[k] > 0);
+  if (!ks.length) return;
+  achQueue.push({ i: '🎒', n: title || 'Добыча', d: ks.map((k) => '+' + lootRound[k] + ' ' + RES[k].i).join('  '), plain: true });
+  lootRound = {}; saveStats(); if (!achShowing) showAch();
+}
+// Верстак: украшения профиля. f — оправа, b — фон досье, i — значок у ника
+const CHAIN = '<svg class="dchain" viewBox="0 0 100 20">' + Array.from({ length: 9 }, (_, k) => '<ellipse cx="' + (10 + k * 10) + '" cy="' + (8 + Math.sin(k / 8 * Math.PI) * 6) + '" rx="5.5" ry="3.2" fill="none" stroke="#ffd45a" stroke-width="2.2"/>').join('') + '</svg>';
+const BULBS = '<div class="dbulbs">' + Array.from({ length: 14 }, (_, k) => '<i style="--k:' + k + '"></i>').join('') + '</div>';
+const CRAFT = [
+  { id: 'cchain', slot: 'f', n: 'Цепура из крышек', i: '⛓️', rar: 0, cost: { kryshki: 40, medyak: 8 }, deco: CHAIN },
+  { id: 'cgarl', slot: 'f', n: 'Гирлянда с рынка', i: '💡', rar: 1, cost: { semki: 150, kryshki: 30, pirog: 3 }, deco: BULBS },
+  { id: 'cneon', slot: 'f', n: 'Неоновая обводка', i: '🌈', rar: 2, cost: { medyak: 40, zub: 6, vkladysh: 1 } },
+  { id: 'cgold', slot: 'f', n: 'Золотая цепь с фиксой', i: '👑', rar: 3, cost: { fiksa: 2, medyak: 60, klyuch: 1 }, deco: CHAIN.replace('dchain', 'dchain big') + '<span class="dfix">🥇</span>' },
+  { id: 'btiles', slot: 'b', n: 'Плитка в подъезде', i: '🟦', rar: 0, cost: { semki: 80, kryshki: 25 } },
+  { id: 'bcarpet', slot: 'b', n: 'Ковёр на стену', i: '🟥', rar: 0, cost: { semki: 120, pirog: 2 } },
+  { id: 'bgarage', slot: 'b', n: 'Гаражи', i: '🏚️', rar: 1, cost: { medyak: 30, zub: 3 } },
+  { id: 'bstars', slot: 'b', n: 'Звёзды над Кирово', i: '🌌', rar: 3, cost: { klyuch: 1, vkladysh: 1, medyak: 50 } },
+  { id: 'isemki', slot: 'i', n: 'Семечный король', i: '🌻', rar: 0, cost: { semki: 200 } },
+  { id: 'ikrysh', slot: 'i', n: 'Пробочник', i: '🍺', rar: 0, cost: { kryshki: 60 } },
+  { id: 'izub', slot: 'i', n: 'Стоматолог', i: '🦷', rar: 1, cost: { zub: 10 } },
+  { id: 'ilove', slot: 'i', n: 'Романтик', i: '💌', rar: 2, cost: { vkladysh: 3 } },
+  { id: 'ikey', slot: 'i', n: 'Ключник', i: '🗝️', rar: 3, cost: { klyuch: 2, medyak: 30 } },
+];
+const SLOT = { f: ['eqF', 'Оправа'], b: ['eqB', 'Фон досье'], i: ['eqI', 'Значок у ника'] };
+// надетое хранится как «время*100 + номер»: при объединении устройств побеждает последнее
+const eqDecode = (v) => { const k = (v || 0) % 100; return k ? (CRAFT[k - 1] || {}).id || null : null; };
+const eqOf = (st) => ({ f: eqDecode(st && st.eqF), b: eqDecode(st && st.eqB), i: eqDecode(st && st.eqI) });
+function equip(id, slot) { STATS[SLOT[slot][0]] = Math.floor(Date.now() / 1000) * 100 + (id ? CRAFT.findIndex((c) => c.id === id) + 1 : 0); saveStats(); }
+const canCraft = (c) => Object.entries(c.cost).every(([r, n]) => bal(r) >= n);
+function craft(id) {
+  const c = CRAFT.find((x) => x.id === id);
+  if (!c || ACHS[id] || !canCraft(c)) return false;
+  for (const [r, n] of Object.entries(c.cost)) STATS[rk('s', r)] = (STATS[rk('s', r)] || 0) + n;
+  ACHS[id] = Date.now();
+  try { localStorage.setItem('kozel-ach', JSON.stringify(ACHS)); } catch (e) {}
+  equip(id, c.slot); Snd.good();
+  return true;
+}
+function invHtml() { return '<div class="inv">' + Object.keys(RES).map((r) => '<span title="' + RES[r].n + '">' + RES[r].i + '<b>' + bal(r) + '</b></span>').join('') + '</div>'; }
+function renderCraft() {
+  const eq = eqOf(STATS);
+  $('craftIn').innerHTML = invHtml() + Object.keys(SLOT).map((sl) => '<h3>' + SLOT[sl][1] + '</h3><div class="crg">' + CRAFT.filter((c) => c.slot === sl).map((c) => {
+    const have = !!ACHS[c.id], on = eq[sl] === c.id;
+    return '<div class="crc' + (have ? ' have' : '') + (on ? ' on' : '') + '" style="--rc:' + RAR[c.rar].c + '"><i>' + c.i + '</i><b>' + c.n + '</b><small class="rr">' + RAR[c.rar].n + '</small>' +
+      (have ? '' : '<small class="cost">' + Object.entries(c.cost).map(([r, n]) => '<span class="' + (bal(r) >= n ? 'ok' : 'no') + '">' + RES[r].i + ' ' + Math.min(bal(r), n) + '/' + n + '</span>').join(' ') + '</small>') +
+      (have ? '<button class="btn' + (on ? ' alt' : '') + '" data-eq="' + c.id + '">' + (on ? 'Снять' : 'Надеть') + '</button>' : '<button class="btn" data-cr="' + c.id + '"' + (canCraft(c) ? '' : ' disabled') + '>Скрафтить</button>') + '</div>';
+  }).join('') + '</div>').join('') +
+    '<div class="pvw">' + profileCard({ img: CHAR_IMG[myChar], name: Acct.nick || charById(myChar).name, xp: myXp, eq, sub: 'Так тебя видят пацаны' }) + '</div>';
+  $('craftIn').querySelectorAll('[data-cr]').forEach((b) => { b.onclick = () => { if (craft(b.dataset.cr)) renderCraft(); }; });
+  $('craftIn').querySelectorAll('[data-eq]').forEach((b) => { b.onclick = () => { const c = CRAFT.find((x) => x.id === b.dataset.eq); equip(eqOf(STATS)[c.slot] === c.id ? null : c.id, c.slot); renderCraft(); renderPickers(); }; });
+}
+// Точка: пока тебя нет в игре, пацан «работает» (до 12 часов)
+const FARMS = [
+  { n: 'Сдавать бутылки у ларька', i: '🍾', d: 'Крышки и семки', per: { kryshki: 3, semki: 4 } },
+  { n: 'Торговать семками на Кирово', i: '🌻', d: 'Много семок и немного медяков', per: { semki: 9, medyak: 1 } },
+  { n: 'Гаражи у дяди Вити', i: '🔧', d: 'Медяки, иногда зубы и ключ', per: { medyak: 2, zub: .25 }, key: .03 },
+  { n: 'Турник во дворе', i: '🏋️', d: 'Опыт пацану', xp: 30 },
+];
+const farmIdx = () => { const v = STATS.farmSel || 0; return v ? (v % 10) - 1 : -1; };
+function farmPending() {
+  const k = farmIdx(), at = STATS.farmAt || 0;
+  if (k < 0 || !at) return null;
+  const h = Math.min(12, (Date.now() / 1000 - at) / 3600), f = FARMS[k], bonus = 1 + rankOf(myXp).lvl * .01, out = {};
+  for (const [r, n] of Object.entries(f.per || {})) out[r] = Math.floor(n * h * bonus);
+  if (f.key) out.klyuch = Math.floor(h * f.key + (STATS.farmAt % 100) / 100); // редкость, но честно
+  return { h, f, out, xp: f.xp ? Math.floor(f.xp * h * bonus) : 0 };
+}
+function farmCollect(silent) {
+  const p = farmPending();
+  if (p) { for (const [r, n] of Object.entries(p.out)) gain(r, n); if (p.xp) xpGain(p.xp); }
+  STATS.farmAt = Math.floor(Date.now() / 1000); saveStats();
+  if (!silent && p) lootToast('Пока тебя не было: ' + p.f.i + ' ' + Math.floor(p.h) + ' ч ' + Math.round((p.h % 1) * 60) + ' мин' + (p.xp ? ', +' + p.xp + ' опыта' : ''));
+  else lootRound = {};
+}
+function setFarm(k) { farmCollect(); STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + k + 1; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); renderFarm(); renderPickers(); }
+function renderFarm() {
+  const p = farmPending(), k = farmIdx();
+  $('farmIn').innerHTML = '<p class="note">Пока ты не играешь, твой пацан на точке. Копится до 12 часов, потом точка простаивает. Чем выше уровень, тем больше выхлоп.</p>' +
+    (p ? '<div class="fpend">Накопилось за ' + Math.floor(p.h) + ' ч ' + Math.round((p.h % 1) * 60) + ' мин: ' + (Object.entries(p.out).filter(([, n]) => n > 0).map(([r, n]) => '+' + n + ' ' + RES[r].i).join(' ') || 'пока ничего') + (p.xp ? ' +' + p.xp + ' опыта' : '') + ' <button class="btn" id="fGet">Забрать</button></div>' : '') +
+    '<div class="crg">' + FARMS.map((f, i) => '<div class="crc' + (i === k ? ' on' : '') + '"><i>' + f.i + '</i><b>' + f.n + '</b><small>' + f.d + '</small><button class="btn' + (i === k ? ' alt' : '') + '" data-farm="' + i + '"' + (i === k ? ' disabled' : '') + '>' + (i === k ? 'Сейчас тут' : 'Отправить сюда') + '</button></div>').join('') + '</div>';
+  if ($('fGet')) $('fGet').onclick = () => { farmCollect(); renderFarm(); renderPickers(); };
+  $('farmIn').querySelectorAll('[data-farm]').forEach((b) => { b.onclick = () => setFarm(+b.dataset.farm); });
+}
+// Находки во дворе: еле заметно блестит, кто первый тыкнул, тот забрал
+let FINDS = {};
+function showFind(f, local) {
+  if (FINDS[f.id]) return;
+  const e = document.createElement('div');
+  e.className = 'find r' + f.rar; e.textContent = '✦'; e.style.left = f.x + '%'; e.style.top = f.y + '%'; e.title = '';
+  e.onclick = (ev) => { ev.stopPropagation(); if (local) foundFind(f.id, 0, f); else Net.send('grab', { id: f.id }); };
+  stage.appendChild(e); FINDS[f.id] = { e, f };
+  if (f.hint) { const R = seeded(f.seed || f.id); setTimeout(() => { if (!FINDS[f.id]) return; const t = KozelLines.findHint(f.x, f.y, R); if ((LAY.yard || LAY.base) && !bomzhBusy) showBomzh(t, null, null); else { const n = document.createElement('div'); n.className = 'wxnote plate'; n.innerHTML = '🗣 <b>Витя Гудок из-за угла:</b> ' + t; stage.appendChild(n); setTimeout(() => n.remove(), 6000); } }, 1500); }
+  if (local) setTimeout(() => goneFind(f.id), 30000);
+}
+function goneFind(id) { const x = FINDS[id]; if (!x) return; x.e.classList.add('gone'); setTimeout(() => x.e.remove(), 500); delete FINDS[id]; }
+function foundFind(id, seat, f) {
+  const x = FINDS[id]; f = f || (x && x.f) || {};
+  if (x) { x.e.classList.add('took'); setTimeout(() => x.e.remove(), 700); delete FINDS[id]; }
+  const it = RES[f.item]; if (!it) return;
+  const n = document.createElement('div'); n.className = 'wxnote plate'; n.style.borderColor = RAR[f.rar].c;
+  n.innerHTML = (seat === 0 ? '✨ Ты нашёл: ' : '😤 ' + NAMES[seat] + ' первым схватил: ') + '<b style="color:' + (f.rar ? RAR[f.rar].c : 'inherit') + '">' + it.i + ' ' + it.n + ' ×' + f.qty + '</b> <small>(' + RAR[f.rar].n.toLowerCase() + ')</small>';
+  stage.appendChild(n); setTimeout(() => n.remove(), 4500);
+  if (seat === 0) { gain(f.item, f.qty); saveStats(); Snd.good(); if (f.rar >= 2) talk(2, pickOne(['Везёт же!', 'Ну ты глазастый', 'Это моё было!'])); }
+  else if (round) talk(seat, pickOne(['Моё!', 'Кто успел, тот и съел', 'Спасибо, что не заметили']));
+}
+// С ботами: находки сами по себе, боты тоже иногда хватают
+(function findLoopLocal() {
+  setTimeout(() => {
+    if (!online && round && !round.over && !paused() && !document.hidden) {
+      const f = Object.assign({ id: 'L' + Date.now(), seed: Date.now() % 1e6 }, KozelLines.rollFind());
+      showFind(f, true);
+      if (Math.random() < .35) setTimeout(() => { if (FINDS[f.id]) foundFind(f.id, 1 + Math.floor(Math.random() * 3), f); }, 10000 + Math.random() * 14000);
+    }
+    findLoopLocal();
+  }, 90000 + Math.random() * 90000);
+})();
+
 // ---------- Ранги ----------
 // Уровни: первые идут быстро, каждый следующий дороже в 1.35 раза
 const LVL_NEED = (l) => Math.round(80 * Math.pow(1.11, l - 1)); // сколько опыта нужно с уровня l на l+1 (до 60 уровня)
@@ -1804,7 +2017,7 @@ function dragonSvg(t) {
   return (w ? '<svg class="wng" viewBox="0 0 100 100">' + w + '</svg>' : '') + '<svg class="drg" viewBox="0 0 100 100">' + g + '</svg>';
 }
 // Аватар в оправе своего уровня (досье, меню)
-function framedAvatar(src, lvl, cls) {
+function framedAvatar(src, lvl, cls, eq) {
   const t = tierOf(lvl);
   let o = '';
   if (t >= 2) o += '<i class="rv r1"></i><i class="rv r2"></i><i class="rv r3"></i><i class="rv r4"></i>';
@@ -1814,12 +2027,15 @@ function framedAvatar(src, lvl, cls) {
   if (t >= 6) o += dragonSvg(t);
   if (t >= 5) o += '<span class="crw">👑</span>';
   if (t >= 9) o += '<i class="spk s1">✦</i><i class="spk s2">✧</i><i class="spk s3">✦</i>';
-  return '<div class="pfr t' + t + (cls ? ' ' + cls : '') + '"><img alt="" src="' + src + '">' + o + '<b class="plv">' + lvl + '</b></div>';
+  const fm = eq && eq.f ? CRAFT.find((c) => c.id === eq.f) : null;
+  if (fm) o += fm.deco || '';
+  return '<div class="pfr t' + t + (cls ? ' ' + cls : '') + (fm ? ' m-' + fm.id : '') + '"><img alt="" src="' + src + '">' + o + '<b class="plv">' + lvl + '</b></div>';
 }
 // Шапка досье: оправа, имя, звание, уровень, опыт
 function profileCard(o) {
   const r = rankOf(o.xp || 0), t = tierOf(r.lvl);
-  return '<div class="pc t' + t + '">' + framedAvatar(o.img, r.lvl) + '<div class="pci"><b class="pnm">' + o.name + '</b><div class="prk">' + r.name + ' · ур. ' + r.lvl + '</div>' +
+  const eq = o.eq || {}, bg = eq.b ? ' bg-' + eq.b : '', badge = eq.i ? (CRAFT.find((c) => c.id === eq.i) || {}).i || '' : '';
+  return '<div class="pc t' + t + bg + '">' + framedAvatar(o.img, r.lvl, '', eq) + '<div class="pci"><b class="pnm">' + (badge ? '<span class="badge">' + badge + '</span>' : '') + o.name + '</b><div class="prk">' + r.name + ' · ур. ' + r.lvl + '</div>' +
     '<div class="ptier">Оправа: ' + TIER_NAME[t] + '</div>' +
     (o.self ? '<div class="xpbar"><i style="width:' + r.pct + '%"></i></div><small>Опыт ' + (o.xp || 0) + ', до уровня ' + (r.lvl + 1) + ' ещё ' + (r.next - (o.xp || 0)) + '</small>' : '') +
     (o.sub ? '<small class="psub">' + o.sub + '</small>' : '') + '</div></div>';
@@ -2612,15 +2828,19 @@ function renderPickers() {
   const c = charById(myChar), r = rankOf(myXp);
   document.querySelectorAll('[data-mychar]').forEach((box) => {
     const others = Object.keys(ROSTER).filter((id) => id !== myChar && CHARS.some((x) => x.id === id));
-    box.innerHTML = '<div class="mychar">' + framedAvatar(CHAR_IMG[myChar], r.lvl, 'big') + '<div class="mi"><b>' + c.name + '</b>' +
+    const fp = farmPending();
+    box.innerHTML = '<div class="mychar">' + framedAvatar(CHAR_IMG[myChar], r.lvl, 'big', eqOf(STATS)) + '<div class="mi"><b>' + c.name + '</b>' +
       '<div class="lv">Ур. ' + r.lvl + ' · ' + r.name + '</div><div class="xpbar"><i style="width:' + r.pct + '%"></i></div><small>до уровня ' + (r.lvl + 1) + ' ещё ' + (r.next - myXp) + ' опыта</small>' +
       '<p>' + c.desc + '</p></div></div>' +
       '<div class="roster">' + others.map((id) => '<span class="rcw"><button class="rc" data-sw="' + id + '" title="Переключиться"><img alt="" src="' + CHAR_IMG[id] + '">' + charById(id).name + ' <i>' + rankOf(ROSTER[id].xp || 0).lvl + '</i></button><button class="rdel" data-del="' + id + '" title="Удалить пацана">×</button></span>').join('') +
       (Object.keys(ROSTER).length > 1 ? '<button class="rdel rdelme" data-del="' + myChar + '" title="Удалить текущего пацана">Удалить ' + c.name + '</button>' : '') +
-      (CHARS.some((x) => !ROSTER[x.id]) ? '<button class="rc add" data-newchar>+ Новый пацан</button>' : '') + '</div>';
+      (CHARS.some((x) => !ROSTER[x.id]) ? '<button class="rc add" data-newchar>+ Новый пацан</button>' : '') + '</div>' +
+      invHtml() + '<div class="lootrow"><button class="btn alt" data-ocraft>🧰 Верстак</button><button class="btn alt" data-ofarm>🏚 Точка' + (fp ? ': ' + fp.f.i + ' ' + Math.floor(fp.h) + ' ч' : '') + '</button></div>';
     box.querySelector('.big').onclick = showProfile;
     box.querySelectorAll('[data-sw]').forEach((b) => { b.onclick = () => switchChar(b.dataset.sw); });
     box.querySelectorAll('[data-del]').forEach((b) => { b.onclick = () => deleteChar(b.dataset.del); });
+    box.querySelectorAll('[data-ocraft]').forEach((b) => { b.onclick = () => { renderCraft(); open('craft'); }; });
+    box.querySelectorAll('[data-ofarm]').forEach((b) => { b.onclick = () => { renderFarm(); open('farm'); }; });
     box.querySelectorAll('[data-newchar]').forEach((b) => { b.onclick = openNewChar; });
   });
 }
@@ -3331,6 +3551,9 @@ const Net = (() => {
     if (ev.type === 'mic') { if (ev.seat !== 0) micTalk(ev.seat, ev.on); }
     else if (ev.type === 'scene') netScene(ev);
     else if (ev.type === 'weather') setWeather(ev.kind, ev.seed, ev.seat);
+    else if (ev.type === 'find') showFind(ev, false);
+    else if (ev.type === 'found') foundFind(ev.id, ev.seat, ev);
+    else if (ev.type === 'findGone') goneFind(ev.id);
   }
   function send(type, extra) {
     return api('/api/action', Object.assign({ code, token: tok, type }, extra || {}))
@@ -3573,7 +3796,9 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.36') { localStorage.setItem('kozel-seen-ver', '2.36'); setTimeout(() => { if ($('menu').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.38') { localStorage.setItem('kozel-seen-ver', '2.38'); setTimeout(() => { if ($('menu').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+// Точка: при запуске, если пацан поработал больше 10 минут, забираем
+setTimeout(() => { try { if (farmIdx() < 0) { STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + 1; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); } else { const p = farmPending(); if (p && p.h >= 1 / 6) farmCollect(); } renderPickers(); } catch (e) {} }, 1500);
 // ---------- Эмоции ----------
 const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны', '🔥', 'Учись, салага', '🎰', 'Фарт есть фарт', '👑', 'Учитесь, пацаны'];
 const EMO_LOCK = { 14: 3, 15: 3, 16: 6, 17: 6, 18: 12, 19: 12 };
@@ -3969,7 +4194,7 @@ function showSeatProfile(s) {
   if (!round) return;
   const id = SEATCH[s], c = charById(id), st = SEATSTAT[s], r = rankOf(seatXp(s));
   const team = K.teamOf(s) === 0 ? 'Кореш, твоя команда' : 'Соперник';
-  showPause(profileCard({ img: CHAR_IMG[id], name: NAMES[s], xp: seatXp(s), sub: team + (NAMES[s] !== c.name ? ' · играет за ' + c.name : '') }) +
+  showPause('<button class="xclose" id="dosX" title="Закрыть">✕</button>' + profileCard({ img: CHAR_IMG[id], name: NAMES[s], xp: seatXp(s), sub: team + (NAMES[s] !== c.name ? ' · играет за ' + c.name : '') }) +
     '<p class="chdesc" style="text-align:left">' + c.desc + '</p>' +
     '<p style="margin:.2em 0 .4em;text-align:left"><b>За этот матч</b></p>' +
     '<div class="stats"><span>Взял очков</span><span>' + st.pts + '</span>' +
@@ -3978,9 +4203,9 @@ function showSeatProfile(s) {
     '<span>Предъявил зря</span><span>' + st.miss + '</span></div>' +
     '<p class="note" style="text-align:left">Сколько раз он лез на трояк, никто не знает. Следи сам.</p>' +
     '<button class="btn wide" id="dosClose">Ясно-понятно</button>', 'ДОСЬЕ');
-  $('dosClose').onclick = () => hide('pause');
+  $('dosClose').onclick = () => hide('pause'); if ($('dosX')) $('dosX').onclick = () => hide('pause');
 }
-function bumpStat(k) { STATS[k] = (STATS[k] || 0) + 1; saveStats(); checkAch(); }
+function bumpStat(k) { STATS[k] = (STATS[k] || 0) + 1; if (k === 'caught') gain('zub', 1); saveStats(); checkAch(); }
 
 // ---------- Ачивки: за каждую опыт к рангу ----------
 const ACH = [
@@ -4080,8 +4305,9 @@ function trickAch(winner) {
   const pts = pl.reduce((x, e) => x + e.card.points, 0);
   const wc = pl[K.trickWinner(pl.map((e) => e.card), round.trump)].card;
   if (pts >= 30) unlock('big');
+  if (pts >= 20) gain('kryshki', 1);
   STATS.tricks = (STATS.tricks || 0) + 1;
-  if (wc.rank === '6' && wc.suit === round.trump) { unlock('mom'); STATS.mom = (STATS.mom || 0) + 1; }
+  if (wc.rank === '6' && wc.suit === round.trump) { unlock('mom'); STATS.mom = (STATS.mom || 0) + 1; gain('pirog', 1); }
   // перехват последней картой: до меня взятку держали соперники
   const pre = pl.slice(0, 3), pb = pre[K.trickWinner(pre.map((e) => e.card), round.trump)];
   if (pl[3].seat === 0 && K.teamOf(pb.seat) !== 0 && pts >= 20) STATS.snatch = (STATS.snatch || 0) + 1;
@@ -4095,20 +4321,23 @@ function roundAch(pts) {
   const e = round.end;
   if (e && e.type === 'cards') {
     const hTeam = K.teamOf(round.hvalSeat);
-    if ((e.lusya === 'praise' && hTeam === 1) || (e.lusya === 'other' && hTeam === 0)) { unlock('lusya'); STATS.lusya = (STATS.lusya || 0) + 1; }
+    if ((e.lusya === 'praise' && hTeam === 1) || (e.lusya === 'other' && hTeam === 0)) { unlock('lusya'); STATS.lusya = (STATS.lusya || 0) + 1; gain('fiksa', 1); }
     if (e.egg) { unlock('egg'); STATS.egg = (STATS.egg || 0) + 1; }
   }
   if (round.hvalSeat === 0) STATS.hval = (STATS.hval || 0) + 1;
   if (online) STATS.net = (STATS.net || 0) + 1;
   STATS[{ baza: 'locBaza', yard: 'locYard', office: 'locOffice', space: 'locSpace' }[LOC]] = 1;
   const loser = online ? match.loser : K.matchLoser(match);
-  if (loser === 1) STATS.wins++;
+  if (loser === 1) { STATS.wins++; gain('medyak', 3); }
+  gain('semki', 3 + Math.floor(pts / 30));
+  if (Math.random() < .04) gain('vkladysh', 1);
   saveStats();
   checkAch();
+  lootToast('Добыча за раздачу');
 }
 function showProfile() {
   const r = rankOf(myXp), c = charById(myChar);
-  showPause(profileCard({ img: CHAR_IMG[myChar], name: Acct.nick || (round ? NAMES[0] : c.name), xp: myXp, self: true, sub: c.name }) +
+  showPause('<button class="xclose" id="dosX" title="Закрыть">✕</button>' + profileCard({ img: CHAR_IMG[myChar], name: Acct.nick || (round ? NAMES[0] : c.name), xp: myXp, self: true, sub: c.name, eq: eqOf(STATS) }) + invHtml() +
     '<div class="stats"><span>Залез на трояк</span><span>' + STATS.troyak + '</span>' +
     '<span>Спалил подлецов</span><span>' + STATS.caught + '</span>' +
     '<span>Спалили самого</span><span>' + STATS.gotCaught + '</span>' +
@@ -4123,10 +4352,22 @@ function showProfile() {
     '<span>Люсь повесил</span><span>' + (STATS.lusya || 0) + '</span></div>' +
     '<p style="margin:.2em 0 .4em;text-align:left"><b>Награды за уровни</b></p>' +
     '<div class="achs">' + PERKS.map((p) => '<div class="' + (r.lvl >= p.lvl ? '' : 'off') + '"><i>' + p.i + '</i><span>Ур. ' + p.lvl + '<small>' + p.n + '</small></span></div>').join('') + '</div>' +
-    '<p style="margin:.2em 0 .4em;text-align:left"><b>Ачивки ' + Object.keys(ACHS).length + ' из ' + ACH.length + '</b></p>' +
-    '<div class="achs">' + ACH.map((a) => '<div class="' + (ACHS[a.id] ? '' : 'off') + '"><i>' + a.i + '</i><span>' + a.n + ' <em>+' + a.xp + '</em><small>' + a.d + '</small></span></div>').join('') + '</div>' +
+    '<p style="margin:.2em 0 .4em;text-align:left"><b>Ачивки ' + ACH.filter((a) => ACHS[a.id]).length + ' из ' + ACH.length + '</b></p>' +
+    '<div class="achs" id="achList">' + ACH.map((a) => { const pr = achProg(a), done = !!ACHS[a.id]; return '<div class="' + (done ? 'done' : 'off') + '" data-ach="' + a.id + '" title="Тыкни, чтобы увидеть, сколько осталось"><i>' + a.i + '</i><span>' + a.n + ' <em>+' + a.xp + '</em><small>' + a.d + '</small>' + (done ? '<small class="apd">✔ Выполнено</small>' : pr ? '<b class="apb"><i style="width:' + Math.round(pr[0] / pr[1] * 100) + '%"></i></b><small class="apn">' + pr[0] + ' / ' + pr[1] + '</small>' : '<small class="apn">Разовая: сделай один раз</small>') + '<small class="apl"></small></span></div>'; }).join('') + '</div>' +
     '<button class="btn wide" id="dosClose">Ясно-понятно</button>', 'ДОСЬЕ');
-  $('dosClose').onclick = () => hide('pause');
+  $('dosClose').onclick = () => hide('pause'); if ($('dosX')) $('dosX').onclick = () => hide('pause');
+  document.querySelectorAll('#achList [data-ach]').forEach((el) => { el.onclick = () => {
+    const a = ACH.find((x) => x.id === el.dataset.ach), pr = achProg(a), l = el.querySelector('.apl'), open = el.classList.toggle('show');
+    l.textContent = !open ? '' : ACHS[a.id] ? 'Готово, опыт получен' : pr ? 'Осталось: ' + (pr[1] - pr[0]) + ' (' + Math.round(pr[0] / pr[1] * 100) + '%)' : 'Пока не было. Нужно один раз: ' + a.d.toLowerCase();
+  }; });
+}
+// Прогресс ачивки: [сколько есть, сколько надо] из условия вида s.rounds >= 10
+function achProg(a) {
+  if (a.id === 'tour') { const n = ['locBaza', 'locYard', 'locOffice', 'locSpace'].filter((k) => STATS[k]).length; return [n, 4]; }
+  const m = String(a.ok).match(/s\.(\w+)(?:\s*\|\|\s*0\))?\s*>=\s*(\d+)/);
+  if (!m) return null;
+  const goal = +m[2], cur = Math.min(goal, STATS[m[1]] || 0);
+  return [cur, goal];
 }
 $('me').onclick = showProfile;
 document.querySelectorAll('[data-myrank]').forEach((p) => { p.style.cursor = 'pointer'; p.title = 'Открыть досье'; p.onclick = showProfile; });
@@ -4226,6 +4467,7 @@ const Acct = (() => {
   const STATUS = { yard: 'во дворе', lobby: 'за столом, ждут игру', playing: 'играет', off: 'не в сети' };
   const ago = (s) => (s === null ? 'давно не был' : s < 120 ? 'был только что' : s < 3600 ? 'был ' + Math.round(s / 60) + ' мин назад' : s < 86400 ? 'был ' + Math.round(s / 3600) + ' ч назад' : 'был ' + Math.round(s / 86400) + ' дн назад');
   let openYS = null;
+  const img0 = (x) => CHAR_IMG[x.roster && Object.keys(x.roster)[0]] || '';
   function renderYard() {
     $('yardList').innerHTML = last.list.map((x) => {
       const r = rankOf(x.xp || 0), img = CHAR_IMG[x.char] || CHAR_IMG[x.roster && Object.keys(x.roster)[0]] || '';
@@ -4235,7 +4477,7 @@ const Acct = (() => {
       const st = x.status === 'off' ? ago(x.seenAgo) : STATUS[x.status] + (x.table ? ', стол ' + x.table.code + (x.table.free ? ', мест: ' + x.table.free : ', мест нет') : '');
       return '<div class="yr' + (x.status === 'off' ? ' off' : '') + '" data-yr="' + x.nick + '"><img alt="" class="' + frameOf(x.xp) + '" src="' + img + '"><div class="yn"><b>' + x.nick + (x.me ? ' (ты)' : '') + '</b><small>Ур. ' + r.lvl + ' ' + r.name + ' · побед ' + x.wins + '</small></div>' +
         '<span class="st ' + x.status + '">' + (x.status !== 'off' ? '<span class="dot"' + (x.status === 'playing' ? ' style="background:#c33;box-shadow:0 0 .4em #c33"' : x.status === 'lobby' ? ' style="background:#e0a400;box-shadow:0 0 .4em #e0a400"' : '') + '></span>' : '') + st + '</span>' + act + '</div>';
-    }).map((h, i) => h + (last.list[i] ? (() => { const x = last.list[i], st = x.stats || {}, nrs = x.roster ? Object.keys(x.roster).length : 1; return '<div class="ystat' + (openYS === x.nick ? ' open' : '') + '" data-ys="' + x.nick + '"><span>Побед<b>' + (st.wins || 0) + '</b></span><span>Раздач<b>' + (st.rounds || 0) + '</b></span><span>Очков<b>' + (st.totalPts || 0) + '</b></span><span>Лучшая раздача<b>' + (st.best || 0) + '</b></span><span>Спалил крыс<b>' + (st.caught || 0) + '</b></span><span>Спалили его<b>' + (st.gotCaught || 0) + '</b></span><span>Люсь повесил<b>' + (st.lusya || 0) + '</b></span><span>Пацанов<b>' + nrs + '</b></span></div>'; })() : '')).join('') || '<p class="note">Пока тут никого. Скинь пацанам ссылку на игру.</p>';
+    }).map((h, i) => h + (last.list[i] ? (() => { const x = last.list[i], st = x.stats || {}, nrs = x.roster ? Object.keys(x.roster).length : 1; return (openYS === x.nick ? '<div class="ypc">' + profileCard({ img: CHAR_IMG[x.char] || img0(x), name: x.nick + (x.me ? ' (ты)' : ''), xp: x.xp || 0, eq: eqOf(x.stats), sub: (CHARS.find((c) => c.id === x.char) || { name: '' }).name }) + '</div>' : '') + '<div class="ystat' + (openYS === x.nick ? ' open' : '') + '" data-ys="' + x.nick + '"><span>Побед<b>' + (st.wins || 0) + '</b></span><span>Раздач<b>' + (st.rounds || 0) + '</b></span><span>Очков<b>' + (st.totalPts || 0) + '</b></span><span>Лучшая раздача<b>' + (st.best || 0) + '</b></span><span>Спалил крыс<b>' + (st.caught || 0) + '</b></span><span>Спалили его<b>' + (st.gotCaught || 0) + '</b></span><span>Люсь повесил<b>' + (st.lusya || 0) + '</b></span><span>Пацанов<b>' + nrs + '</b></span></div>'; })() : '')).join('') || '<p class="note">Пока тут никого. Скинь пацанам ссылку на игру.</p>';
     $('yardList').querySelectorAll('[data-yr]').forEach((r) => { r.onclick = (ev) => { if (ev.target.closest('button')) return; openYS = openYS === r.dataset.yr ? null : r.dataset.yr; renderYard(); }; });
     $('yardList').querySelectorAll('[data-inv]').forEach((b) => { b.onclick = () => inviteTo(b.dataset.inv, b); });
     $('yardList').querySelectorAll('[data-sit]').forEach((b) => { b.onclick = () => { hide('yard'); hide('menu'); Net.join(b.dataset.sit, nick).catch((e) => { $('yardErr').textContent = e.message; open('yard'); }); }; });

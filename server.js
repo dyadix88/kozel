@@ -121,6 +121,31 @@ function sceneLoop(room) {
   }, 70000 + Math.random() * 60000);
 }
 
+// Находки во дворе: кто первый тыкнул, тот забрал. Боты тоже иногда подбирают
+let findSeq = 1;
+function findLoop(room) {
+  clearTimeout(room.findT);
+  room.findT = setTimeout(() => {
+    if (!rooms.has(room.code)) return;
+    if (room.phase === 'playing' && !room.paused && !room.find && room.seats.some((x) => x && !x.bot && x.conns.size)) {
+      const f = Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollFind());
+      room.find = f;
+      blast(room, [Object.assign({ type: 'find' }, f)]);
+      const bots = room.seats.map((x, i) => (x && x.bot ? i : -1)).filter((i) => i >= 0);
+      if (bots.length && Math.random() < .4) setTimeout(() => grabFind(room, f.id, pick(bots)), 9000 + Math.random() * 13000);
+      setTimeout(() => { if (room.find && room.find.id === f.id) { room.find = null; blast(room, [{ type: 'findGone', id: f.id }]); } }, 30000);
+    }
+    findLoop(room);
+  }, Number(process.env.FIND_MS) || 90000 + Math.random() * 90000); // FIND_MS только для проверок
+}
+function grabFind(room, id, seat) {
+  const f = room.find;
+  if (!f || f.id !== id) return false;
+  room.find = null;
+  blast(room, [{ type: 'found', id, seat, item: f.item, qty: f.qty, rar: f.rar }]);
+  return true;
+}
+
 // Погода: одна на стол, меняется раз в 2.5-5 минут, без снега
 const WX_KINDS = ['clear', 'clear', 'cloudy', 'cloudy', 'drizzle', 'drizzle', 'rain', 'rain', 'storm', 'storm', 'wind', 'leaves', 'leaves', 'heat', 'rainbow'];
 function weatherLoop(room) {
@@ -142,6 +167,7 @@ function startMatch(room) {
   room.match = K.newMatch(room.mode === 'turbo' ? 6 : 12);
   startRound(room);
   if (!room.sceneT) sceneLoop(room);
+  if (!room.findT) findLoop(room);
   if (!room.wxT) { room.weather = { kind: pick(['clear', 'clear', 'cloudy', 'drizzle']), seed: Math.floor(Math.random() * 2 ** 31) }; weatherLoop(room); }
 }
 function startRound(room) {
@@ -501,6 +527,9 @@ function act(room, seat, body) {
       broadcast(room, [{ type: 'gesture', seat, g }]);
       return;
     }
+    case 'grab':
+      grabFind(room, Number(body.id), seat);
+      return;
     case 'mic': {
       const on = !!body.on, now = Date.now();
       if (on === !!s.mic) return;
