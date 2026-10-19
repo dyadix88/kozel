@@ -8,6 +8,7 @@ const path = require('path');
 const crypto = require('crypto');
 const K = require('./rules.js');
 const KL = require('./lines.js');
+const A = require('./accounts.js');
 
 const PORT = process.env.PORT || 8080;
 const TURN_MS = 60000;          // минута на ход
@@ -42,13 +43,13 @@ const token = () => crypto.randomBytes(16).toString('hex');
 const humans = (room) => room.seats.filter((s) => s && !s.bot);
 const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
-function createRoom(name, mode, ch, xp) {
+function createRoom(name, mode, ch, xp, acct) {
   const code = newCode();
   const room = { code, mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
-  room.seats[0] = { token: tok, name: clean(name) || CHARS[charOk(ch)], char: charOk(ch), xp: xpOk(xp), bot: false, conns: new Set() };
+  room.seats[0] = { token: tok, name: clean(name) || CHARS[charOk(ch)], char: charOk(ch), xp: xpOk(xp), bot: false, conns: new Set(), acct: acct || null };
   return { room, tok, seat: 0 };
 }
 const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
@@ -372,6 +373,15 @@ function act(room, seat, body) {
   }
 }
 
+// За каким столом сидит человек с аккаунтом key (для «Двора»)
+function tableOf(key) {
+  for (const room of rooms.values()) {
+    const s = room.seats.find((x) => x && !x.bot && x.acct === key && x.conns.size);
+    if (s) return { code: room.code, phase: room.phase, mode: room.mode, free: room.seats.filter((x) => !x || (room.phase !== 'lobby' && x.bot)).length };
+  }
+  return null;
+}
+
 // ---------- HTTP ----------
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -387,10 +397,18 @@ const INDEX = path.join(__dirname, 'client', 'index.html');
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   try {
-    if (req.method === 'GET' && url.pathname === '/api/ping') return json(res, 200, { ok: true, rooms: rooms.size });
+    if (req.method === 'GET' && url.pathname === '/api/ping') return json(res, 200, { ok: true, rooms: rooms.size, accounts: A.store.kind });
+    // Аккаунты и «Двор»
+    const ACCT = { register: A.register, login: A.login, me: A.me, save: A.save, logout: A.logout, yard: (b) => A.yard(b, tableOf), invite: (b) => A.invite(b, tableOf) };
+    const am = url.pathname.match(/^\/api\/acct\/(\w+)$/);
+    if (req.method === 'POST' && am && ACCT[am[1]]) {
+      const b = await readBody(req);
+      try { return json(res, 200, await ACCT[am[1]](b)); } catch (e) { return json(res, 400, { error: e.message }); }
+    }
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
-      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, b.xp);
+      const u = await A.userByToken(b.acct).catch(() => null);
+      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {
@@ -402,7 +420,8 @@ const server = http.createServer(async (req, res) => {
       if (i < 0 && room.phase !== 'lobby') i = room.seats.findIndex((s) => s && s.bot);
       if (i < 0) return json(res, 409, { error: 'Стол занят, мест нет' });
       const tok = token();
-      room.seats[i] = { token: tok, name: clean(b.name) || CHARS[charOk(b.char)], char: charOk(b.char), xp: xpOk(b.xp), bot: false, conns: new Set() };
+      const u = await A.userByToken(b.acct).catch(() => null);
+      room.seats[i] = { token: tok, name: clean(b.name) || CHARS[charOk(b.char)], char: charOk(b.char), xp: xpOk(u ? u.xp : b.xp), bot: false, conns: new Set(), acct: u ? A.keyOf(u.nick) : null };
       broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat: i, text: '<i>*подсел за стол*</i>' }]);
       return json(res, 200, { code: room.code, token: tok, seat: i });
     }
