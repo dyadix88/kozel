@@ -45,7 +45,7 @@ const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
 function createRoom(name, mode, ch, xp, acct, loc) {
   const code = newCode();
-  const room = { code, loc: ['yard', 'office', 'space'].includes(loc) ? loc : 'yard', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
+  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
@@ -323,9 +323,9 @@ function act(room, seat, body) {
       // хозяин стола выбирает место: в лобби и между раздачами
       if (seat !== room.host) throw new Error('Место выбирает хозяин стола');
       if (!['lobby', 'roundEnd', 'matchEnd'].includes(room.phase)) throw new Error('Пересядем после раздачи');
-      if (!['yard', 'office', 'space'].includes(body.loc)) throw new Error('Нет такого места');
+      if (!['baza', 'yard', 'office', 'space'].includes(body.loc)) throw new Error('Нет такого места');
       room.loc = body.loc;
-      broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { yard: 'во двор', office: 'в кабинет', space: 'в космос' }[body.loc] + '*</i>' }]);
+      broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { baza: 'на БАЗУ', yard: 'во двор', office: 'в кабинет', space: 'в космос' }[body.loc] + '*</i>' }]);
       return;
     }
     case 'next':
