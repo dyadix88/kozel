@@ -21,7 +21,7 @@ const ROOM_TTL = 3 * 3600 * 1000;
 const CHARS = { lysy: 'Лысый', zema: 'Зёма', dantl: 'Дантл', vitaha: 'Витаха', elvis: 'Элвис', oleg: 'Олег' };
 const charOk = (c) => (CHARS[c] ? c : 'oleg');
 const xpOk = (x) => Math.max(0, Math.min(1e7, Math.floor(Number(x) || 0)));
-const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны', '🔥', 'Учись, салага', '🎰', 'Фарт есть фарт', '👑', 'Склонитесь, черти'];
+const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны', '🔥', 'Учись, салага', '🎰', 'Фарт есть фарт', '👑', 'Учитесь, пацаны'];
 
 const rooms = new Map();
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
@@ -61,7 +61,7 @@ function viewFor(room, my) {
   const rot = (arr) => [0, 1, 2, 3].map((r) => arr[(r + my) % 4]);
   const t = my % 2;
   const v = {
-    code: room.code, phase: room.phase, mode: room.mode, honest: !!room.honest, loc: room.loc, host: R(room.host), now: Date.now(),
+    code: room.code, phase: room.phase, mode: room.mode, honest: !!room.honest, paused: room.paused ? { by: R(room.paused.by) } : null, weather: room.weather || null, loc: room.loc, host: R(room.host), now: Date.now(),
     seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0 } : null)),
   };
   if (room.match) {
@@ -112,7 +112,7 @@ function sceneLoop(room) {
   clearTimeout(room.sceneT);
   room.sceneT = setTimeout(() => {
     if (!rooms.has(room.code)) return;
-    if (room.phase === 'playing' && room.seats.some((x) => x && !x.bot && x.conns.size)) {
+    if (room.phase === 'playing' && !room.paused && room.seats.some((x) => x && !x.bot && x.conns.size)) {
       const r = Math.random();
       const kind = room.loc === 'yard' ? (r < .5 ? 'guest' : r < .8 ? 'babka' : 'neigh') : 'guest';
       blast(room, [{ type: 'scene', kind, seed: Math.floor(Math.random() * 2 ** 31), seat: Math.floor(Math.random() * 4) }]);
@@ -121,13 +121,28 @@ function sceneLoop(room) {
   }, 70000 + Math.random() * 60000);
 }
 
+// Погода: одна на стол, меняется раз в 2.5-5 минут, без снега
+const WX_KINDS = ['clear', 'clear', 'cloudy', 'cloudy', 'drizzle', 'drizzle', 'rain', 'rain', 'storm', 'storm', 'wind', 'leaves', 'leaves', 'heat', 'rainbow'];
+function weatherLoop(room) {
+  clearTimeout(room.wxT);
+  room.wxT = setTimeout(() => {
+    if (!rooms.has(room.code)) return;
+    if (!room.paused && room.phase !== 'lobby') {
+      room.weather = { kind: pick(WX_KINDS), seed: Math.floor(Math.random() * 2 ** 31) };
+      blast(room, [Object.assign({ type: 'weather', seat: Math.floor(Math.random() * 4) }, room.weather)]);
+    }
+    weatherLoop(room);
+  }, 150000 + Math.random() * 150000);
+}
+
 // ---------- Ход игры ----------
 function startMatch(room) {
   const free = Object.keys(CHARS).filter((c) => !room.seats.some((s) => s && s.char === c)).sort(() => Math.random() - .5);
-  room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(Object.keys(CHARS)); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 8000), bot: true, conns: new Set() }; } });
+  room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(Object.keys(CHARS)); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 4000), bot: true, conns: new Set() }; } });
   room.match = K.newMatch(room.mode === 'turbo' ? 6 : 12);
   startRound(room);
   if (!room.sceneT) sceneLoop(room);
+  if (!room.wxT) { room.weather = { kind: pick(['clear', 'clear', 'cloudy', 'drizzle']), seed: Math.floor(Math.random() * 2 ** 31) }; weatherLoop(room); }
 }
 function startRound(room) {
   room.round = K.newRound(room.match); room.round.honest = !!room.honest;
@@ -142,7 +157,7 @@ function startRound(room) {
 }
 
 function schedule(room, delay) {
-  if (room.phase === 'closing') return; // у последней предъявы свой таймер
+  if (room.phase === 'closing' || room.paused) return; // у последней предъявы свой таймер
   clearTimeout(room.timer);
   const r = room.round;
   if (room.phase !== 'playing' || !r || r.over) { room.deadline = 0; return; }
@@ -212,7 +227,7 @@ function finalize(room) {
 const seatsInfo = (room) => room.seats.map((s) => (s ? { char: s.char, name: s.name.replace(' (бот)', ''), bot: !!s.bot } : null));
 const GESTURE_MS = 15000;
 const GESTURES = ['wink', 'clap', 'fuck'];
-// Реплики после взятки (за всех, включая живых: это дворовой юмор) + жесты ботов + бомж Валера
+// Реплики после взятки (за всех, включая живых: это дворовой юмор) + жесты ботов + Витя Гудок
 function chatter(room, evs, res) {
   const r = room.round, t = r.tricks[r.tricks.length - 1];
   const lines = KL.chatter(t.plays, res.winner, r.trump, res.points, K, seatsInfo(room), r.hands);
@@ -227,7 +242,7 @@ function chatter(room, evs, res) {
     else if (x < .7 && bot(mate)) gest(mate, 'clap', 900);
     else if (bot(res.winner)) gest(res.winner, 'wink', 700);
   }
-  if (room.loc === 'yard' && room.bomzhAt === r.tricks.length && !r.closing && !r.over) {
+  if ((room.loc === 'yard' || room.loc === 'baza') && room.bomzhAt === r.tricks.length && !r.closing && !r.over) {
     const b = KL.bomzh(seatsInfo(room), r.hands, r.trump);
     evs.push({ type: 'bomzh', text: b.text, seat: b.reply.seat, reply: b.reply.text, delay: 2500 });
   }
@@ -270,6 +285,7 @@ function checkMayak(room, res) {
 }
 
 function endRound(room) {
+  room.paused = null; clearTimeout(room.pauseT);
   const m = room.match;
   room.phase = K.matchLoser(m) === null ? 'roundEnd' : 'matchEnd';
   room.deadline = 0;
@@ -278,12 +294,12 @@ function endRound(room) {
 
 function botAct(room) {
   const r = room.round;
-  if (!r || r.over || room.phase !== 'playing' || !room.seats[r.turn].bot) return;
+  if (!r || r.over || room.phase !== 'playing' || room.paused || !room.seats[r.turn].bot) return;
   try { doPlay(room, r.turn, botMove(r, r.turn)); } catch (e) { console.error('bot', e); }
 }
 function timeoutAct(room) {
   const r = room.round;
-  if (!r || r.over || room.phase !== 'playing') return;
+  if (!r || r.over || room.phase !== 'playing' || room.paused) return;
   const s = r.turn;
   const legal = K.legalCards(r.hands[s], r.trick.map((e) => e.card), r.trump);
   const led = r.trick.length ? K.effSuit(r.trick[0].card, r.trump) : null;
@@ -321,11 +337,43 @@ function botMove(r, s) {
   return legal.reduce((a, b) => (a.points < b.points || (a.points === b.points && pw(a) < pw(b)) ? a : b)).id;
 }
 
+// ---------- Пауза для всех: таймеры стоят, боты ждут ----------
+function pauseRoom(room, seat) {
+  if (room.paused) return;
+  clearTimeout(room.timer);
+  const now = Date.now();
+  room.paused = { by: seat, at: now, left: room.deadline ? Math.max(3000, room.deadline - now) : 0 };
+  room.deadline = 0;
+  clearTimeout(room.pauseT); room.pauseT = setTimeout(() => resumeRoom(room, seat), 10 * 60000); // сама снимется через 10 минут
+  broadcast(room, [{ type: 'talk', seat, text: pick(['Пацаны, передых!', 'Стоп игра, щас вернусь', 'Пауза, братва', 'Тайм-аут!']) }]);
+}
+function resumeRoom(room, seat) {
+  const p = room.paused;
+  if (!p) return;
+  room.paused = null; clearTimeout(room.pauseT);
+  const now = Date.now();
+  if (room.phase === 'closing') {
+    room.deadline = now + (p.left || CLOSE_MS);
+    room.timer = setTimeout(() => finalize(room), room.deadline - now);
+  } else if (room.phase === 'playing' && room.round && !room.round.over) {
+    const cur = room.seats[room.round.turn];
+    if (cur && !cur.bot && p.left) { room.deadline = now + p.left; room.timer = setTimeout(() => timeoutAct(room), p.left); }
+    else schedule(room, 600);
+  }
+  broadcast(room, [{ type: 'talk', seat, text: pick(['Погнали дальше', 'Всё, играем', 'Продолжаем, пацаны']) }]);
+}
+
 // ---------- Действия игроков ----------
 function act(room, seat, body) {
   const s = room.seats[seat];
   const abs = (rel) => (Number(rel) + seat) % 4;
+  if (room.paused && ['play', 'accuse', 'ready'].includes(body.type)) throw new Error('Передых: сначала снимите паузу');
   switch (body.type) {
+    case 'pause': {
+      if (room.phase !== 'playing' && room.phase !== 'closing') throw new Error('Пауза только во время игры');
+      if (body.on === false || room.paused) resumeRoom(room, seat); else pauseRoom(room, seat);
+      return;
+    }
     case 'sit': {
       if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
       const to = abs(body.seat);
@@ -435,7 +483,7 @@ function act(room, seat, body) {
         broadcast(room, [{ type: 'lobby' }]);
       } else {
         // посреди игры место занимает бот, чтобы партия не встала
-        room.seats[seat] = { name: s.name + ' (бот)', char: s.char, bot: true, conns: new Set() };
+        room.seats[seat] = { name: s.name + ' (бот)', char: s.char, bot: true, conns: new Set(), was: { token: s.token, acct: s.acct || null, name: s.name } };
         for (const res of s.conns) res.end();
         if (!humans(room).length) { clearTimeout(room.timer); rooms.delete(room.code); return; }
         if (room.host === seat) room.host = room.seats.findIndex((x) => x && !x.bot);
@@ -492,7 +540,10 @@ const server = http.createServer(async (req, res) => {
       const room = getRoom(b.code);
       if (!room) return json(res, 404, { error: 'Такого стола нет' });
       if (b.token && seatOf(room, b.token) >= 0) return json(res, 200, { code: room.code, token: b.token, seat: seatOf(room, b.token) });
-      let i = room.seats.findIndex((s) => !s);
+      const u0 = await A.userByToken(b.acct).catch(() => null), ak = u0 ? A.keyOf(u0.nick) : null;
+      // вернулся тот, кто свалил: отдаём его же место (та же команда), бота убираем
+      let i = room.seats.findIndex((s) => s && s.bot && s.was && ((b.was && s.was.token === b.was) || (ak && s.was.acct === ak)));
+      if (i < 0) i = room.seats.findIndex((s) => !s);
       if (i < 0 && room.phase !== 'lobby') i = room.seats.findIndex((s) => s && s.bot);
       if (i < 0) return json(res, 409, { error: 'Стол занят, мест нет' });
       const tok = token();
@@ -541,12 +592,13 @@ const server = http.createServer(async (req, res) => {
 setInterval(() => {
   const now = Date.now();
   for (const room of rooms.values()) {
-    if (room.phase !== 'playing' || !room.round || room.round.over) continue;
+    if (room.phase !== 'playing' || !room.round || room.round.over || room.paused) continue;
     if (!room.nextBanter) room.nextBanter = now + 40000 + Math.random() * 30000;
     if (now < room.nextBanter) continue;
     room.nextBanter = now + 50000 + Math.random() * 35000;
     const ctx = { pen: room.match.penalties, limit: room.match.limit };
-    const evs = KL.banter(seatsInfo(room), ctx).map((c) => ({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0 }));
+    const wk = room.weather && room.weather.kind, wl = wk && wk !== 'clear' && Math.random() < .4 ? KL.wxLine(wk, seatsInfo(room)) : null;
+    const evs = wl ? [{ type: 'talk', seat: wl.seat, text: wl.text }] : KL.banter(seatsInfo(room), ctx).map((c) => ({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0 }));
     if (evs.length) broadcast(room, evs);
   }
 }, 3000);
