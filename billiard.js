@@ -369,7 +369,31 @@
     return rnd() < .25 ? (rnd() < .5 ? { who: 'me', text: pickA(LINES.missMe, rnd) } : { who: 'other', text: pickA(LINES.miss, rnd) }) : null;
   }
 
-  const api = { HALLS, LINES, pickLine, T, PH, JAWS, VARIANTS, TO_WIN, BOT, rack, simulate, newGame, applyShot, judge, canPlace, freeSpot, botShot, teamOf, nextSeat };
+  // ---------- Лут бильярдной: падает только тут ----------
+  // Редкость как везде: 0 белая, 1 зелёная, 2 синяя, 3 фиолетовая, 4 оранжевая
+  const BIL_LOOT = [
+    { item: 'mel', rar: 0, p: .58, qty: [1, 2] },     // мел для кия
+    { item: 'zheton', rar: 2, p: .28, qty: [1, 1] },  // жетон бильярдной
+    { item: 'perch', rar: 3, p: .115, qty: [1, 1] },  // перчатка каталы
+    { item: 'shar', rar: 4, p: .025, qty: [1, 1] },   // счастливый шар
+  ];
+  // где лежит: ковёр и борта вокруг стола (в % экрана), не под табличками сверху и не под лентой снизу
+  const BIL_SPOTS = [
+    { n: 'на ковре', x: [3, 24], y: [86, 96] }, { n: 'на ковре', x: [74, 96], y: [86, 96] },
+    { n: 'на ковре', x: [1, 4], y: [24, 70] }, { n: 'на ковре', x: [96, 99], y: [24, 70] },
+    { n: 'на борту', x: [10, 40], y: [9.5, 12] }, { n: 'на борту', x: [60, 90], y: [9.5, 12] },
+    { n: 'на борту', x: [10, 40], y: [79, 81] }, { n: 'на борту', x: [60, 90], y: [79, 81] },
+    { n: 'у лузы', x: [3, 7], y: [11, 16] }, { n: 'у лузы', x: [93, 97], y: [76, 81] },
+  ];
+  function rollBilFind(R) {
+    R = R || Math.random;
+    let r = R(), L = BIL_LOOT[0];
+    for (const x of BIL_LOOT) { if (r < x.p) { L = x; break; } r -= x.p; }
+    const sp = BIL_SPOTS[Math.floor(R() * BIL_SPOTS.length)];
+    return { rar: L.rar, item: L.item, qty: L.qty[0] + Math.floor(R() * (L.qty[1] - L.qty[0] + 1)), x: +(sp.x[0] + R() * (sp.x[1] - sp.x[0])).toFixed(1), y: +(sp.y[0] + R() * (sp.y[1] - sp.y[0])).toFixed(1), at: sp.n, bil: true };
+  }
+
+  const api = { BIL_LOOT, BIL_SPOTS, rollBilFind, HALLS, LINES, pickLine, T, PH, JAWS, VARIANTS, TO_WIN, BOT, rack, simulate, newGame, applyShot, judge, canPlace, freeSpot, botShot, teamOf, nextSeat };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelBil = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -546,7 +546,7 @@ function act(room, seat, body) {
       if (!['lobby', 'roundEnd', 'matchEnd'].includes(room.phase)) throw new Error('Пересядем после раздачи');
       if (!KL.LOC_IDS.includes(body.loc)) throw new Error('Нет такого места');
       room.loc = body.loc;
-      broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { baza: 'на БАЗУ', yard: 'во двор', office: 'в кабинет', space: 'в космос', cherem: 'на Черёмушки', stroy: 'на Строитель', centr: 'в Центр' }[body.loc] + '*</i>' }]);
+      broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { baza: 'на БАЗУ', yard: 'во двор', office: 'в кабинет', space: 'в космос', cherem: 'на Черёмушки', korolenko: 'на Короленко', stroy: 'на Строитель', centr: 'в Центр', vodokanal: 'на Водоканал' }[body.loc] + '*</i>' }]);
       return;
     }
     case 'opts': { // хозяин в лобби меняет режим, честняк, смайлы и ставку
@@ -709,6 +709,15 @@ function bilView(room, my) {
   }
   return v;
 }
+// лут бильярдной: раз в 30-55 с на ковре или борту, кто первый тыкнул
+function bilFindLoop(room) {
+  clearTimeout(room.findT);
+  room.findT = setTimeout(() => {
+    if (!rooms.has(room.code)) return;
+    if (room.phase === 'playing' && room.seats.some((x) => x && !x.bot && x.conns.size)) dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KB.rollBilFind()), 30000);
+    bilFindLoop(room);
+  }, Number(process.env.FIND_MS) || 30000 + Math.random() * 25000);
+}
 const bilLevel = (s) => (s.char === 'zema' ? 2 : s.level);
 function bilStart(room) {
   const used = new Set(room.seats.filter(Boolean).map((x) => x.char)), free = OWN6.filter((c) => !used.has(c)).sort(() => Math.random() - .5);
@@ -716,6 +725,7 @@ function bilStart(room) {
   room.g = KB.newGame(room.seats.length, room.variant, Math.floor(Math.random() * 2 ** 31));
   room.taken = room.seats.map(() => 0);
   room.phase = 'playing'; room.shotId = 0;
+  if (!room.findT) bilFindLoop(room);
   const L = KB.LINES;
   broadcast(room, [{ type: 'bstart' }, { type: 'talk', seat: room.g.turn, text: pick(L.start), delay: 900 }]);
   bilSchedule(room, 1500);
@@ -824,6 +834,8 @@ function bilAct(room, seat, body) {
       return;
     case 'xp':
       s.xp = xpOk(body.xp); return broadcast(room, []);
+    case 'grab':
+      grabFind(room, Number(body.id), seat); return;
     default:
       return; // остальное (маяки козла и т.п.) за бильярдом не нужно
   }
