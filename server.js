@@ -10,6 +10,7 @@ const K = require('./rules.js');
 const KL = require('./lines.js');
 const A = require('./accounts.js');
 const KC = require('./campaign.js');
+const KB = require('./billiard.js');
 
 const PORT = process.env.PORT || 8080;
 const TURN_MS = 60000;          // минута на ход
@@ -68,6 +69,7 @@ function canPay(room, s) { const st = KC.STAKES[room.stake]; return !st || !st.r
 // ---------- Что видит конкретный игрок ----------
 // Места поворачиваются так, что сам игрок всегда на месте 0, напарник на 2.
 function viewFor(room, my) {
+  if (room.game === 'bil') return bilView(room, my);
   const R = (a) => (a - my + 4) % 4;
   const rot = (arr) => [0, 1, 2, 3].map((r) => arr[(r + my) % 4]);
   const t = my % 2;
@@ -96,9 +98,10 @@ function viewFor(room, my) {
   }
   return v;
 }
-function convEvent(ev, my) {
+function convEvent(ev, my, n) {
+  n = n || 4;
   const e = Object.assign({}, ev);
-  for (const k of ['seat', 'winner', 'accuser', 'accused', 'mate', 'by']) if (e[k] !== undefined) e[k] = (e[k] - my + 4) % 4;
+  for (const k of ['seat', 'winner', 'accuser', 'accused', 'mate', 'by']) if (e[k] !== undefined) e[k] = (e[k] - my + n) % n;
   if (e.team !== undefined) e.team = (e.team - (my % 2) + 2) % 2;
   return e;
 }
@@ -106,7 +109,7 @@ function broadcast(room, events) {
   room.touched = Date.now();
   room.seats.forEach((s, i) => {
     if (!s || s.bot || !s.conns.size) return;
-    const msg = 'data: ' + JSON.stringify({ events: (events || []).map((e) => convEvent(e, i)), view: viewFor(room, i) }) + '\n\n';
+    const msg = 'data: ' + JSON.stringify({ events: (events || []).map((e) => convEvent(e, i, room.seats.length)), view: viewFor(room, i) }) + '\n\n';
     for (const res of s.conns) res.write(msg);
   });
 }
@@ -115,7 +118,7 @@ function broadcast(room, events) {
 function blast(room, events) {
   room.seats.forEach((s, i) => {
     if (!s || s.bot || !s.conns.size) return;
-    const msg = 'data: ' + JSON.stringify({ fx: events.map((e) => convEvent(e, i)) }) + '\n\n';
+    const msg = 'data: ' + JSON.stringify({ fx: events.map((e) => convEvent(e, i, room.seats.length)) }) + '\n\n';
     for (const res of s.conns) res.write(msg);
   });
 }
@@ -456,6 +459,7 @@ function resumeRoom(room, seat) {
 
 // ---------- Действия игроков ----------
 function act(room, seat, body) {
+  if (room.game === 'bil') return bilAct(room, seat, body);
   const s = room.seats[seat];
   const abs = (rel) => (Number(rel) + seat) % 4;
   if (room.paused && ['play', 'accuse', 'ready'].includes(body.type)) throw new Error('Передых: сначала снимите паузу');
@@ -676,9 +680,153 @@ function prank(admin, b) {
 function tableOf(key) {
   for (const room of rooms.values()) {
     const s = room.seats.find((x) => x && !x.bot && x.acct === key && x.conns.size);
-    if (s) return { code: room.code, phase: room.phase, mode: room.mode, free: room.seats.filter((x) => !x || (room.phase !== 'lobby' && x.bot)).length };
+    if (s) return { code: room.code, phase: room.phase, mode: room.mode, game: room.game || 'kozel', free: room.seats.filter((x) => !x || (room.phase !== 'lobby' && x.bot)).length };
   }
   return null;
+}
+
+// ======================= 🎱 Бильярдная по сети =======================
+// Партия считается здесь (billiard.js), браузеры получают удар и сами его прокручивают (расчёт одинаковый), а потом сверяются с итогом.
+const OWN6 = ['oleg', 'dantl', 'lysy', 'elvis', 'vitaha', 'zema'];
+const BIL_HALLS = KB.HALLS.filter((h) => !h.soon).map((h) => h.id);
+function createBilRoom(b, u) {
+  const code = newCode(), n = Number(b.size) === 4 ? 4 : 2;
+  const room = { game: 'bil', code, phase: 'lobby', seats: new Array(n).fill(null), host: 0, hall: BIL_HALLS.includes(b.hall) ? b.hall : 'bellagio',
+    variant: KB.VARIANTS[b.variant] ? b.variant : 'free', botLevel: Math.max(0, Math.min(2, Number(b.botLevel) || 1)), g: null, shotId: 0, touched: Date.now() };
+  rooms.set(code, room);
+  const tok = token(), acct = u ? A.keyOf(u.nick) : null, cc = charOk(b.char, acct, room);
+  room.seats[0] = { token: tok, name: clean(b.name) || CHARS[cc], char: cc, xp: xpOk(u ? u.xp : b.xp), bot: false, conns: new Set(), acct };
+  return { room, tok, seat: 0 };
+}
+function bilView(room, my) {
+  const n = room.seats.length, R = (a) => (a - my + n) % n, t = my % 2, g = room.g;
+  const v = { game: 'bil', code: room.code, phase: room.phase, host: R(room.host), hall: room.hall, variant: room.variant, size: n, botLevel: room.botLevel, now: Date.now(),
+    seats: room.seats.map((_, i) => room.seats[(i + my) % n]).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0, level: s.level } : null)) };
+  if (g) {
+    v.g = { state: g.state, turn: R(g.turn), score: [g.score[t], g.score[1 - t]], hand: g.hand, over: g.over, winner: g.winner === null ? null : (g.winner - t + 2) % 2, shots: g.shots, deadline: room.deadline || 0 };
+    if (g.last) v.last = { id: room.shotId, seat: R(g.last.seat), shot: g.last.shot, place: g.last.place || null, before: g.last.before, judge: g.last.judge };
+    v.taken = room.taken ? room.seats.map((_, i) => room.taken[(i + my) % n]) : null;
+  }
+  return v;
+}
+const bilLevel = (s) => (s.char === 'zema' ? 2 : s.level);
+function bilStart(room) {
+  const used = new Set(room.seats.filter(Boolean).map((x) => x.char)), free = OWN6.filter((c) => !used.has(c)).sort(() => Math.random() - .5);
+  room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(OWN6); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 4000), bot: true, conns: new Set(), level: c === 'zema' ? 2 : room.botLevel }; } });
+  room.g = KB.newGame(room.seats.length, room.variant, Math.floor(Math.random() * 2 ** 31));
+  room.taken = room.seats.map(() => 0);
+  room.phase = 'playing'; room.shotId = 0;
+  const L = KB.LINES;
+  broadcast(room, [{ type: 'bstart' }, { type: 'talk', seat: room.g.turn, text: pick(L.start), delay: 900 }]);
+  bilSchedule(room, 1500);
+}
+// чей удар: бот бьёт сам, живой — 90 с (без связи — 15 с), потом за него бьёт бот
+function bilSchedule(room, delay) {
+  clearTimeout(room.timer);
+  const g = room.g;
+  if (!g || g.over || room.phase !== 'playing') { room.deadline = 0; return; }
+  const s = room.seats[g.turn];
+  const L = KB.BOT[bilLevel(s) || 0] || KB.BOT[1];
+  const wait = s.bot ? delay + L.think[0] + Math.random() * (L.think[1] - L.think[0]) : delay + (s.conns.size ? 90000 : 15000);
+  room.deadline = s.bot ? 0 : Date.now() + wait;
+  room.timer = setTimeout(() => {
+    if (!rooms.has(room.code) || room.g !== g || g.over) return;
+    const shot = KB.botShot(g, s.bot ? bilLevel(s) : 0);
+    bilShoot(room, g.turn, shot, !s.bot);
+  }, wait);
+}
+function bilShoot(room, seat, shot, auto) {
+  const g = room.g, L = KB.LINES;
+  if (!g || g.over || g.turn !== seat) throw new Error('Сейчас не твой удар');
+  const sh = { dx: Number(shot.dx) || 0, dy: Number(shot.dy) || 0, power: Math.max(0, Math.min(1, Number(shot.power) || 0)) };
+  if (!sh.dx && !sh.dy) throw new Error('Куда бьёшь?');
+  if (g.hand) sh.place = shot.place && { x: Number(shot.place.x), y: Number(shot.place.y) };
+  const r = KB.applyShot(g, sh);
+  if (!r.ok) throw new Error(r.error);
+  g.last.place = sh.place || null;
+  room.shotId++;
+  const j = r.judge;
+  room.taken[seat] += j.points;
+  const evs = [{ type: 'bshot', id: room.shotId }];
+  const line = KB.pickLine(j, r.sim.ev, g, seat, Math.random);
+  if (line) evs.push({ type: 'talk', seat: line.who === 'me' ? seat : (seat + 1 + Math.floor(Math.random() * (room.seats.length - 1))) % room.seats.length, text: line.text, delay: Math.round(r.sim.ev.t * 1000) + 300 });
+  if (auto) evs.push({ type: 'talk', seat, text: '<i>*долго думал, бот ударил за него*</i>' });
+  if (g.over) { room.phase = 'over'; evs.push({ type: 'bover' }); }
+  broadcast(room, evs);
+  bilSchedule(room, Math.round(r.sim.ev.t * 1000) + 600);
+}
+function bilAct(room, seat, body) {
+  const s = room.seats[seat], n = room.seats.length, abs = (rel) => (Number(rel) + seat) % n;
+  switch (body.type) {
+    case 'sit': {
+      if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
+      const to = abs(body.seat);
+      if (room.seats[to]) throw new Error('Место занято');
+      room.seats[to] = s; room.seats[seat] = null;
+      if (room.host === seat) room.host = to;
+      return broadcast(room, [{ type: 'lobby' }]);
+    }
+    case 'opts': {
+      if (seat !== room.host) throw new Error('Это решает хозяин стола');
+      if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
+      if (KB.VARIANTS[body.variant]) room.variant = body.variant;
+      if (body.botLevel !== undefined) room.botLevel = Math.max(0, Math.min(2, Number(body.botLevel) || 0));
+      if (BIL_HALLS.includes(body.hall)) room.hall = body.hall;
+      if (body.size !== undefined) {
+        const want = Number(body.size) === 4 ? 4 : 2;
+        if (want !== n) {
+          const people = room.seats.filter(Boolean);
+          if (people.length > want) throw new Error('За столом больше людей, чем мест');
+          const hostP = room.seats[room.host];
+          room.seats = new Array(want).fill(null); people.forEach((p, i) => { room.seats[i] = p; });
+          room.host = room.seats.indexOf(hostP);
+        }
+      }
+      return broadcast(room, [{ type: 'lobby' }]);
+    }
+    case 'start':
+      if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
+      if (seat !== room.host) throw new Error('Начинает хозяин стола');
+      return bilStart(room);
+    case 'shot':
+      if (room.phase !== 'playing') throw new Error('Сейчас не играем');
+      return bilShoot(room, seat, body);
+    case 'rematch':
+      if (room.phase !== 'over') return;
+      return bilStart(room);
+    case 'say': {
+      if (Date.now() - (s.sayAt || 0) < 400) return;
+      s.sayAt = Date.now();
+      const text = String(body.text || '').replace(/<(?!\/?i>)[^>]*>/g, '').slice(0, 200);
+      if (text) blast(room, [{ type: 'talk', seat: abs(body.seat || 0), text }]);
+      return;
+    }
+    case 'emote': {
+      if (Date.now() - (s.emoAt || 0) < 1500) return;
+      s.emoAt = Date.now();
+      const k = Number(body.i); if (!(k >= 0 && k < 40)) return;
+      blast(room, [{ type: 'emote', seat, i: k }]);
+      return;
+    }
+    case 'leave':
+      if (room.phase === 'lobby') {
+        room.seats[seat] = null;
+        if (!humans(room).length) { rooms.delete(room.code); return; }
+        if (room.host === seat) room.host = room.seats.findIndex((x) => x && !x.bot);
+        return broadcast(room, [{ type: 'lobby' }]);
+      }
+      room.seats[seat] = { name: s.name + ' (бот)', char: s.char, bot: true, conns: new Set(), level: 1, was: { token: s.token, acct: s.acct || null, name: s.name } };
+      for (const res of s.conns) res.end();
+      if (!humans(room).length) { clearTimeout(room.timer); rooms.delete(room.code); return; }
+      if (room.host === seat) room.host = room.seats.findIndex((x) => x && !x.bot);
+      broadcast(room, [{ type: 'talk', seat, text: '<i>*свалил, за него бот*</i>' }]);
+      if (room.g && room.g.turn === seat) bilSchedule(room, 500);
+      return;
+    case 'xp':
+      s.xp = xpOk(body.xp); return broadcast(room, []);
+    default:
+      return; // остальное (маяки козла и т.п.) за бильярдом не нужно
+  }
 }
 
 // ---------- HTTP ----------
@@ -722,7 +870,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
       const u = await A.userByToken(b.acct).catch(() => null);
-      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest, b.emotes === false, b.stake);
+      const { room, tok, seat } = b.game === 'bil' ? createBilRoom(b, u) : createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest, b.emotes === false, b.stake);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {

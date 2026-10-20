@@ -103,6 +103,12 @@
     podval: { i: '🗝️', n: 'Ключ от подвала БАЗЫ', pass: true, cost: { antracit: 5, fiksa: 2, klyuch: 1, vkladysh: 1, uah: 600 } },
   };
 
+  // Редкое, шо можно скрафтить на Верстаке (сколько хочешь раз): даёт 1 штуку
+  const RARE_CRAFT = [
+    { id: 'klyuch', cost: { medyak: 40, zub: 4, uah: 20 } },
+    { id: 'fiksa', cost: { zub: 5, medyak: 25, uah: 30 } },
+  ];
+
   // Барыга Жора скупает: сколько гривен за штуку. Гривна ценная: семки и крышки идут почти даром, редкое дороже
   const SELL = { semki: .1, kryshki: .3, medyak: 1, pirog: 2, zub: 4, fiksa: 20, vkladysh: 12, klyuch: 25,
     pero: 4, blesna: 6, kvit: 9, cennik: 12, antracit: 16 };
@@ -124,7 +130,7 @@
   // Шансы на особую находку за раздачу на районе
   const FIND_CHANCE = .65;
 
-  const api = { DISTRICTS, ITEMS, SELL, CRAFT_BACK, STAKES, FIND_CHANCE };
+  const api = { DISTRICTS, ITEMS, RARE_CRAFT, SELL, CRAFT_BACK, STAKES, FIND_CHANCE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelCamp = api;
 })(typeof window !== 'undefined' ? window : globalThis);

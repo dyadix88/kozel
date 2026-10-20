@@ -439,7 +439,7 @@
   ];
   function duo(seats) {
     const has = (id) => seats.findIndex((x) => x && x.char === id);
-    const ok = DUOS.filter((d) => d.c.every((id) => has(id) >= 0));
+    const ok = DUOS.filter((d) => d.c.every((id) => has(id) >= 0) && !(d.c.every((id) => OWNERS[id]) && d.l.some(([, t]) => RUDE.test(t)))); // свои без грубостей
     if (!ok.length) return null;
     const d = pickNR('duo', ok), idx = d.c.map(has), names = idx.map((i) => seats[i].name);
     return d.l.map(([k, t]) => ({ seat: idx[k], text: t.replace(/\{(\d)\}/g, (m, q) => names[+q] || '') }));
@@ -493,6 +493,19 @@
     let t = start || 0;
     return (list || []).map((x) => { const o = Object.assign({}, x, { delay: t }); t += readMs(x.text) + 500; return o; });
   }
+  // Грубое (лох, бык, сука и т.п.) между своими не говорим
+  const RUDE = /лох|бык|кобыл|пасть|ублюд|сук|урод|туп|дебил|хуй|хуё|пизд|бля|позорищ|чмо|мудак|придур|идиот|овощ|козлин|морд|заткн|ничтожеств|пош[её]л ты|нахер/i;
+  const isOwn = (ch) => !!OWNERS[ch];
+  function pickSoft(key, arr) { const ok = arr.filter((t) => !RUDE.test(t)); return ok.length ? pickNR(key, ok) : null; }
+  const FRIEND_TEASE = ['{n}, шо, опять задумался? Мы не торопимся, у нас вся жизнь впереди', '{n}, красиво зашёл, я аж прослезился', '{n}, давай-давай, мы в тебя верим',
+    '{n}, ты сегодня в ударе, шо ли?', '{n}, если продуем, пиво с тебя', '{n}, шо ты лыбишься? Шо-то знаешь?', '{n}, брат, держи лицо, всё по нему видно',
+    '{n}, я за тобой слежу. С любовью', '{n}, это был гениальный ход. Наверное', '{n}, шо, опять козырь бережёшь на старость?', '{n}, мамке твоей привет, кстати'];
+  const FRIEND_REPLY = ['Ахах, ну ты скажешь', 'Смотри и учись, брат', 'Всё под контролем', 'Не нагнетай', 'Люблю вас, пацаны', 'Шо ты начинаешь, родной',
+    'Спокойно, я всё просчитал', 'Ахаха, по фактам', 'Пиво с меня, если шо', '<i>*подмигивает*</i>'];
+  // по чужим можно жёстче
+  const ROAST = ['{n}, ты с какого района вообще такой?', '{n}, у нас за такое с лавки ссаживают', '{n}, ты карты держать умеешь или только семки лузгать?',
+    '{n}, вали на свой район, там и козли', '{n}, тебя кто вообще за стол пустил?', '{n}, ты так играешь, будто тебе за это платят. Мало', '{n}, сиди тихо и кидай карту, чужак',
+    '{n}, у тебя на лице написано: «продую»', '{n}, ещё раз так сходишь — пойдёшь пешком до своего района', '{n}, ты шо, в первый раз карты видишь?'];
   function banter(seats, ctx) { return pace(banterRaw(seats, ctx)); }
   function banterRaw(seats, ctx) {
     // изредка Элвис отходит «подышать» и возвращается под бафом на 4 минуты
@@ -514,16 +527,21 @@
       const s = pick(live), c = CHAR[seats[s].char];
       if (c && c.lines) return [{ seat: s, text: pickNR('own:' + seats[s].char, c.lines) }];
     }
-    const a = pick(live), b = pick(live.filter((i) => i !== a));
-    const ca = seats[a].char, cb = seats[b].char, c = CHAR[ca], pair = PAIR[ca + '>' + cb];
+    // свои (шестеро друзей) друг на друга не бузят: только дружеский угар. Жёстко — по чужим (нейтральным и районным)
+    const a = pick(live), others0 = live.filter((i) => i !== a), strangers = others0.filter((i) => !isOwn(seats[i].char));
+    const b = strangers.length && Math.random() < .75 ? pick(strangers) : pick(others0);
+    const ca = seats[a].char, cb = seats[b].char, c = CHAR[ca], pair = PAIR[ca + '>' + cb], friends = isOwn(ca) && isOwn(cb);
     const r = Math.random();
-    const tpl = pair && r < .5 ? pickNR('pair:' + ca + cb, pair) : c && r < .85 ? pickNR('tease:' + ca, c.tease) : pickNR('gen', GENERIC_TEASE);
+    let tpl;
+    if (friends) tpl = pickSoft('ft:' + ca + cb, [].concat(pair || [], (c && c.tease) || [], FRIEND_TEASE)) || pickNR('fr', FRIEND_TEASE);
+    else if (isOwn(ca) && !isOwn(cb) && r < .45) tpl = pickNR('roast', ROAST);
+    else tpl = pair && r < .5 ? pickNR('pair:' + ca + cb, pair) : c && r < .85 ? pickNR('tease:' + ca, c.tease) : pickNR('gen', GENERIC_TEASE);
     const out = [{ seat: a, text: tpl.replace('{n}', seats[b].name) }];
     if (Math.random() < .8) {
       const back = PAIR[cb + '>' + ca];
       const own = REPLY_BY[cb];
       const x = Math.random();
-      out.push({ seat: b, text: back && x < .3 ? pickNR('pair:' + cb + ca, back) : own && x < .65 ? pickNR('rb:' + cb, own) : pickNR('reply', REPLY) });
+      out.push({ seat: b, text: friends ? (pickSoft('fb:' + cb, [].concat(back || [], own || [], FRIEND_REPLY)) || pickNR('frr', FRIEND_REPLY)) : back && x < .3 ? pickNR('pair:' + cb + ca, back) : own && x < .65 ? pickNR('rb:' + cb, own) : pickNR('reply', REPLY) });
     }
     // Третий смеётся: Элвис, если сидит, ржёт громче всех
     const others = live.filter((i) => i !== a && i !== b);
@@ -800,8 +818,13 @@
     for (const s of all) { k -= s.w; if (k <= 0) { sp = s; break; } }
     return { n: sp.n, x: +(sp.x[0] + R() * (sp.x[1] - sp.x[0])).toFixed(1), y: +(sp.y[0] + R() * (sp.y[1] - sp.y[0])).toFixed(1) };
   }
+  // особая находка района падает и в обычной игре на месте этого района (примерно 1 находка из 12)
+  const LOC_ITEM = { cherem: 'pero', stroy: 'kvit', centr: 'cennik' }, LOC_ITEM_P = .08;
+  const RAR_P = [.55, .26, .13, .048, .012];
   function rollFind(R, loc) {
     R = R || Math.random;
+    const li = LOC_ITEM[String(loc || '').replace(/2$/, '')];
+    if (li && R() < LOC_ITEM_P) { const sp = spotOf(loc, R); return { rar: 3, item: li, qty: 1, x: sp.x, y: sp.y, at: sp.n, hint: R() < .5 }; }
     const r = R(), rar = r < .55 ? 0 : r < .81 ? 1 : r < .94 ? 2 : r < .988 ? 3 : 4;
     const opt = FIND_TABLE[rar][Math.floor(R() * FIND_TABLE[rar].length)];
     const sp = spotOf(loc, R);
@@ -826,7 +849,7 @@
   }
   // Реплика из GORL по ситуации, {n} = к кому обращаются
   function gorl(kind, name) { const t = pickNR('gorl:' + kind, GORL[kind]); return t ? t.replace('{n}', name || 'голова') : null; }
-  const api = { L, CATCH, wxLine, slowLine, sho, OWNERS, ADMIN, setOwners, canUse, lockOn, neutralIds, gorl, GORL, rollFind, rollCoin, SPOTS, LOCMETA, LOC_IDS, VARIANTS, bgOf, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
+  const api = { L, CATCH, wxLine, slowLine, sho, OWNERS, ADMIN, setOwners, canUse, lockOn, neutralIds, gorl, GORL, rollFind, rollCoin, FIND_TABLE, RAR_P, LOC_ITEM, LOC_ITEM_P, SPOTS, LOCMETA, LOC_IDS, VARIANTS, bgOf, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);
