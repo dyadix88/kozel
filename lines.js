@@ -166,14 +166,48 @@
     vitaha: ['Ахаха, ладно, справедливо', 'Ору, люблю тебя', 'Обнимемся и забудем', 'Ахах, сам такой'],
     oleg: ['Это баг', 'В патче поправлю. Тебя', 'Админ всё видит', 'Бан выписать?'],
   };
+  // ---------- Свои пацаны закрыты для чужих ----------
+  // За своих шестерых играет только хозяин аккаунта (ник без учёта регистра). Олег, автор, может брать любого.
+  // Чужие берут нейтральных (персонажи без хозяина). Ботами свои сидят у кого угодно.
+  // Замок включается сам, когда в CHAR появится хотя бы один нейтральный персонаж.
+  const OWNERS = { oleg: 'олег', dantl: 'дантл', lysy: 'лысый', elvis: 'элвис', vitaha: 'siegriech', zema: null };
+  const ADMIN = 'олег';
+  const neutralIds = () => Object.keys(CHAR).filter((id) => !(id in OWNERS));
+  const lockOn = () => neutralIds().length > 0;
+  function canUse(id, nick) {
+    if (!(id in OWNERS) || !lockOn()) return true;
+    const k = String(nick || '').trim().toLowerCase();
+    return !!k && (k === ADMIN || OWNERS[id] === k);
+  }
   // ---------- Горловка: мы шокаем ----------
-  // «что», «чё», «чего», «чтобы» в репликах превращаются в «шо» и «шоб»
+  // В основном «шо» и «шоб», но не всегда: примерно 2 фразы из 10 звучат с «что/чё».
+  // Лысый интеллигент: у него «что» в 35-40% фраз. Решение принимается на всю фразу,
+  // чтобы не было «Шо ты, что ты» в одной строке. Работает в обе стороны:
+  // готовое «шо» тоже иногда становится «что/чё».
   const NL = '[^А-Яа-яЁёA-Za-z]';
-  function sho(t) {
-    return String(t)
-      .replace(new RegExp('(^|' + NL + ')([Чч])тобы(?=' + NL + '|$)', 'g'), (m, p, c) => p + (c === 'Ч' ? 'Ш' : 'ш') + 'об')
-      .replace(new RegExp('(^|' + NL + ')([Чч])(?:то|ё|о|его)(?=' + NL + '|$)', 'g'), (m, p, c) => p + (c === 'Ч' ? 'Ш' : 'ш') + 'о')
-      .replace(new RegExp('(^|' + NL + ')ЧТО(?=' + NL + '|$)', 'g'), '$1ШО');
+  const KEEP = { lysy: 0.37 };     // доля фраз с «что/чё»
+  const KEEP_DEF = 0.2;
+  const up = (c, s) => (c === c.toUpperCase() ? s[0].toUpperCase() + s.slice(1) : s);
+  const B = (w) => new RegExp('(^|' + NL + ')(' + w + ')(?=' + NL + '|$)', 'g');
+  function toSho(t) {
+    return t
+      .replace(B('[Чч]тобы'), (m, p, w) => p + up(w[0], 'шоб'))
+      .replace(B('ЧТО|ЧЁ'), '$1ШО')
+      .replace(B('[Чч](?:то|ё|о|его)'), (m, p, w) => p + up(w[0], 'шо'));
+  }
+  function toChto(t, who, rnd) {
+    const lysy = who === 'lysy';
+    return t
+      .replace(B('[Шш]об'), (m, p, w) => p + up(w[0], 'чтобы'))
+      .replace(B('ШО'), (m, p) => p + (lysy || rnd() < 0.6 ? 'ЧТО' : 'ЧЁ'))
+      .replace(B('[Шш]о'), (m, p, w) => p + up(w[0], lysy || rnd() < 0.6 ? 'что' : 'чё'));
+  }
+  // who: id пацана (lysy, zema...) или пусто для бабок, соседей, Гудка и интерфейса
+  function sho(t, who, rnd) {
+    rnd = rnd || Math.random;
+    t = String(t);
+    const keep = rnd() < (KEEP[who] !== undefined ? KEEP[who] : KEEP_DEF);
+    return keep ? toChto(t, who, rnd) : toSho(t);
   }
   // Свои пацанские фразы по ситуациям
   const GORL = {
@@ -547,7 +581,7 @@
   }
   // Реплика из GORL по ситуации, {n} = к кому обращаются
   function gorl(kind, name) { const t = pickNR('gorl:' + kind, GORL[kind]); return t ? t.replace('{n}', name || 'голова') : null; }
-  const api = { L, CATCH, wxLine, sho, gorl, GORL, rollFind, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
+  const api = { L, CATCH, wxLine, sho, OWNERS, canUse, lockOn, neutralIds, gorl, GORL, rollFind, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);

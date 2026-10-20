@@ -18,8 +18,14 @@ const AFTER_TRICK = 2100;       // пауза, чтобы все увидели 
 const AFTER_VERDICT = 5500;     // пауза на окно проверки
 const CLOSE_MS = 20000;         // окно «последней предъявы» после 9-й взятки
 const ROOM_TTL = 3 * 3600 * 1000;
-const CHARS = { lysy: 'Лысый', zema: 'Зёма', dantl: 'Дантл', vitaha: 'Витаха', elvis: 'Элвис', oleg: 'Олег' };
-const charOk = (c) => (CHARS[c] ? c : 'oleg');
+const CHARS = Object.fromEntries(Object.entries(KL.CHAR).map(([id, c]) => [id, c.name]));
+// Свои пацаны только для своих аккаунтов (KL.canUse), чужому даём свободного нейтрального
+const charOk = (c, acct, room) => {
+  c = CHARS[c] ? c : 'oleg';
+  if (KL.canUse(c, acct)) return c;
+  const n = KL.neutralIds(), free = n.filter((x) => !(room && room.seats.some((s) => s && s.char === x)));
+  return free[0] || n[0] || c;
+};
 const xpOk = (x) => Math.max(0, Math.min(1e7, Math.floor(Number(x) || 0)));
 const EMOTES = ['😂', '😎', '🤡', '🐐', '👏', '🤬', '🍺', '💀', 'Красава!', 'Ходи уже!', 'Ну ты и крыса', 'Ахаха, лошара', 'Чётко!', 'Гг, пацаны', '🔥', 'Учись, салага', '🎰', 'Фарт есть фарт', '👑', 'Учитесь, пацаны'];
 
@@ -49,7 +55,8 @@ function createRoom(name, mode, ch, xp, acct, loc, honest, noEmo) {
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
-  room.seats[0] = { token: tok, name: clean(name) || CHARS[charOk(ch)], char: charOk(ch), xp: xpOk(xp), bot: false, conns: new Set(), acct: acct || null };
+  const cc = charOk(ch, acct, room);
+  room.seats[0] = { token: tok, name: clean(name) || CHARS[cc], char: cc, xp: xpOk(xp), bot: false, conns: new Set(), acct: acct || null };
   return { room, tok, seat: 0 };
 }
 const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
@@ -638,7 +645,8 @@ const server = http.createServer(async (req, res) => {
       if (i < 0) return json(res, 409, { error: 'Стол занят, мест нет' });
       const tok = token();
       const u = await A.userByToken(b.acct).catch(() => null);
-      room.seats[i] = { token: tok, name: clean(b.name) || CHARS[charOk(b.char)], char: charOk(b.char), xp: xpOk(u ? u.xp : b.xp), bot: false, conns: new Set(), acct: u ? A.keyOf(u.nick) : null };
+      const cc = charOk(b.char, u ? A.keyOf(u.nick) : null, room);
+      room.seats[i] = { token: tok, name: clean(b.name) || CHARS[cc], char: cc, xp: xpOk(u ? u.xp : b.xp), bot: false, conns: new Set(), acct: u ? A.keyOf(u.nick) : null };
       broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat: i, text: '<i>*подсел за стол*</i>' }]);
       return json(res, 200, { code: room.code, token: tok, seat: i });
     }
