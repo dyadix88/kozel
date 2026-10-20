@@ -206,6 +206,10 @@ button{font:inherit;color:inherit}
 .dz.beta{fill:rgba(230,160,60,.14);stroke:#e6a03c;stroke-dasharray:3 5}
 .dpin.beta{opacity:.85;border-style:dashed}.dpin small{font-size:.65em;background:#e6a03c;color:#2a1400;border-radius:1em;padding:0 .4em;margin-left:.2em}
 .dpin.bilpin{background:rgba(10,60,40,.88);border-color:#5ad06a}.dpin.bilpin.soon{filter:saturate(.5)}.dpin.bilpin small{background:#555;color:#eee}
+.dfights{display:flex;flex-direction:column;gap:.35em;margin-bottom:.4em}.dfight{display:flex;align-items:center;gap:.5em;padding:.35em .45em;border-radius:.4em;border:.1em solid rgba(111,20,15,.2);background:rgba(255,255,255,.35);text-align:left}
+.dfight.cur{border-color:#e0a400;background:rgba(255,212,90,.2)}.dfight.done{opacity:.8;background:rgba(90,165,72,.15)}.dfight.lock{opacity:.55}
+.dfo{display:flex;flex:none}.dfo img{width:2.4em;height:2.4em;border-radius:.3em;object-fit:cover;margin-right:-.5em;border:.1em solid #fff}.dft{flex:1;min-width:0;padding-left:.5em}.dft b{display:block;font:400 .95em 'Russo One',sans-serif;color:var(--red-dk)}.dft small{font-size:.75em;color:var(--ink-soft)}.dft .ddesc{margin:.2em 0 0;font-size:.82em}
+.dfight .btn{flex:none;font-size:.8em;padding:.35em .8em}.dlk{font-style:normal}
 .bilcardimg{width:100%;border-radius:.4em;margin:.3em 0}
 .dst.beta{color:#b06a10}
 .dz.open{fill:rgba(255,200,80,.16);stroke:#ffd45a;animation:dpulse 1.5s ease-in-out infinite}
@@ -930,12 +934,12 @@ details.sets summary::-webkit-details-marker{display:none}
       <button class="btn" id="tBack" hidden></button>
       <div class="tplayrow"><button class="btn tplay" id="tPlay">ИГРАТЬ</button><button class="btn tplay tmap" id="tMap">🗺 РАЙОН</button><button class="btn tplay tbil" id="tBil">🎱 БИЛЬЯРДНАЯ</button></div>
       <div class="trow"><button class="btn alt" id="tProf">👤 Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button><button class="btn alt" data-open="rules">📖 Правила</button></div>
-      <small class="tver">версия 2.62</small>
+      <small class="tver">версия 2.63</small>
     </div>
   </div>
   <div class="ov" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.62</button></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.63</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -1048,7 +1052,8 @@ details.sets summary::-webkit-details-marker{display:none}
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.62 · Сегодня</h3><ul><li>🎒 Снаряга на Верстаке: термос (добыча ×2), компас (стрелки над находками), подкова (находки удваиваются), фонарик, кий с новой наклейкой (длинный прицел), талисман катали. Скрафтил, отметил «Взять» — работает весь следующий матч</li><li>Новые ресурсы: изолента, проволока, батарейка, а в бильярдной — обрезок сукна и наклейка для кия</li><li>Новые украшения: оправа из изоленты, фон «Зелёное сукно», значки «Кладоискатель» и «Электрик»</li><li>🔍 Лупа снова гасит всё вокруг, карты чуть видны. Когда что-то лежит, лупа светится</li><li>Козырь рядом со счётом, очки команд скромно под ним</li><li>На табличках масть крупнее и «ур.» перед уровнем</li></ul>
+        <h3>Версия 2.63 · Сегодня</h3><ul><li>🗺 На Черёмушках три боя подряд, каждый сильнее: «Голубятня», «Лавочка у подъезда» (Баба Зоя и Тётя Валя палят крыс сразу) и «Хозяева двора» (Боксёр Санёк и Таксист Палыч). Район пройден, когда выиграны все три</li><li>Районы на карте аккуратно разложены по городу, навести проще</li><li>Справа вверху новое место — «Отшиб». Пока закрыто, скоро откроем</li></ul>
+        <h3>Версия 2.62</h3><ul><li>🎒 Снаряга на Верстаке: термос (добыча ×2), компас (стрелки над находками), подкова (находки удваиваются), фонарик, кий с новой наклейкой (длинный прицел), талисман катали. Скрафтил, отметил «Взять» — работает весь следующий матч</li><li>Новые ресурсы: изолента, проволока, батарейка, а в бильярдной — обрезок сукна и наклейка для кия</li><li>Новые украшения: оправа из изоленты, фон «Зелёное сукно», значки «Кладоискатель» и «Электрик»</li><li>🔍 Лупа снова гасит всё вокруг, карты чуть видны. Когда что-то лежит, лупа светится</li><li>Козырь рядом со счётом, очки команд скромно под ним</li><li>На табличках масть крупнее и «ур.» перед уровнем</li></ul>
         <h3>Версия 2.61</h3><ul><li>🧭 Клады! Карта клада показывает сундук или заброшенный гараж: обычный, необычный, редкий, эпический или легендарный. Сундук открывается ключом от сундука, гараж — ключом от гаража. Чем реже, тем жирнее лут</li><li>Карты и ключи: в находках, за победы, на Точке «Гаражи», на Верстаке и у Барыги Жоры</li><li>🗺 Районы переставлены на карте и идут по порядку: Черёмушки → Короленко → Строитель → Центр → Водоканал → БАЗА. Пока открыты только Черёмушки, остальные в бете</li><li>На карте бильярдные: «Русская баня» на Черёмушках, «Белладжио» в Центре, «Местный бар» на БАЗЕ</li><li>Свои места у Короленко (ставок с катамаранами) и Водоканала (башня, трубы, терриконы)</li><li>🎱 Пацаны с киями у стола: целятся, ждут и радуются</li><li>Анимации в бильярде: шары проваливаются в лузы, мел, «ДУПЛЕТ!», «СВОЯК!», салют за победу</li><li>Таблица после партии: кто сколько забил, свояки, серии, штрафы, лут</li><li>Свой лут бильярдной: мел, жетон, перчатка каталы и счастливый шар. Из него крафтятся значок «Катала» и оправа «Сукно Белладжио»</li><li>Куча новых бильярдных ачивок. Лысый оценит</li><li>🔊 Маленькая кнопка в углу: громкость, музыка и главная заставка</li></ul>
         <h3>Версия 2.60</h3><ul><li>🎱 Бильярдная! Кнопка на стартовом экране. Первая открылась — «Белладжио», «Русская баня» и «Местный бар» скоро</li><li>Русский бильярд: свободная (американка), московская и невская. Играем до 8 шаров из 15</li><li>1 на 1 и 2 на 2, с ботами и по сети. Боты из наших: мажет, нормальный и снайпер (Зёма всегда снайпер)</li><li>Прицел пальцем или мышкой: тянешь от битка, видна линия и куда пойдёт шар, сила — насколько оттянул</li><li>Честная физика: борта, лузы, свояки, шар может вылететь со стола</li><li>Реплики, стук шаров, своя музыка, опыт, ачивки и добыча за партию</li></ul>
         <h3>Версия 2.55</h3><ul><li>📖 Журнал добычи: где шо брать, с каким шансом и для чего нужно (в меню и на карте)</li><li>Особые находки районов теперь иногда падают и в обычной игре на месте района. На Верстаке крафтятся ключ от гаража и фикса</li><li>Районы проходятся только в Хардкоре</li><li>С ботами добычи меньше, чем по сети с пацанами</li><li>Клавиши: 1 — смайлы, 2 — лупа</li><li>Видно, кто сейчас сходил: последняя карта крупнее и подписана, на ленте «кто кинул → кто ходит»</li><li>Козырь на табло большой карточкой в цвет масти</li><li>Когда кто-то лутает, «+1 ₴» вылетает прямо с места. Починили: твой лут не всегда было видно в ленте</li><li>Свои пацаны друг на друга не бузят, только угарают. Достаётся чужим</li></ul>
@@ -2368,22 +2373,33 @@ details.sets summary::-webkit-details-marker{display:none}
   const MAP_FILE = 'map';
   // Бильярдные на карте: hall — id из billiard.js HALLS, pin — точка в процентах
   const BIL_PINS = [
-    { hall: 'banya', pin: [11, 38] },     // «Русская баня» — на Черёмушках, нужна для Строителя
-    { hall: 'bellagio', pin: [55, 28] },  // «Белладжио» — чуть выше центра Центра, нужна для Центра
-    { hall: 'bar', pin: [52, 91] },       // «Местный бар» — на БАЗЕ, без него к дедам не пускают
+    { hall: 'banya', pin: [7, 41] },     // «Русская баня» — на Черёмушках, нужна для Строителя
+    { hall: 'bellagio', pin: [48, 22] },  // «Белладжио» — чуть выше центра Центра, нужна для Центра
+    { hall: 'bar', pin: [56, 73] },       // «Местный бар» — на БАЗЕ, без него к дедам не пускают
   ];
   // Уровни ботов (см. ai.js): 0 слабый, 1 средний, 2 сильный, 3 деды
   const DISTRICTS = [
     {
       id: 'd1', name: 'Черёмушки', level: 0, loc: 'cherem',
-      area: [[2, 34], [18, 31], [32, 34], [33, 46], [30, 60], [18, 61], [2, 56]], pin: [21, 46],
-      pair: {
-        name: 'Голубятня', chars: ['kolya', 'tema'],
-        desc: 'Голубятник Коля и студент Тёма. Один смотрит в небо, другой в конспект. Для разминки самое то.',
-        start: ['Тёма, ты посчитал, как их обыграть?', 'Голубь сказал, шо мы сегодня выиграем', 'Ну шо, пацаны, сыграем по-соседски?'],
-        win: ['Вот это мы! Голубь, ты видел?', 'Теория вероятности сработала!'],
-        lose: ['Эх, пацаны, на небо засмотрелся', 'Это была статистическая погрешность'],
-      },
+      area: [[2, 42], [10, 36], [24, 34], [33, 40], [34, 52], [22, 54], [8, 50]], pin: [16, 45],
+      // fights: несколько боёв подряд, каждый следующий сильнее (level — уровень ботов 0..2). Район пройден, когда выиграны все
+      fights: [
+        { name: 'Голубятня', chars: ['kolya', 'tema'], level: 0,
+          desc: 'Голубятник Коля и студент Тёма. Один смотрит в небо, другой в конспект. Для разминки самое то.',
+          start: ['Тёма, ты посчитал, как их обыграть?', 'Голубь сказал, шо мы сегодня выиграем', 'Ну шо, пацаны, сыграем по-соседски?'],
+          win: ['Вот это мы! Голубь, ты видел?', 'Теория вероятности сработала!'],
+          lose: ['Эх, пацаны, на небо засмотрелся', 'Это была статистическая погрешность'] },
+        { name: 'Лавочка у подъезда', chars: ['zoya', 'valya'], level: 1,
+          desc: 'Баба Зоя и Тётя Валя. Всё видят, всё слышат, всех знают. Крысу палят с первого хода, так шо играй чисто.',
+          start: ['Валя, глянь, какие мальчики пришли', 'Садитесь, сынки. Только без фокусов, я всё вижу', 'Мы тут с восьмидесятого года сидим'],
+          win: ['Вот так, сынки! Учитесь у старших', 'Я ж говорила, Валя, не умеют они'],
+          lose: ['Ой, ну ладно, повезло вам', 'Это потому шо я без очков'] },
+        { name: 'Хозяева двора', chars: ['boxer', 'palych'], level: 2,
+          desc: 'Боксёр Санёк и таксист Палыч. Местная элита Черёмушек: считают карты, не прощают ошибок. Обыграешь — откроется дорога дальше.',
+          start: ['Ну шо, пацаны, посмотрим, шо вы умеете', 'Палыч, счётчик включай', 'Тут наш двор, тут наши правила'],
+          win: ['Двор наш. Приходите, когда подрастёте', 'Счётчик щёлкнул, платите'],
+          lose: ['Уважаю. Нормально играете', 'Ладно, пацаны, район ваш. Заслужили'] },
+      ],
       need: null,                        // первый район открыт сразу
       find: 'pero',                      // особая находка, падает только тут
       reward: { uah: 40, xp: 120 },
@@ -2391,7 +2407,7 @@ details.sets summary::-webkit-details-marker{display:none}
     },
     {
       id: 'd2', name: 'Короленко', level: 1, loc: 'korolenko',
-      area: [[2, 62], [18, 62], [32, 68], [33, 84], [34, 97], [10, 97], [2, 82]], pin: [18, 78],
+      area: [[16, 56], [34, 54], [36, 64], [32, 78], [22, 74], [14, 64]], pin: [25, 64],
       pair: {
         name: 'У ставка', chars: ['seryy', 'rybak'],
         desc: 'Гитарист Серый и Рыбак Петрович. Сидят у ставка с удочкой и гитарой. Один ходит по вдохновению, второй ждёт поклёвку.',
@@ -2403,7 +2419,7 @@ details.sets summary::-webkit-details-marker{display:none}
     },
     {
       id: 'd3', name: 'Строитель', level: 1, loc: 'stroy',
-      area: [[4, 6], [24, 4], [42, 8], [44, 24], [33, 32], [18, 30], [4, 22]], pin: [22, 17],
+      area: [[7, 20], [14, 7], [22, 10], [30, 18], [28, 30], [16, 32], [7, 28]], pin: [17, 20],
       pair: {
         name: 'Гаражные', chars: ['vovan', 'palych'],
         desc: 'Сантехник Вован и Таксист Палыч. Познакомились в гаражах, с тех пор не разлей вода. Медленные, но хитрые.',
@@ -2415,7 +2431,7 @@ details.sets summary::-webkit-details-marker{display:none}
     },
     {
       id: 'd4', name: 'Центр', level: 2, loc: 'centr',
-      area: [[34, 26], [46, 14], [62, 12], [73, 22], [80, 44], [74, 60], [58, 66], [36, 64], [33, 46]], pin: [53, 40],
+      area: [[28, 9], [38, 8], [42, 22], [55, 14], [66, 18], [65, 38], [54, 48], [38, 48], [34, 36], [30, 24]], pin: [48, 32],
       pair: {
         name: 'Рыночные', chars: ['zhora', 'valya'],
         desc: 'Барыга Жора и Тётя Валя с ларька. Он крысит, она считает каждую карту. Тут уже не пошутишь.',
@@ -2427,7 +2443,7 @@ details.sets summary::-webkit-details-marker{display:none}
     },
     {
       id: 'd5', name: 'Водоканал', level: 2, loc: 'vodokanal',
-      area: [[62, 68], [74, 62], [82, 60], [94, 72], [86, 92], [66, 94], [58, 82]], pin: [76, 78],
+      area: [[66, 44], [85, 42], [86, 58], [80, 64], [68, 62], [65, 52]], pin: [76, 52],
       pair: {
         name: 'Шахтная', chars: ['mihalych', 'zoya'],
         desc: 'Шахтёр Михалыч и Баба Зоя-картёжница. Он прёт козырями напролом, она обыгрывает всех на районе с пелёнок твоей мамки.',
@@ -2439,7 +2455,7 @@ details.sets summary::-webkit-details-marker{display:none}
     },
     {
       id: 'baza', name: 'БАЗА', level: 3, loc: 'baza', boss: true,
-      area: [[36, 68], [57, 69], [60, 82], [56, 97], [36, 97], [33, 84]], pin: [46, 82],
+      area: [[37, 52], [54, 50], [64, 55], [62, 70], [52, 80], [40, 76], [37, 64]], pin: [48, 63],
       pair: {
         name: 'Деды с БАЗЫ', chars: ['ded1', 'ded2'],
         desc: 'Финальный босс. Два деда, которые сидят за этим столом с тех пор, как его поставили. Помнят каждую карту, крыс палят с полувзгляда.',
@@ -2449,6 +2465,12 @@ details.sets summary::-webkit-details-marker{display:none}
       },
       need: 'podval', find: null, reward: { uah: 600, xp: 1200 }, bil: 'bar', beta: true,
     },
+    {
+      id: 'otshib', name: 'Отшиб', level: 2, loc: 'yard', side: true, // в стороне от основной цепочки, откроем позже
+      area: [[70, 20], [78, 26], [97, 28], [98, 34], [86, 40], [74, 40], [70, 30]], pin: [86, 33],
+      pair: { name: 'Неизвестно', chars: ['mihalych', 'zhora'], desc: 'Окраина за рекой. Кто там играет — пока никто не знает.', start: ['Шо вы тут забыли?'], win: ['Валите отсюда'], lose: ['Ладно, бывает'] },
+      need: null, find: null, reward: { uah: 300, xp: 600 }, bil: null, beta: true,
+    }
   ];
 
   // Особые находки (падают только на своём районе) и пропуска (крафтятся на «Верстаке»).
@@ -4021,7 +4043,7 @@ async function botsWatch(entry, g) {
 // характер бота (lines.js CHAR[].style): cheat — трояк, catch — ловит крыс, think — думает дольше, wild — ходит наугад, trumps — прёт козырями
 const botStyle = (ch) => Object.assign({ cheat: .18, catch: .75, think: 0 }, (KozelLines.CHAR[ch] && KozelLines.CHAR[ch].style) || {});
 function botMove(s) {
-  if (CAMP) return KozelAI.choose(round, s, campLevel(s), { honest, oppCatch: s % 2 ? .6 : KozelAI.catchChance(CAMP.d.level) }); // район: умные боты по уровню
+  if (CAMP) return KozelAI.choose(round, s, campLevel(s), { honest, oppCatch: s % 2 ? .6 : KozelAI.catchChance(CAMP.lvl) }); // район: умные боты по уровню
   const st = botStyle(SEATCH[s]);
   const hand = round.hands[s];
   const trickCards = round.trick.map((e) => e.card);
@@ -4303,7 +4325,7 @@ async function startRound() {
   busy = false;
   render();
   campFind();
-  if (CAMP && match.penalties[0] + match.penalties[1] === 0 && round.tricks.length === 0) setTimeout(() => talk(1, pickOne(CAMP.d.pair.start)), 500);
+  if (CAMP && match.penalties[0] + match.penalties[1] === 0 && round.tricks.length === 0) setTimeout(() => talk(1, pickOne(CAMP.pair.start)), 500);
   else if (Math.random() < .45) { const ss = 1 + Math.floor(Math.random() * 3); setTimeout(() => talk(ss, KozelLines.gorl('start')), 500); }
   else if (round.hvalSeat !== 0 && Math.random() < .6) talk(round.hvalSeat, pickOne(LINES.hval));
   loop(g);
@@ -4326,7 +4348,7 @@ function newMatch() {
   const mate = fi >= 0 ? others.splice(fi, 1)[0] : others.shift();
   SEATCH = CAMP ? campSeats() : [myChar, others[0], mate, others[1]];
   NAMES = SEATCH.map((id) => charById(id).name);
-  botXp = [0, 1, 2, 3].map((s) => (CAMP && s % 2 ? 2000 + CAMP.d.level * 9000 + Math.floor(Math.random() * 3000) : Math.floor(Math.random() * 4000)));
+  botXp = [0, 1, 2, 3].map((s) => (CAMP && s % 2 ? 2000 + CAMP.lvl * 9000 + Math.floor(Math.random() * 3000) : Math.floor(Math.random() * 4000)));
   resetSeatStat();
   match = K.newMatch(mode === 'turbo' ? 6 : 12);
   mstatReset(); stakeStart(); gearStart('kozel');
@@ -5507,7 +5529,7 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.62') { localStorage.setItem('kozel-seen-ver', '2.62'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.63') { localStorage.setItem('kozel-seen-ver', '2.63'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
 // Точка: при запуске, если пацан поработал больше 10 минут, забираем
 setTimeout(() => { try { if (farmIdx() < 0) { STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + 2; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); } else { const p = farmPending(); if (p && p.h >= 1 / 6) farmCollect(); } renderPickers(); } catch (e) {} }, 1500);
 $('tPlay').onclick = () => { Snd.init(); hide('title'); open('menu'); };
@@ -6398,27 +6420,32 @@ Object.entries(CITEM).forEach(([k, v]) => { if (!RES[k]) RES[k] = { i: v.i, n: v
 const LEVEL_TITLE = ['Дворовый', 'Бывалый катала', 'Опасный катала', 'Легенда района'];
 let CAMP = null; // идёт матч на районе: { i, d, prevLoc }
 // прогресс в STATS пацана (только буквы в ключах, так он уходит в облако): cwA = побед на районе 1, coB = район 2 открыт пропуском
-const dKey = (t, i) => t + 'ABCDEF'[i];
+const dKey = (t, i) => t + 'ABCDEFG'[i];
+// бои района по порядку (у старых районов один бой = pair). dStage — сколько боёв уже выиграно
+const dFights = (d) => d.fights || [Object.assign({ level: d.level }, d.pair)];
+const dStage = (i) => (dWon(i) ? dFights(CAMPD[i]).length : Math.min(dFights(CAMPD[i]).length - 1, STATS[dKey('cs', i)] || 0));
 const dWon = (i) => i >= 0 && (STATS[dKey('cw', i)] || 0) > 0;
 const dOpen = (i) => i === 0 || (STATS[dKey('co', i)] || 0) > 0;
 // beta: район виден, но закрыт табличкой «скоро» (админу открыт для проверки)
 const dBeta = (i) => !!CAMPD[i].beta && !isAdmin();
 const dState = (i) => (dBeta(i) && !dWon(i) ? 'beta' : dWon(i) ? 'done' : dOpen(i) ? 'open' : 'lock');
 const dCanEnter = (i) => i > 0 && !dBeta(i) && !dOpen(i) && dWon(i - 1) && bal(CAMPD[i].need) > 0;
-const campLevel = (s) => (s === 2 ? (CAMP.d.level >= 2 ? 2 : 1) : CAMP.d.level); // кореш играет на среднем, на сильных районах на сильном
+const campLevel = (s) => (s === 2 ? (CAMP.lvl >= 2 ? 2 : 1) : CAMP.lvl); // кореш играет на среднем, на сильных районах на сильном
 const costHtml = (cost) => Object.entries(cost).map(([r, n]) => '<span class="' + (bal(r) >= n ? 'ok' : 'no') + '" title="' + RES[r].n + '">' + RES[r].i + ' ' + Math.min(bal(r), n) + '/' + n + '</span>').join(' ');
 
 function campEnd() { if (CAMP) { LOC = CAMP.prevLoc; CAMP = null; } }
-function campPlay(i) {
+function campPlay(i, f) {
   Snd.init();
   campEnd();
-  CAMP = { i, d: CAMPD[i], prevLoc: LOC };
+  const d = CAMPD[i], F = dFights(d); f = f === undefined ? Math.min(dStage(i), F.length - 1) : f;
+  CAMP = { i, d, f, pair: F[f], lvl: F[f].level !== undefined ? F[f].level : d.level, prevLoc: LOC };
   hide('mapov'); hide('pause'); hide('menu'); hide('title');
   LOC = CAMP.d.loc;
   newMatch();
 }
 function campSeats() {
-  const opp = CAMP.d.pair.chars;
+  // если ты сам играешь за кого-то из местных, его место занимает другой нейтральный
+  const opp = CAMP.pair.chars.map((id) => (id === myChar ? KozelLines.neutralIds().find((x) => x !== myChar && !CAMP.pair.chars.includes(x)) || id : id));
   const own = ['oleg', 'elvis', 'lysy', 'zema', 'dantl', 'vitaha'].filter((id) => id !== myChar && CHAR_POSE[id] && CHAR_POSE[id].front);
   return [myChar, opp[0], pickOne(own), opp[1]];
 }
@@ -6481,28 +6508,33 @@ function showBilCard(id) {
   const g = card.querySelector('[data-bgo]'); if (g) g.onclick = () => { hide('mapov'); Bil.openMenu(id); };
 }
 function showDCard(i) {
-  const d = CAMPD[i], st = dState(i), prev = CAMPD[i - 1], card = $('dCard');
-  const opp = d.pair.chars.map((id) => { const c = charById(id); return '<div class="dopp"><img alt="" src="' + (CHAR_IMG[id] || '') + '"><b>' + c.name + '</b><small>' + LEVEL_TITLE[d.level] + '</small></div>'; }).join('');
+  const d = CAMPD[i], st = dState(i), prev = d.side ? null : CAMPD[i - 1], card = $('dCard'), F = dFights(d), stage = dStage(i);
   const ok = (b) => (b ? '<i class="dok">✔</i>' : '<i class="dno">✖</i>');
   const conds = [];
-  if (prev) conds.push('<li>' + ok(dWon(i - 1)) + ' Обыграть «' + prev.pair.name + '» (' + prev.name + ')</li>');
+  if (prev) { const pf = dFights(prev); conds.push('<li>' + ok(dWon(i - 1)) + ' Пройти ' + prev.name + ' (последний бой: «' + pf[pf.length - 1].name + '»)</li>'); }
   if (d.need) { const it = CITEM[d.need]; conds.push('<li>' + ok(dOpen(i) || bal(d.need) > 0) + ' Пропуск: ' + it.i + ' ' + it.n + (dOpen(i) ? ' (предъявлен)' : bal(d.need) > 0 ? ' (есть)' : ' <small>крафтится на Верстаке</small>') + '</li>'); }
-  if (!prev) conds.push('<li>' + ok(true) + ' Открыт сразу</li>');
+  if (!prev && !d.side) conds.push('<li>' + ok(true) + ' Открыт сразу</li>');
+  if (F.length > 1) conds.push('<li>' + ok(dWon(i)) + ' Выиграть все бои: ' + Math.min(stage, F.length) + ' из ' + F.length + '</li>');
   if (d.bil) { const h = KozelBil.HALLS.find((x) => x.id === d.bil); conds.push('<li class="soon">🔒 🎱 Победить местных в бильярд: «' + (h ? h.name : d.bil) + '» <small>(скоро)</small></li>'); }
   conds.push('<li>🔥 Только Хардкор: вся инфа в бошке</li>');
+  const playable = st === 'open' || st === 'done';
+  const fights = F.map((fi, k) => { const done = k < stage, cur = k === stage && playable && !dWon(i), lockd = !done && !cur;
+    const opp = fi.chars.map((id) => '<img alt="" title="' + charById(id).name + '" src="' + (CHAR_IMG[id] || '') + '">').join('');
+    return '<div class="dfight' + (done ? ' done' : cur ? ' cur' : ' lock') + '"><div class="dfo">' + opp + '</div><div class="dft"><b>' + (F.length > 1 ? (k + 1) + '. ' : '') + '«' + fi.name + '»</b><small>' + fi.chars.map((id) => charById(id).name).join(' и ') + ' · ' + LEVEL_TITLE[fi.level !== undefined ? fi.level : d.level] + '</small>' + (cur || F.length === 1 ? '<p class="ddesc">' + fi.desc + '</p>' : '') + '</div>' +
+      (playable && (done || cur) ? '<button class="btn' + (cur ? '' : ' alt') + '" data-dplay="' + i + '" data-df="' + k + '">' + (cur ? (d.boss ? '👑 Сесть' : '⚔️ Играть') : 'Ещё раз') + '</button>' : lockd ? '<i class="dlk">🔒</i>' : '') + '</div>'; }).join('');
   const rew = '₴ ' + d.reward.uah + ' · +' + d.reward.xp + ' опыта' + (d.find ? ' · ' + CITEM[d.find].i + ' ' + CITEM[d.find].n : '');
   let btn = '';
   if (st === 'beta') btn = '<button class="btn wide alt" disabled>🚧 Бета: скоро откроем</button>';
-  else if (st === 'open' || st === 'done') btn = '<button class="btn wide" data-dplay="' + i + '">' + (d.boss ? '👑 Сесть к дедам' : '⚔️ Играть с местными') + '</button>';
+  else if (playable) btn = '';
   else if (dCanEnter(i)) btn = '<button class="btn wide" data-denter="' + i + '">Предъявить ' + CITEM[d.need].i + ' и войти</button>';
-  else if (dWon(i - 1)) btn = '<button class="btn wide alt" data-dcraft>🧰 На верстак за пропуском</button>';
-  else btn = '<button class="btn wide alt" disabled>Сначала пройди ' + prev.name + '</button>';
+  else if (prev && dWon(i - 1)) btn = '<button class="btn wide alt" data-dcraft>🧰 На верстак за пропуском</button>';
+  else if (prev) btn = '<button class="btn wide alt" disabled>Сначала пройди ' + prev.name + '</button>';
   card.innerHTML = '<button class="xclose" data-dclose title="Закрыть">✕</button><h2>' + (d.boss ? '👑 ' : '') + d.name + '</h2>' +
-    '<p class="dst ' + st + '">' + (st === 'done' ? '🚩 Пройден' + ((STATS[dKey('cw', i)] || 0) > 1 ? ', побед: ' + STATS[dKey('cw', i)] : '') : st === 'open' ? 'Открыт, местные ждут' : st === 'beta' ? '🚧 Бета: скоро откроем' : '🔒 Под туманом') + '</p>' +
-    '<h3>«' + d.pair.name + '»</h3><div class="dopps">' + opp + '</div><p class="ddesc">' + d.pair.desc + '</p>' +
-    '<h4>Шо нужно, шоб пройти</h4><ul class="dconds">' + conds.join('') + '</ul><h4>Награда</h4><p class="drew">' + rew + (st === 'done' ? '<br><small>Повторно: треть гривен и опыта, находка как обычно</small>' : '') + '</p>' + btn;
+    '<p class="dst ' + st + '">' + (st === 'done' ? '🚩 Пройден' + ((STATS[dKey('cw', i)] || 0) > 1 ? ', побед: ' + STATS[dKey('cw', i)] : '') : st === 'open' ? 'Открыт, местные ждут' + (F.length > 1 ? ' · бой ' + (stage + 1) + ' из ' + F.length : '') : st === 'beta' ? '🚧 Бета: скоро откроем' : '🔒 Под туманом') + '</p>' +
+    '<h4>' + (F.length > 1 ? 'Бои (каждый следующий сильнее)' : 'Местные') + '</h4><div class="dfights">' + fights + '</div>' +
+    '<h4>Шо нужно, шоб пройти</h4><ul class="dconds">' + conds.join('') + '</ul><h4>Награда за район</h4><p class="drew">' + rew + (F.length > 1 ? '<br><small>За каждый бой по пути: треть гривен и опыта</small>' : '') + (st === 'done' ? '<br><small>Повторно: треть гривен и опыта, находка как обычно</small>' : '') + '</p>' + btn;
   card.hidden = false;
-  card.querySelectorAll('[data-dplay]').forEach((b) => { b.onclick = () => campPlay(+b.dataset.dplay); });
+  card.querySelectorAll('[data-dplay]').forEach((b) => { b.onclick = () => campPlay(+b.dataset.dplay, +b.dataset.df); });
   card.querySelectorAll('[data-denter]').forEach((b) => { b.onclick = () => enterDistrict(+b.dataset.denter); });
   card.querySelectorAll('[data-dcraft]').forEach((b) => { b.onclick = () => { renderCraft(); open('craft'); }; });
   card.querySelector('[data-dclose]').onclick = () => { card.hidden = true; };
@@ -6511,25 +6543,31 @@ function showDCard(i) {
 
 // ---------- Конец матча на районе ----------
 function campFinish(loser) {
-  const { i, d } = CAMP, won = loser === 1, first = won && !dWon(i);
+  const { i, d, f } = CAMP, F = dFights(d), won = loser === 1, newFight = won && !dWon(i) && f === dStage(i), last = f === F.length - 1, first = newFight && last;
+  let nextFight = null;
   if (won) {
-    STATS[dKey('cw', i)] = (STATS[dKey('cw', i)] || 0) + 1;
+    if (newFight && !last) { STATS[dKey('cs', i)] = f + 1; nextFight = F[f + 1]; }
+    if (first) STATS[dKey('cw', i)] = (STATS[dKey('cw', i)] || 0) + 1;
+    else if (dWon(i) && last) STATS[dKey('cw', i)] = (STATS[dKey('cw', i)] || 0) + 1;
     gain('uah', first ? d.reward.uah : Math.round(d.reward.uah / 3));
     if (d.find) gain(d.find, 1);
     xpGain(first ? d.reward.xp : Math.round(d.reward.xp / 3), 'район');
     if (d.boss) STATS.bossWin = (STATS.bossWin || 0) + 1;
     saveStats(); lootToast(d.name + ': победа');
   }
-  setTimeout(() => talk(1, pickOne(won ? d.pair.lose : d.pair.win)), 500);
+  setTimeout(() => talk(1, pickOne(won ? CAMP.pair.lose : CAMP.pair.win)), 500);
   if (won) Snd.good(); else Snd.bad();
   const next = CAMPD[i + 1];
   const tip = !won ? 'Местные оказались сильнее. Отыграйся, а находки, которые успел поднять, остались у тебя.'
+    : nextFight ? 'Следующий бой: «' + nextFight.name + '». Они играют сильнее, готовься.'
     : d.boss ? 'Ты обыграл дедов с БАЗЫ. Теперь ты легенда района. Деды сказали: «Заходи ещё, внучок».'
-    : next && !dOpen(i + 1) ? 'Дальше ' + next.name + '. Нужен пропуск ' + CITEM[next.need].i + ' ' + CITEM[next.need].n + ': крафтится на Верстаке.' : 'Район твой.';
-  showPause('<h2>' + (won ? (d.boss ? 'Деды повержены!' : d.name + ' пройден') : 'Продули «' + d.pair.name + '»') + '</h2><p>Счёт ' + match.penalties[0] + ' : ' + match.penalties[1] + '</p><p>' + tip + '</p>' + matchTable() +
-    '<button class="btn wide" id="cMap">🗺 На карту</button><button class="btn wide alt" id="cAgain">' + (won ? 'Ещё раз с ними' : 'Реванш') + '</button><button class="btn wide alt" id="toMenu">В меню</button>', won ? (d.boss ? 'ЛЕГЕНДА РАЙОНА' : 'РАЙОН ТВОЙ') : 'ТЫ KOZEL');
+    : next && !next.side && next.beta ? 'Район твой! Дальше ' + next.name + ', но там пока бета: скоро откроем.'
+    : next && !next.side && !dOpen(i + 1) && next.need ? 'Дальше ' + next.name + '. Нужен пропуск ' + CITEM[next.need].i + ' ' + CITEM[next.need].n + ': крафтится на Верстаке.' : 'Район твой.';
+  showPause('<h2>' + (won ? (d.boss ? 'Деды повержены!' : nextFight ? '«' + CAMP.pair.name + '» побеждены' : d.name + ' пройден') : 'Продули «' + CAMP.pair.name + '»') + '</h2><p>Счёт ' + match.penalties[0] + ' : ' + match.penalties[1] + '</p><p>' + tip + '</p>' + matchTable() +
+    (nextFight ? '<button class="btn wide" id="cNext">⚔️ Следующий бой</button>' : '') + '<button class="btn wide' + (nextFight ? ' alt' : '') + '" id="cMap">🗺 На карту</button><button class="btn wide alt" id="cAgain">' + (won ? 'Ещё раз с ними' : 'Реванш') + '</button><button class="btn wide alt" id="toMenu">В меню</button>', won ? (d.boss ? 'ЛЕГЕНДА РАЙОНА' : nextFight ? 'КРАСАВЦЫ' : 'РАЙОН ТВОЙ') : 'ТЫ KOZEL');
   $('cMap').onclick = () => { hide('pause'); round = null; clearTable(); campEnd(); openMap(); };
-  $('cAgain').onclick = () => { hide('pause'); campPlay(i); };
+  $('cAgain').onclick = () => { hide('pause'); campPlay(i, f); };
+  if ($('cNext')) $('cNext').onclick = () => { hide('pause'); campPlay(i, f + 1); };
   $('toMenu').onclick = () => { hide('pause'); round = null; clearTable(); goHome(); };
 }
 // особая находка района: падает только тут, боты её не хватают
