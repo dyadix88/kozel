@@ -59,7 +59,8 @@ function load() {
 const keyOf = (nick) => String(nick || '').trim().toLowerCase();
 const cleanNick = (s) => String(s || '').replace(/[<>&"'\\]/g, '').replace(/\s+/g, ' ').trim().slice(0, 14);
 const hashPin = (pin, salt) => crypto.scryptSync(String(pin), salt, 32).toString('hex');
-const CHARS = ['lysy', 'zema', 'dantl', 'vitaha', 'elvis', 'oleg'];
+// все, за кого можно играть (свои шестеро и нейтральные), берём из lines.js, шоб прогресс новых тоже сохранялся
+const CHARS = (() => { try { const C = require('./lines.js').CHAR; return Object.keys(C).filter((id) => !C[id].boss); } catch (e) { return ['lysy', 'zema', 'dantl', 'vitaha', 'elvis', 'oleg']; } })();
 
 // Прогресс: опыт, статистика, ачивки, персонаж. Объединяем по максимуму, ничего не теряется.
 function cleanProgress(p) {

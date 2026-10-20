@@ -19,9 +19,10 @@ const AFTER_VERDICT = 5500;     // пауза на окно проверки
 const CLOSE_MS = 20000;         // окно «последней предъявы» после 9-й взятки
 const ROOM_TTL = 3 * 3600 * 1000;
 const CHARS = Object.fromEntries(Object.entries(KL.CHAR).map(([id, c]) => [id, c.name]));
+const charPick = (c) => (CHARS[c] && !KL.CHAR[c].boss ? c : 'oleg');
 // Свои пацаны только для своих аккаунтов (KL.canUse), чужому даём свободного нейтрального
 const charOk = (c, acct, room) => {
-  c = CHARS[c] ? c : 'oleg';
+  c = charPick(c);
   if (KL.canUse(c, acct)) return c;
   const n = KL.neutralIds(), free = n.filter((x) => !(room && room.seats.some((s) => s && s.char === x)));
   return free[0] || n[0] || c;
@@ -169,7 +170,7 @@ function weatherLoop(room) {
 
 // ---------- Ход игры ----------
 function startMatch(room) {
-  const free = Object.keys(CHARS).filter((c) => !room.seats.some((s) => s && s.char === c)).sort(() => Math.random() - .5);
+  const free = Object.keys(CHARS).filter((c) => !KL.CHAR[c].boss && !room.seats.some((s) => s && s.char === c)).sort(() => Math.random() - .5);
   room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(Object.keys(CHARS)); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 4000), bot: true, conns: new Set() }; } });
   room.match = K.newMatch(room.mode === 'turbo' ? 6 : 12);
   startRound(room);
