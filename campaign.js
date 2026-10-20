@@ -140,8 +140,8 @@
       { uah: [120, 200], pick: [4, 4], items: [['shar', 1, 1], ['fiksa', 2, 2], ['klyuch', 1, 1], ['antracit', 1, 2], ['vkladysh', 2, 2], ['perch', 1, 2]] },
     ],
     garage: [
-      { uah: [2, 5], pick: [2, 2], items: [['kryshki', 6, 12], ['medyak', 2, 4], ['semki', 20, 40]] },
-      { uah: [6, 12], pick: [2, 3], items: [['medyak', 6, 10], ['zub', 1, 2], ['skey', 1, 1], ['kryshki', 10, 20]] },
+      { uah: [2, 5], pick: [2, 2], items: [['kryshki', 6, 12], ['medyak', 2, 4], ['semki', 20, 40], ['izolenta', 2, 4], ['provoloka', 3, 6]] },
+      { uah: [6, 12], pick: [2, 3], items: [['medyak', 6, 10], ['zub', 1, 2], ['skey', 1, 1], ['kryshki', 10, 20], ['batareyka', 1, 2]] },
       { uah: [15, 30], pick: [3, 3], items: [['zub', 3, 5], ['klyuch', 1, 1], ['blesna', 1, 2], ['karta', 1, 1], ['medyak', 10, 15]] },
       { uah: [40, 70], pick: [3, 4], items: [['fiksa', 1, 1], ['klyuch', 1, 1], ['antracit', 1, 2], ['zub', 5, 8], ['karta', 1, 1]] },
       { uah: [100, 180], pick: [4, 4], items: [['klyuch', 2, 2], ['fiksa', 2, 3], ['shar', 1, 1], ['antracit', 2, 3], ['perch', 1, 1]] },
@@ -153,7 +153,8 @@
   // Барыга Жора скупает: сколько гривен за штуку. Гривна ценная: семки и крышки идут почти даром, редкое дороже
   const SELL = { semki: .1, kryshki: .3, medyak: 1, pirog: 2, zub: 4, fiksa: 20, vkladysh: 12, klyuch: 25,
     pero: 4, blesna: 6, kvit: 9, cennik: 12, antracit: 16,
-    mel: .5, zheton: 6, perch: 20, shar: 60, karta: 10, skey: 4 }; // бильярдный лут, клады
+    mel: .5, zheton: 6, perch: 20, shar: 60, karta: 10, skey: 4,
+    sukno: 1, naklejka: 3, izolenta: .5, provoloka: .3, batareyka: 3 }; // бильярдный лут, клады
   // Скрафченные украшения Тётя Валя с рынка берёт за половину того, шо на них ушло (в гривнах)
   const CRAFT_BACK = .5;
 
