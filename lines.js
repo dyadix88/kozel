@@ -727,37 +727,73 @@
     if (!pool) return null;
     return { seat, text: pool[Math.floor(R() * pool.length)] };
   }
-  // ---------- Находки во дворе ----------
-  // Редкость: 0 обычная, 1 редкая, 2 эпик, 3 легенда
+  // ---------- Находки: на всех локациях, в точках (окна, деревья, под столом, у стола, на столе) ----------
+  // Редкость: 0 обычная (белая), 1 необычная (зелёная), 2 редкая (синяя), 3 эпик (фиолетовая), 4 легенда (оранжевая).
+  // Шансы: 55% / 26% / 13% / 4.8% / 1.2%. Гривны ценные: в находках их мало
   const FIND_TABLE = [
-    [['semki', 4, 8], ['kryshki', 2, 4], ['uah', 3, 8]],
-    [['medyak', 2, 3], ['pirog', 1, 1], ['uah', 10, 20]],
-    [['zub', 2, 3], ['fiksa', 1, 1], ['uah', 30, 50]],
-    [['klyuch', 1, 1], ['vkladysh', 1, 1]],
+    [['semki', 3, 7], ['kryshki', 1, 3], ['uah', 1, 1]],
+    [['semki', 8, 12], ['kryshki', 4, 6], ['medyak', 1, 2], ['uah', 2, 3]],
+    [['medyak', 3, 4], ['pirog', 1, 1], ['uah', 4, 6]],
+    [['zub', 1, 2], ['fiksa', 1, 1], ['uah', 10, 15]],
+    [['klyuch', 1, 1], ['vkladysh', 1, 1], ['uah', 30, 40]],
   ];
-  function rollFind(R) {
+  // Точки, где может лежать добро, по локациям: n — где (для оповещений), x/y — прямоугольник в % экрана, w — как часто
+  const SPOTS = {
+    baza: [
+      { n: 'в окне дома', x: [64, 72], y: [17, 29], w: 2 }, { n: 'в окне дома', x: [86, 92], y: [12, 26], w: 1 }, { n: 'в окне дома', x: [87, 93], y: [33, 44], w: 1 },
+      { n: 'под деревьями', x: [17, 37], y: [44, 51], w: 3 }, { n: 'под большим деревом', x: [54, 64], y: [45, 55], w: 2 },
+      { n: 'у крыльца', x: [80, 95], y: [47, 55], w: 2 }, { n: 'на дорожке', x: [64, 80], y: [46, 54], w: 1 },
+      { n: 'у стола', x: [2, 11], y: [80, 95], w: 2 }, { n: 'под столом', x: [22, 37], y: [90, 97], w: 2 }, { n: 'на столе', x: [27, 56], y: [66, 79], w: 3, table: true },
+    ],
+    yard: [
+      { n: 'в окне', x: [52, 62], y: [14, 25], w: 2 }, { n: 'на балконе', x: [88, 98], y: [10, 30], w: 2 },
+      { n: 'под деревьями', x: [24, 36], y: [40, 50], w: 3 }, { n: 'под большим деревом', x: [68, 80], y: [44, 58], w: 2 }, { n: 'у качелей', x: [26, 37], y: [30, 44], w: 2 },
+      { n: 'в кустах', x: [1, 12], y: [50, 62], w: 2 },
+      { n: 'у стола', x: [2, 10], y: [84, 96], w: 1 }, { n: 'у стола', x: [90, 98], y: [78, 94], w: 1 }, { n: 'под столом', x: [20, 36], y: [90, 97], w: 2 }, { n: 'на столе', x: [22, 78], y: [70, 79], w: 3, table: true },
+    ],
+    office: [
+      { n: 'на подоконнике', x: [19, 28], y: [27, 39], w: 2 }, { n: 'на полках', x: [86, 98], y: [30, 45], w: 2 }, { n: 'на картине', x: [91, 99], y: [10, 27], w: 1 },
+      { n: 'у флага', x: [34, 40], y: [28, 44], w: 1 }, { n: 'на рабочем столе', x: [61, 72], y: [38, 48], w: 2 }, { n: 'за креслом', x: [29, 40], y: [42, 52], w: 1 },
+      { n: 'под столом', x: [10, 37], y: [80, 88], w: 2 }, { n: 'у дивана', x: [0, 37], y: [89, 98], w: 1 }, { n: 'на столе', x: [20, 80], y: [55, 77], w: 4, table: true },
+    ],
+    space: [
+      { n: 'за иллюминатором', x: [24, 76], y: [12, 37], w: 3 }, { n: 'у пульта', x: [80, 98], y: [37, 50], w: 2 }, { n: 'у пульта', x: [15, 21], y: [34, 44], w: 1 },
+      { n: 'под столом', x: [10, 37], y: [80, 90], w: 2 }, { n: 'у кресел', x: [0, 37], y: [89, 98], w: 1 }, { n: 'на столе', x: [15, 85], y: [52, 72], w: 4, table: true },
+    ],
+  };
+  function spotOf(loc, R, onTable) {
+    const all = (SPOTS[loc] || SPOTS.yard).filter((s) => (onTable ? s.table : true));
+    let k = R() * all.reduce((a, s) => a + s.w, 0), sp = all[0];
+    for (const s of all) { k -= s.w; if (k <= 0) { sp = s; break; } }
+    return { n: sp.n, x: +(sp.x[0] + R() * (sp.x[1] - sp.x[0])).toFixed(1), y: +(sp.y[0] + R() * (sp.y[1] - sp.y[0])).toFixed(1) };
+  }
+  function rollFind(R, loc) {
     R = R || Math.random;
-    const r = R(), rar = r < .6 ? 0 : r < .88 ? 1 : r < .98 ? 2 : 3;
+    const r = R(), rar = r < .55 ? 0 : r < .81 ? 1 : r < .94 ? 2 : r < .988 ? 3 : 4;
     const opt = FIND_TABLE[rar][Math.floor(R() * FIND_TABLE[rar].length)];
-    let x = 6 + R() * 88, y = 44 + R() * 30;
-    if (x > 36 && y > 64) y = 44 + R() * 18; // не под рукой с картами
-    return { rar, item: opt[0], qty: opt[1] + Math.floor(R() * (opt[2] - opt[1] + 1)), x: +x.toFixed(1), y: +y.toFixed(1), hint: R() < .55 };
+    const sp = spotOf(loc, R);
+    return { rar, item: opt[0], qty: opt[1] + Math.floor(R() * (opt[2] - opt[1] + 1)), x: sp.x, y: sp.y, at: sp.n, hint: R() < .45 };
+  }
+  // Монета 1 грн падает на стол: кто первый тыкнул, того и монета
+  function rollCoin(R, loc) {
+    R = R || Math.random;
+    const sp = spotOf(loc, R, true);
+    return { rar: 0, item: 'uah', qty: 1, coin: true, x: sp.x, y: sp.y, at: 'на столе' };
   }
   // Подсказка от Вити Гудка: примерно где, но не точно
-  function findHint(x, y, R) {
+  function findHint(x, y, R, at) {
     R = R || Math.random;
-    const side = x < 30 ? 'слева' : x > 70 ? 'справа' : 'где-то посерёдке', far = y < 56;
-    const place = far ? pick(['подальше, у деревьев', 'там, за столом', 'ближе к дорожке']) : pick(['у лавки', 'под ногами у вас', 'возле стола, внизу']);
-    const T = ['Пацаны... <i>*шепчет*</i> что-то блестит. ' + place + ', ' + side + '. Я не говорил',
-      'Ту-ту! Видел, как что-то упало ' + side + '. Или показалось',
-      'Слышь, там ' + place + ' валяется что-то. Кто первый, того и тапки',
+    const side = x < 30 ? 'слева' : x > 70 ? 'справа' : 'где-то посерёдке', place = at || (y < 56 ? 'подальше' : 'возле стола');
+    const T = ['Пацаны... <i>*шепчет*</i> шо-то блестит ' + place + ', ' + side + '. Я не говорил',
+      'Ту-ту! Видел, как шо-то упало ' + side + '. Или показалось',
+      'Слышь, там ' + place + ' валяется шо-то. Кто первый, того и тапки',
       'Я бы на вашем месте глянул ' + side + '. Но я не на вашем месте, ТУУУ!',
       'Там ' + place + ' блеснуло. Может, крышка. Может, судьба'];
     return T[Math.floor(R() * T.length)];
   }
   // Реплика из GORL по ситуации, {n} = к кому обращаются
   function gorl(kind, name) { const t = pickNR('gorl:' + kind, GORL[kind]); return t ? t.replace('{n}', name || 'голова') : null; }
-  const api = { L, CATCH, wxLine, slowLine, sho, OWNERS, ADMIN, setOwners, canUse, lockOn, neutralIds, gorl, GORL, rollFind, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
+  const api = { L, CATCH, wxLine, slowLine, sho, OWNERS, ADMIN, setOwners, canUse, lockOn, neutralIds, gorl, GORL, rollFind, rollCoin, SPOTS, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);

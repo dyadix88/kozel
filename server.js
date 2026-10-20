@@ -9,6 +9,7 @@ const crypto = require('crypto');
 const K = require('./rules.js');
 const KL = require('./lines.js');
 const A = require('./accounts.js');
+const KC = require('./campaign.js');
 
 const PORT = process.env.PORT || 8080;
 const TURN_MS = 60000;          // минута на ход
@@ -50,9 +51,9 @@ const token = () => crypto.randomBytes(16).toString('hex');
 const humans = (room) => room.seats.filter((s) => s && !s.bot);
 const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
-function createRoom(name, mode, ch, xp, acct, loc, honest, noEmo) {
+function createRoom(name, mode, ch, xp, acct, loc, honest, noEmo, stake) {
   const code = newCode();
-  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', honest: !!honest, noEmo: !!noEmo, seats: [null, null, null, null], host: 0,
+  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', honest: !!honest, noEmo: !!noEmo, stake: KC.STAKES[stake] ? Number(stake) : 0, seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
@@ -62,6 +63,8 @@ function createRoom(name, mode, ch, xp, acct, loc, honest, noEmo) {
 }
 const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
 
+// хватает ли у игрока на ставку (браузер сам сообщает баланс action 'bal')
+function canPay(room, s) { const st = KC.STAKES[room.stake]; return !st || !st.r || (s.bal && (s.bal[st.r] || 0) >= st.n); }
 // ---------- Что видит конкретный игрок ----------
 // Места поворачиваются так, что сам игрок всегда на месте 0, напарник на 2.
 function viewFor(room, my) {
@@ -70,7 +73,8 @@ function viewFor(room, my) {
   const t = my % 2;
   const v = {
     code: room.code, phase: room.phase, mode: room.mode, honest: !!room.honest, noEmo: !!room.noEmo, paused: room.paused ? { by: R(room.paused.by) } : null, weather: room.weather || null, canUndo: canUndo(room, my), undo: room.undo ? { seat: R(room.undo.seat), votes: [...room.undo.votes].map(R), mine: room.undo.votes.has(my) } : null, loc: room.loc, host: R(room.host), now: Date.now(),
-    seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0 } : null)),
+    stake: room.stake ? Object.assign({ i: room.stake }, KC.STAKES[room.stake]) : null,
+    seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0, poor: !!(room.stake && !s.bot && !canPay(room, s)), admin: !s.bot && s.acct === KL.ADMIN } : null)),
   };
   if (room.match) {
     const m = room.match;
@@ -129,30 +133,44 @@ function sceneLoop(room) {
   }, 40000 + Math.random() * 35000);
 }
 
-// Находки во дворе: кто первый тыкнул, тот забрал. Боты тоже иногда подбирают
+// Находки на всех локациях: кто первый тыкнул, тот забрал. Боты тоже иногда подбирают.
+// Обычные находки раз в 35-70 с (лежат 45 с), монеты 1 грн на стол раз в 20-40 с (лежат 14 с)
 let findSeq = 1;
+const liveTable = (room) => room.phase === 'playing' && !room.paused && room.seats.some((x) => x && !x.bot && x.conns.size);
+function dropFind(room, f, ms, force) {
+  room.finds = room.finds || {};
+  if (!force && Object.keys(room.finds).length >= 4) return;
+  room.finds[f.id] = f;
+  blast(room, [Object.assign({ type: 'find' }, f)]);
+  const bots = room.seats.map((x, i) => (x && x.bot ? i : -1)).filter((i) => i >= 0);
+  if (bots.length && Math.random() < (f.coin ? .3 : .35)) setTimeout(() => grabFind(room, f.id, pick(bots)), f.coin ? 3500 + Math.random() * 6000 : 9000 + Math.random() * 13000);
+  setTimeout(() => { if (room.finds && room.finds[f.id]) { delete room.finds[f.id]; blast(room, [{ type: 'findGone', id: f.id }]); } }, ms);
+}
 function findLoop(room) {
   clearTimeout(room.findT);
   room.findT = setTimeout(() => {
     if (!rooms.has(room.code)) return;
-    if (room.phase === 'playing' && !room.paused && !room.find && room.seats.some((x) => x && !x.bot && x.conns.size)) {
-      const f = Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollFind());
-      room.find = f;
-      blast(room, [Object.assign({ type: 'find' }, f)]);
-      const bots = room.seats.map((x, i) => (x && x.bot ? i : -1)).filter((i) => i >= 0);
-      if (bots.length && Math.random() < .4) setTimeout(() => grabFind(room, f.id, pick(bots)), 9000 + Math.random() * 13000);
-      setTimeout(() => { if (room.find && room.find.id === f.id) { room.find = null; blast(room, [{ type: 'findGone', id: f.id }]); } }, 45000);
-    }
+    if (liveTable(room)) dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollFind(null, room.loc)), 45000);
     findLoop(room);
-  }, Number(process.env.FIND_MS) || 60000 + Math.random() * 60000); // FIND_MS только для проверок
+  }, Number(process.env.FIND_MS) || 35000 + Math.random() * 35000); // FIND_MS только для проверок
+}
+function coinLoop(room) {
+  clearTimeout(room.coinT);
+  room.coinT = setTimeout(() => {
+    if (!rooms.has(room.code)) return;
+    if (liveTable(room)) dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollCoin(null, room.loc)), 14000);
+    coinLoop(room);
+  }, Number(process.env.FIND_MS) || 20000 + Math.random() * 20000);
 }
 function grabFind(room, id, seat) {
-  const f = room.find;
-  if (!f || f.id !== id) return false;
-  room.find = null;
-  blast(room, [{ type: 'found', id, seat, item: f.item, qty: f.qty, rar: f.rar }]);
+  const f = room.finds && room.finds[id];
+  if (!f) return false;
+  delete room.finds[id];
+  blast(room, [{ type: 'found', id, seat, item: f.item, qty: f.qty, rar: f.rar, coin: !!f.coin, at: f.at }]);
   return true;
 }
+// админ подкинул монет на стол
+function coinRain(room, n) { for (let k = 0; k < n; k++) setTimeout(() => dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollCoin(null, room.loc)), 12000, true), k * 350); }
 
 // Погода: одна на стол, меняется раз в 2.5-5 минут, без снега
 const WX_KINDS = ['clear', 'clear', 'cloudy', 'cloudy', 'drizzle', 'drizzle', 'rain', 'rain', 'storm', 'storm', 'wind', 'leaves', 'leaves', 'heat', 'rainbow'];
@@ -176,6 +194,7 @@ function startMatch(room) {
   startRound(room);
   if (!room.sceneT) sceneLoop(room);
   if (!room.findT) findLoop(room);
+  if (!room.coinT) coinLoop(room);
   if (!room.wxT) { room.weather = { kind: pick(['clear', 'clear', 'cloudy', 'drizzle']), seed: Math.floor(Math.random() * 2 ** 31) }; weatherLoop(room); }
 }
 function startRound(room) {
@@ -459,6 +478,7 @@ function act(room, seat, body) {
     case 'start':
       if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
       if (seat !== room.host) throw new Error('Начинает хозяин стола');
+      { const poor = room.seats.filter((x) => x && !x.bot && !canPay(room, x)); if (poor.length) throw new Error('На ставку не хватает у: ' + poor.map((x) => x.name).join(', ')); }
       startMatch(room);
       return;
     case 'play':
@@ -525,6 +545,27 @@ function act(room, seat, body) {
       broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { baza: 'на БАЗУ', yard: 'во двор', office: 'в кабинет', space: 'в космос' }[body.loc] + '*</i>' }]);
       return;
     }
+    case 'opts': { // хозяин в лобби меняет режим, честняк, смайлы и ставку
+      if (seat !== room.host) throw new Error('Это решает хозяин стола');
+      if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
+      if (body.mode !== undefined) room.mode = ['lite', 'turbo'].includes(body.mode) ? body.mode : 'hard';
+      if (body.honest !== undefined) room.honest = !!body.honest;
+      if (body.noEmo !== undefined) room.noEmo = !!body.noEmo;
+      if (body.stake !== undefined) room.stake = KC.STAKES[body.stake] ? Number(body.stake) : 0;
+      broadcast(room, [{ type: 'lobby' }]);
+      return;
+    }
+    case 'prank': { // админ за столом прикалывается прямо из игры
+      if (!s.acct || s.acct !== KL.ADMIN) throw new Error('Это не для тебя, братан');
+      if (Date.now() - (s.prankAt || 0) < 250) return;
+      s.prankAt = Date.now();
+      prankRoom(room, abs(body.seat), String(body.kind || ''), String(body.text || '').replace(/[<>]/g, '').slice(0, 140));
+      return;
+    }
+    case 'bal': // сколько у игрока семок и гривен (для ставки)
+      s.bal = { semki: Math.max(0, Number(body.semki) || 0), uah: Math.max(0, Number(body.uah) || 0) };
+      if (room.phase === 'lobby') broadcast(room, []);
+      return;
     case 'next':
       if (room.phase !== 'roundEnd') return;
       startRound(room);
@@ -610,17 +651,22 @@ function act(room, seat, body) {
 }
 
 // ---------- Приколы админа над пацанами (только внешний вид, на игру не влияют) ----------
-const PRANKS = ['say', 'babka', 'tomato', 'goat', 'flip', 'gudok', 'quake', 'rain'];
+const PRANKS = ['say', 'babka', 'tomato', 'goat', 'flip', 'gudok', 'quake', 'rain', 'fart', 'slap', 'bird', 'call', 'coins', 'drunk', 'bighead', 'fly', 'shout', 'king'];
+function prankRoom(room, seat, kind, text) {
+  if (!PRANKS.includes(kind)) throw new Error('Нет такого прикола');
+  if (!room.seats[seat]) throw new Error('Там никто не сидит');
+  if ((kind === 'say' || kind === 'babka' || kind === 'gudok' || kind === 'shout') && !text) throw new Error('Напиши, шо сказать');
+  if (kind === 'rain') { room.weather = { kind: 'storm', seed: Date.now() % 1e6 }; blast(room, [{ type: 'weather', kind: 'storm', seed: room.weather.seed, seat }]); }
+  else if (kind === 'coins') { if (room.phase !== 'playing') throw new Error('Монеты сыпем, пока идёт раздача'); coinRain(room, 6 + Math.floor(Math.random() * 4)); blast(room, [{ type: 'prank', kind, seat, text: '', name: room.seats[seat].name, seed: Date.now() % 1e6 }]); }
+  else blast(room, [{ type: 'prank', kind, seat, text, name: room.seats[seat].name, seed: Date.now() % 1e6 }]);
+}
 function prank(admin, b) {
   const kind = String(b.kind || ''), text = String(b.text || '').replace(/[<>]/g, '').slice(0, 140);
-  if (!PRANKS.includes(kind)) throw new Error('Нет такого прикола');
   const key = A.keyOf(b.to);
   for (const room of rooms.values()) {
     const seat = room.seats.findIndex((x) => x && !x.bot && x.acct === key && x.conns.size);
     if (seat < 0) continue;
-    if ((kind === 'say' || kind === 'babka' || kind === 'gudok') && !text) throw new Error('Напиши, шо сказать');
-    if (kind === 'rain') { room.weather = { kind: 'storm', seed: Date.now() % 1e6 }; blast(room, [{ type: 'weather', kind: 'storm', seed: room.weather.seed, seat }]); }
-    else blast(room, [{ type: 'prank', kind, seat, text, name: room.seats[seat].name, seed: Date.now() % 1e6 }]);
+    prankRoom(room, seat, kind, text);
     return { ok: true, code: room.code };
   }
   throw new Error('Этот пацан сейчас не за столом');
@@ -676,7 +722,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
       const u = await A.userByToken(b.acct).catch(() => null);
-      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest, b.emotes === false);
+      const { room, tok, seat } = createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest, b.emotes === false, b.stake);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {
