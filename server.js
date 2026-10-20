@@ -122,11 +122,11 @@ function sceneLoop(room) {
     if (!rooms.has(room.code)) return;
     if (room.phase === 'playing' && !room.paused && room.seats.some((x) => x && !x.bot && x.conns.size)) {
       const r = Math.random();
-      const kind = room.loc === 'yard' ? (r < .5 ? 'guest' : r < .8 ? 'babka' : 'neigh') : 'guest';
+      const kind = room.loc === 'yard' || room.loc === 'baza' ? (r < .4 ? 'guest' : r < .75 ? 'babka' : 'neigh') : 'guest';
       blast(room, [{ type: 'scene', kind, seed: Math.floor(Math.random() * 2 ** 31), seat: Math.floor(Math.random() * 4) }]);
     }
     sceneLoop(room);
-  }, 70000 + Math.random() * 60000);
+  }, 40000 + Math.random() * 35000);
 }
 
 // Находки во дворе: кто первый тыкнул, тот забрал. Боты тоже иногда подбирают
@@ -141,10 +141,10 @@ function findLoop(room) {
       blast(room, [Object.assign({ type: 'find' }, f)]);
       const bots = room.seats.map((x, i) => (x && x.bot ? i : -1)).filter((i) => i >= 0);
       if (bots.length && Math.random() < .4) setTimeout(() => grabFind(room, f.id, pick(bots)), 9000 + Math.random() * 13000);
-      setTimeout(() => { if (room.find && room.find.id === f.id) { room.find = null; blast(room, [{ type: 'findGone', id: f.id }]); } }, 30000);
+      setTimeout(() => { if (room.find && room.find.id === f.id) { room.find = null; blast(room, [{ type: 'findGone', id: f.id }]); } }, 45000);
     }
     findLoop(room);
-  }, Number(process.env.FIND_MS) || 90000 + Math.random() * 90000); // FIND_MS только для проверок
+  }, Number(process.env.FIND_MS) || 60000 + Math.random() * 60000); // FIND_MS только для проверок
 }
 function grabFind(room, id, seat) {
   const f = room.find;
@@ -180,7 +180,7 @@ function startMatch(room) {
 }
 function startRound(room) {
   room.round = K.newRound(room.match); room.round.honest = !!room.honest;
-  room.bomzhAt = Math.random() < .5 ? 2 + Math.floor(Math.random() * 5) : -1; // бомж заходит примерно раз в две раздачи
+  room.bomzhAt = Math.random() < .75 ? 2 + Math.floor(Math.random() * 5) : -1; // бомж заходит примерно раз в две раздачи
   room.voids = [];
   room.phase = 'playing';
   const evs = [{ type: 'deal' }];
@@ -550,6 +550,15 @@ function act(room, seat, body) {
       broadcast(room, [{ type: 'gesture', seat, g }]);
       return;
     }
+    case 'say': { // реплика, которую придумал чей-то браузер: показываем всем одну и ту же
+      const now = Date.now();
+      if (now - (s.sayAt || 0) < 400) return;
+      s.sayAt = now;
+      const to = (Number(body.seat) + seat) % 4, text = String(body.text || '').replace(/<(?!\/?i>)[^>]*>/g, '').slice(0, 200);
+      if (!(to >= 0 && to < 4) || !room.seats[to] || !text) return;
+      blast(room, [{ type: 'talk', seat: to, text }]);
+      return;
+    }
     case 'peek': { // открыл журнал или «Предъявить»: «кто пасёт...»
       const now = Date.now();
       if (now - (room.peekAt || 0) < 30000 || Math.random() > .5) return;
@@ -600,6 +609,23 @@ function act(room, seat, body) {
   }
 }
 
+// ---------- Приколы админа над пацанами (только внешний вид, на игру не влияют) ----------
+const PRANKS = ['say', 'babka', 'tomato', 'goat', 'flip', 'gudok', 'quake', 'rain'];
+function prank(admin, b) {
+  const kind = String(b.kind || ''), text = String(b.text || '').replace(/[<>]/g, '').slice(0, 140);
+  if (!PRANKS.includes(kind)) throw new Error('Нет такого прикола');
+  const key = A.keyOf(b.to);
+  for (const room of rooms.values()) {
+    const seat = room.seats.findIndex((x) => x && !x.bot && x.acct === key && x.conns.size);
+    if (seat < 0) continue;
+    if ((kind === 'say' || kind === 'babka' || kind === 'gudok') && !text) throw new Error('Напиши, шо сказать');
+    if (kind === 'rain') { room.weather = { kind: 'storm', seed: Date.now() % 1e6 }; blast(room, [{ type: 'weather', kind: 'storm', seed: room.weather.seed, seat }]); }
+    else blast(room, [{ type: 'prank', kind, seat, text, name: room.seats[seat].name, seed: Date.now() % 1e6 }]);
+    return { ok: true, code: room.code };
+  }
+  throw new Error('Этот пацан сейчас не за столом');
+}
+
 // За каким столом сидит человек с аккаунтом key (для «Двора»)
 function tableOf(key) {
   for (const room of rooms.values()) {
@@ -621,9 +647,24 @@ function json(res, code, obj) { res.writeHead(code, { 'Content-Type': 'applicati
 const getRoom = (code) => rooms.get(String(code || '').toUpperCase().trim());
 
 const INDEX = path.join(__dirname, 'client', 'index.html');
+A.getCfg().then((c) => KL.setOwners(c.owners, c.all)).catch(() => {});
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   try {
+    // кто за кого из своих играет (меняется в «Админке»)
+    if (req.method === 'GET' && url.pathname === '/api/cfg') { const c = await A.getCfg(); KL.setOwners(c.owners, c.all); return json(res, 200, { owners: KL.OWNERS, all: c.all || [] }); }
+    // Админка: только аккаунт админа (проверка по токену входа)
+    const adm = url.pathname.match(/^\/api\/admin\/(\w+)$/);
+    if (req.method === 'POST' && adm) {
+      const b = await readBody(req);
+      try {
+        if (adm[1] === 'state') { const st = await A.adminState(b); st.users.forEach((x) => { x.table = tableOf(x.key); }); return json(res, 200, st); }
+        if (adm[1] === 'owners') { const r = await A.adminOwners(b); KL.setOwners(r.cfg.owners, r.cfg.all); return json(res, 200, r); }
+        if (adm[1] === 'pin') return json(res, 200, await A.adminPin(b));
+        if (adm[1] === 'prank') { const u = await A.admin(b); return json(res, 200, prank(u, b)); }
+        return json(res, 404, { error: 'Нет такого' });
+      } catch (e) { return json(res, 400, { error: e.message }); }
+    }
     if (req.method === 'GET' && url.pathname === '/api/ping') return json(res, 200, { ok: true, rooms: rooms.size, accounts: A.store.kind });
     // Аккаунты и «Двор»
     const ACCT = { register: A.register, login: A.login, me: A.me, save: A.save, logout: A.logout, yard: (b) => A.yard(b, tableOf), invite: (b) => A.invite(b, tableOf) };

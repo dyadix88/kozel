@@ -206,4 +206,43 @@ async function invite(body, tableOf) {
   return { ok: true };
 }
 
-module.exports = { store, register, login, me, save, logout, yard, invite, userByToken, keyOf, load };
+// ---------- Админка (только аккаунт админа) ----------
+// Кто за кого из своих пацанов играет — хранится в базе (cfg:owners), меняется без перезаливки сайта.
+let cfg = null;
+async function getCfg() {
+  if (!cfg) cfg = (await store.get('cfg:owners').catch(() => null)) || { owners: null, all: [] };
+  return cfg;
+}
+async function admin(body) {
+  const u = await userByToken(body.token);
+  if (!u || keyOf(u.nick) !== ADMIN_KEY) throw new Error('Это только для админа');
+  return u;
+}
+const ADMIN_KEY = 'олег';
+async function adminState(body) {
+  await admin(body);
+  const now = Date.now();
+  const list = [...users.entries()].map(([k, x]) => { const sn = seen.get(k); return { nick: x.nick, key: k, char: x.char, xp: x.xp || 0, created: x.created || 0, seenAgo: sn ? Math.round((now - sn.at) / 1000) : null }; })
+    .sort((a, b) => (a.seenAgo === null) - (b.seenAgo === null) || (a.seenAgo || 0) - (b.seenAgo || 0));
+  return { users: list, cfg: await getCfg() };
+}
+async function adminOwners(body) {
+  await admin(body);
+  const owners = {};
+  for (const [id, n] of Object.entries(body.owners || {})) owners[String(id).slice(0, 12)] = n ? keyOf(n).slice(0, 14) : null;
+  cfg = { owners, all: (body.all || []).map((n) => keyOf(n).slice(0, 14)).slice(0, 30) };
+  await store.set('cfg:owners', cfg);
+  return { cfg };
+}
+async function adminPin(body) {
+  await admin(body);
+  const key = keyOf(body.nick), u = users.get(key), pin = String(body.pin || '');
+  if (!u) throw new Error('Нет такого ника');
+  if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN: от 4 до 6 цифр');
+  u.salt = crypto.randomBytes(12).toString('hex'); u.pin = hashPin(pin, u.salt);
+  fails.delete(key);
+  await store.set('user:' + key, u);
+  return { ok: true };
+}
+
+module.exports = { store, register, login, me, save, logout, yard, invite, userByToken, keyOf, load, getCfg, admin, adminState, adminOwners, adminPin };

@@ -126,6 +126,15 @@ button{font:inherit;color:inherit}
 
 /* Экраны поверх игры */
 .ov [hidden],.btn[hidden]{display:none!important}
+.admrow{display:flex;gap:.6em;flex-wrap:wrap;align-items:center;justify-content:center;margin:0 1em .5em}.admrow input{flex:1;min-width:12em;font:inherit;padding:.3em .5em}.admrow select,.admgrid select{font:inherit}
+.admpr .crc{cursor:pointer;font:inherit;color:inherit}.admpr .crc:hover{background:rgba(179,36,28,.12)}
+.admgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5em;margin:0 1em}.admgrid label{display:flex;flex-direction:column;align-items:center;gap:.2em}.admgrid img{width:4em;border-radius:.3em}
+.admusers{display:flex;flex-direction:column;gap:.35em;margin:0 1em .8em;text-align:left}.admu{display:flex;align-items:center;gap:.5em;flex-wrap:wrap;padding:.3em;border-bottom:.08em solid rgba(111,20,15,.2)}.admu img{width:2.4em;border-radius:.2em}.admu>span:first-of-type{flex:1;min-width:8em}.admu small{display:block;color:var(--ink-soft)}
+.admall{font-size:.85em;white-space:nowrap}.admpin{display:flex;gap:.3em}.admpin input{width:6em;font:inherit;padding:.2em .4em}.admpin .btn{font-size:.75em;padding:.25em .5em}
+.admnote{min-height:1.2em;color:#2d7a2d}.admnote.bad{color:#b3241c}
+.goatday{position:absolute;z-index:31;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;pointer-events:none;font-size:2.4em;animation:goatb 1.2s ease-in-out infinite;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif}
+.goatday b{font:400 .38em 'Russo One',sans-serif;color:#ffd45a;background:rgba(30,15,8,.85);padding:.15em .5em;border-radius:.6em;white-space:nowrap}
+@keyframes goatb{0%,100%{transform:translate(-50%,-100%) rotate(-6deg)}50%{transform:translate(-50%,-112%) rotate(6deg)}}
 .tplayrow{display:flex;gap:.6em;flex-wrap:wrap;justify-content:center}.tplay.tmap{background:#2f5d3a;border-color:#1d3a24}
 .mapov{background:#120c08;z-index:7;align-items:stretch}
 .mapwrap{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);aspect-ratio:1536/1024;max-width:100%}
@@ -205,7 +214,8 @@ button{font:inherit;color:inherit}
 #craftIn h3,#farmIn h3{text-align:left;margin:.5em 0 .3em;font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk)}
 .pvw{margin-top:.6em}.fpend{margin:.5em 0 .8em;padding:.5em .7em;background:rgba(90,165,72,.15);border-radius:.3em;text-align:left}.fpend .btn{font-size:.8em;padding:.25em .7em;margin-left:.4em}
 .badge{margin-right:.25em}
-.find{position:absolute;z-index:5;transform:translate(-50%,-50%);font-size:1.05em;color:#fff8e0;opacity:.5;cursor:pointer;text-shadow:0 0 .35em rgba(255,255,220,.8);animation:twinkle 2.2s ease-in-out infinite;padding:.4em;user-select:none}
+.find{position:absolute;z-index:6;transform:translate(-50%,-50%);font-size:2em;color:#fff8e0;opacity:.85;cursor:pointer;text-shadow:0 0 .3em #fff,0 0 .8em rgba(255,230,140,.95),0 0 1.6em rgba(255,200,80,.7);animation:glint 1.6s ease-in-out infinite;padding:.6em;user-select:none}
+@keyframes glint{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(.85) rotate(0)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2) rotate(25deg)}}
 .find.r1{color:#cfe8ff}.find.r2{color:#ead6ff}.find.r3{color:#fff0b0;animation-duration:1.4s}
 .find:hover{opacity:1;transform:translate(-50%,-50%) scale(1.4)}
 .find.took{animation:took .6s forwards}.find.gone{transition:opacity .5s;opacity:0}
@@ -232,8 +242,16 @@ button{font:inherit;color:inherit}
 .vbtn{position:absolute;right:.6em;bottom:.35em;font:inherit;font-size:.8em;color:var(--cream);background:rgba(0,0,0,.25);border:.08em solid rgba(255,240,210,.5);border-radius:1em;padding:.15em .7em;cursor:pointer}
 .vbtn:hover{background:rgba(0,0,0,.45)}
 .undobox b{font-size:1.6em}
-.undobtn{position:absolute;left:24%;bottom:22%;z-index:8;font-size:.95em;animation:pop .2s ease-out}
+.undobtn{position:absolute;left:1.2%;bottom:3%;z-index:8;font-size:.7em;padding:.35em .7em .3em;animation:pop .2s ease-out}
 .undobtn[hidden]{display:none}
+.seekb.ping{animation:seekp 1.3s ease-in-out infinite}
+@keyframes seekp{0%,100%{box-shadow:0 .2em .5em rgba(0,0,0,.4)}50%{box-shadow:0 0 0 .3em rgba(255,212,90,.8),0 0 1.2em rgba(255,212,90,.9)}}
+/* Режим поиска 🔍: всё лишнее гаснет и не мешает тыкать, находки крупные и яркие */
+.stage.seek :is(.seat,.talk,#hand,#pile,.board,.btns,.hints,.msg,#timer,#me,#emoQuick,.wxnote,.undobtn,#tblov){opacity:.12;pointer-events:none!important;transition:opacity .25s}
+.stage.seek #figs{opacity:.55;transition:opacity .25s}
+.stage.seek .find{font-size:4em;padding:.4em;z-index:40;animation-duration:.9s;text-shadow:0 0 .2em #fff,0 0 .6em #ffe27a,0 0 1.4em #ffb300}
+.seeklbl{position:absolute;left:50%;top:3%;transform:translateX(-50%);z-index:41;padding:.35em 1.1em;font:400 1.1em 'Russo One',sans-serif;pointer-events:auto;cursor:pointer}
+.seekvig{position:absolute;inset:0;z-index:39;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 45%,rgba(10,5,0,.55))}
 .hand .card.nope{animation:nope .35s}
 @keyframes nope{25%{translate:-.35em 0}75%{translate:.35em 0}}
 .mode{flex:1;cursor:pointer;padding:.7em .8em;border:.12em solid rgba(111,20,15,.45);border-radius:.2em;background:rgba(255,255,255,.35);text-align:left;line-height:1.35}
@@ -290,7 +308,7 @@ button{font:inherit;color:inherit}
 .logp .won{color:var(--good);font-weight:700}
 #figs{position:absolute;inset:0;pointer-events:none}
 #tblov{position:absolute;pointer-events:none}
-.fig{pointer-events:auto;cursor:pointer}
+.fig{pointer-events:none} /* фигуры не ловят тыки: под ними ищут находки, досье открывается по табличке */
 .seat{cursor:pointer}
 .fig{position:absolute;transform:translateX(-50%);transform-origin:50% 100%;filter:drop-shadow(0 .25em .35em rgba(20,10,3,.5));transition:filter .3s}
 .fig .body{transform-origin:50% 100%}
@@ -328,7 +346,7 @@ button{font:inherit;color:inherit}
 @keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.013)}}
 @keyframes hop{0%,100%{transform:translateX(-50%)}40%{transform:translateX(-50%) translateY(-3.5%) rotate(-1.2deg)}}
 @keyframes shake{0%,100%{transform:translateX(-50%)}20%{transform:translateX(-53%)}40%{transform:translateX(-47%)}60%{transform:translateX(-52%)}80%{transform:translateX(-48%)}}
-.seat.tag{min-width:0;padding:.28em .7em .28em .3em;font-size:.92em;display:flex;align-items:center;gap:.45em;text-align:left;white-space:nowrap;
+.seat.tag{min-width:0;padding:.22em .55em .22em .25em;font-size:.76em;display:flex;align-items:center;gap:.45em;text-align:left;white-space:nowrap;
   background:rgba(22,17,12,.8);color:var(--cream);border:.12em solid rgba(242,231,201,.35);border-radius:2em;box-shadow:0 .25em .7em rgba(0,0,0,.4);backdrop-filter:blur(2px)}
 .seat.tag .ts{display:grid;place-items:center;width:1.7em;height:1.7em;border-radius:50%;background:var(--cream);color:var(--ink);font-size:1.05em;line-height:1;flex:none}
 .seat.tag .ts.red{color:var(--red)}.seat.tag .ts.none{background:rgba(242,231,201,.25);color:var(--cream)}
@@ -733,6 +751,7 @@ details.sets summary::-webkit-details-marker{display:none}
   <div class="netpause undobox plate" id="undoBox" hidden><b>ЗАБРАТЬ КАРТУ?</b><span id="undoTxt"></span><div class="row2" id="undoBtns"><button class="btn" id="undoYes">Да, пусть забирает</button><button class="btn alt" id="undoNo">Нет</button></div></div>
   <div class="netpause plate" id="netPause" hidden><b>ПЕРЕДЫХ</b><span id="npBy"></span><button class="btn" id="npGo">▶ Погнали дальше</button></div>
   <button class="emoq" id="emoQuick" hidden title="Эмоции">😎</button>
+  <button class="emoq seekb" id="seekBtn" hidden title="Поискать находки (пока не твой ход)">🔍</button>
 
   <!-- Главное меню -->
   <div class="ov open titleov" id="title">
@@ -741,12 +760,12 @@ details.sets summary::-webkit-details-marker{display:none}
       <button class="btn" id="tBack" hidden></button>
       <div class="tplayrow"><button class="btn tplay" id="tPlay">ИГРАТЬ</button><button class="btn tplay tmap" id="tMap">🗺 РАЙОН</button></div>
       <div class="trow"><button class="btn alt" id="tProf">👤 Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button><button class="btn alt" data-open="rules">📖 Правила</button></div>
-      <small class="tver">версия 2.50</small>
+      <small class="tver">версия 2.52</small>
     </div>
   </div>
   <div class="ov" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.50</button></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.52</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -847,7 +866,7 @@ details.sets summary::-webkit-details-marker{display:none}
         <h3>Маяки</h3><p>Маякнуть корешу смайлом, чтобы он накинул тебе туза или десятку, не по-пацански. В Хардкоре смайлы и жесты во время раздачи закрыты. Перед игрой можно выключить смайлы совсем (кнопка «😎 Смайлы»), тогда они только между раздачами. Если смайлы включены и кто-то маякнул, а кореш сразу накинул ему туза или десятку: «Маяк спалили!», свист, обзывалки и какашки в маячника. Штрафа нет.</p>
         <h3>Добыча</h3><p>За игру капают ресурсы: 🌻 семки за раздачу, 🍺 крышки за жирные взятки, 🥟 пирожки за взятку матерью, 🦷 зубы за спаленную крысу, 🪙 медяки за победу, 🥇 фикса за люсю, иногда 💌 вкладыш. Во дворе иногда еле заметно блестит находка: кто первый тыкнул, тот забрал (бывает обычная, редкая, эпик и легенда). Витя Гудок иногда подсказывает, где искать, но не точно. Пока ты не играешь, пацан работает на «Точке». Из добычи на «Верстаке» крафтятся украшения профиля: оправа, фон досье, значок у ника. Пацаны видят их во «Дворе».</p>
         <h3>Забрать карту</h3><p>Кинул не ту карту? Пока после тебя никто не походил (и не больше 15 секунд), жми «↩ Забрать карту». Остальные трое голосуют: если все не против, карта возвращается в руку. Боты всегда не против. Один «нет», и карта остаётся на столе. Только в игре по сети.</p>
-        <h3>Карта заранее</h3><p>Пока ходят другие, тыкни свою карту: она поднимется с надписью «следующая» и пойдёт сама, когда дойдёт очередь. Ещё тык по ней снимает выбор. Если к твоему ходу её класть нельзя (есть масть), она не пойдёт, выберешь сам. Спрятать карты: смахни их вниз. Открыть: тык по колоде. Заряженная карта при этом не сбрасывается.</p>
+        <h3>Карта заранее</h3><p>Пока ходят другие, тыкни свою карту: она поднимется с надписью «следующая» и пойдёт сама, когда дойдёт очередь. Ещё тык по ней снимает выбор. Если к твоему ходу её класть нельзя (есть масть), она не пойдёт, выберешь сам.</p>
         <button class="btn" data-close="rules" style="margin-top:1.1em">Всё ясно</button>
       </div>
     </div>
@@ -857,7 +876,9 @@ details.sets summary::-webkit-details-marker{display:none}
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.50 · Сегодня</h3><ul><li>🗺 Новый режим «РАЙОН»: карта города, шесть районов, в каждом свои местные каталы. Пройдёшь всех — тебя ждут деды на БАЗЕ</li><li>Боты на районах умнеют от района к району: сначала путают масть, потом считают карты, а деды помнят всё</li><li>Пропуска в районы крафтятся на Верстаке, на каждом районе своя особая находка</li><li>Гривны ₴: за победы на районах, находки, Точку. Барыга Жора скупает лишнее добро</li><li>Прогресс у каждого пацана свой и хранится в аккаунте</li></ul>
+        <h3>Версия 2.52 · Сегодня</h3><ul><li>🔍 Лупа под смайлами: пока не твой ход, жми и ищи, шо блестит во дворе. Находки стали ярче и лежат дольше</li><li>По сети все видят одни и те же реплики и приколы в одно время</li><li>Бабки, соседи и Витя Гудок выходят чаще, и на БАЗЕ тоже</li><li>Таблички игроков меньше, «Забрать карту» меньше и ниже, тык по пацану больше не открывает досье (досье — по табличке)</li><li>Прятать карты больше нельзя</li><li>Дантлу новые фразы</li></ul>
+        <h3>Версия 2.51</h3><ul><li>Зёма снова играет за себя</li><li>У хозяина двора появилась своя кнопка. Берегитесь 😈</li></ul>
+        <h3>Версия 2.50</h3><ul><li>🗺 Новый режим «РАЙОН»: карта города, шесть районов, в каждом свои местные каталы. Пройдёшь всех — тебя ждут деды на БАЗЕ</li><li>Боты на районах умнеют от района к району: сначала путают масть, потом считают карты, а деды помнят всё</li><li>Пропуска в районы крафтятся на Верстаке, на каждом районе своя особая находка</li><li>Гривны ₴: за победы на районах, находки, Точку. Барыга Жора скупает лишнее добро</li><li>Прогресс у каждого пацана свой и хранится в аккаунте</li></ul>
         <h3>Версия 2.45</h3><ul><li>Новые люди с района: Тётя Валя, Голубятник Коля, Барыга Жора, Гитарист Серый, Сантехник Вован, Рыбак Петрович, Баба Зоя, Шахтёр Михалыч, Боксёр Санёк, Студент Тёма, Таксист Палыч. За них можно играть, и они садятся ботами, у каждого свой характер</li><li>Свои пацаны теперь только для своих: чтобы играть за себя, войди по нику</li><li>Реплики висят дольше, успеваешь прочитать</li><li>Куча новых картёжных присказок</li></ul>
         <h3>Версия 2.44</h3><ul><li>Пацаны на лавках радуются, злятся и хитрят по ходу игры</li><li>БАЗА стала красивее: земля без сетки, рамы зелёные</li><li>Шокаем как в жизни: иногда проскакивает «что» и «чё»</li></ul>
         <h3>Версия 2.43</h3><ul><li>Во рту видно зубы и язык, рот открывается поменьше</li></ul>
@@ -892,6 +913,7 @@ details.sets summary::-webkit-details-marker{display:none}
     <div class="maphead plate"><b>🗺 РАЙОН</b><span class="muah" id="mapUah"></span><button class="btn alt" id="mapCraft">🧰 Верстак</button><button class="btn alt" id="mapSell">💰 Барыга</button><button class="btn" id="mapClose" title="Закрыть">✕</button></div>
     <div class="dcard plate" id="dCard" hidden></div>
   </div>
+  <div class="ov" id="admin" style="z-index:9"><div class="box plate" style="width:48em"><button class="xclose" id="admClose" title="Закрыть">✕</button><div class="head"><h1 style="font-size:2.4em">🛠 АДМИНКА</h1><p>Только для Олега. Пацаны её не видят</p></div><div class="in" id="admIn"></div></div></div>
   <div class="ov" id="sell" style="z-index:9"><div class="box plate" style="width:40em"><button class="xclose" data-close="sell" title="Закрыть">✕</button><div class="head"><h1 style="font-size:2.2em">💰 БАРЫГА ЖОРА СКУПАЕТ</h1><p>Лишнее добро меняем на гривны</p></div><div class="in" id="sellIn"></div></div></div>
 
   <!-- Вердикт проверки -->
@@ -1186,11 +1208,12 @@ details.sets summary::-webkit-details-marker{display:none}
     dantl: {
       name: 'Дантл',
       desc: 'Наглый гад. За столом его сложно прочитать: сильный игрок, может нагло блефовать. Будьте аккуратны. P.S. А ещё он фрик. Почему? Да просто потому что могу себе позволить написать это в описании. ГАА ГАА',
-      lines: ['А чё такого?', 'Ну я ж красавчик, признай', 'Сами виноваты', 'Блефую? А может и нет', 'Я так и задумывал', 'Чисто по-братски: соснули',
+      lines: ['Глач звонил, говорил, шо по черепахе скучает', 'Шо, пацаны, может, завтра на канал или карик сгоняем?', 'Рудика видел на КСКЦ, опять с бомжами пиздился', 'На Строителе такой хуйни не было',
+        'А чё такого?', 'Ну я ж красавчик, признай', 'Сами виноваты', 'Блефую? А может и нет', 'Я так и задумывал', 'Чисто по-братски: соснули',
         '<i>*нагло ухмыляется*</i>', 'Не нравится, не играй', 'Работаю на опережение', 'Покерфейс включён', 'Прочитай меня, если сможешь'],
       win: ['Я так и задумывал', 'Чисто по-братски: соснули', 'А чё, можно было по-другому?', '<i>*нагло ухмыляется и забирает*</i>', 'Читать меня надо было, а не в карты пялиться'],
-      lose: ['Я специально отдал. Наверное', 'Это был блеф. Длинный', 'Ладно, один-ноль. Пока', 'Запомнил. Вернусь', '<i>*делает вид, что так и надо*</i>'],
-      tease: ['{n}, ты мем ходячий, причём старый', '{n}, чё, обиделся? Ну и хер с тобой', 'Слышь, {n}, я блефую, а ты повёлся. Опять', '{n}, ты бьёшь, как девочка',
+      lose: ['На Строителе такой хуйни не было', 'Ещё раз так сделаешь, и я звоню Терентьичу', 'Я специально отдал. Наверное', 'Это был блеф. Длинный', 'Ладно, один-ноль. Пока', 'Запомнил. Вернусь', '<i>*делает вид, что так и надо*</i>'],
+      tease: ['{n}, ещё раз так сделаешь, и я звоню Армену', '{n}, ещё раз так сделаешь, и я звоню Терентьичу', '{n}, ты мем ходячий, причём старый', '{n}, чё, обиделся? Ну и хер с тобой', 'Слышь, {n}, я блефую, а ты повёлся. Опять', '{n}, ты бьёшь, как девочка',
         '{n}, по тебе всё видно, лицо как открытая книга', '{n}, у тебя на лице написано, что у тебя мусор', '{n}, ты блефуешь хуже, чем Зёма бросает курить'],
     },
     vitaha: {
@@ -1383,7 +1406,7 @@ details.sets summary::-webkit-details-marker{display:none}
   const REPLY_BY = {
     elvis: ['Пасть порву!', 'Ещё слово, и пасть порву', 'По фактам ты не прав', 'Смешно. Нет'],
     zema: ['Мучёнка немытая', 'Ксерокопия ключа', 'Пойду покурю от вас', 'Сверху видней, не спорь'],
-    dantl: ['Ну и хер с тобой', 'Обиделся? Я нет', 'Сам фрик', 'Запомнил. Отомщу в раздаче'],
+    dantl: ['За такой базар Терентьич мне говорил бить на скачке', 'За такой базар Терентьич мне говорил бить на скачке', 'Ну и хер с тобой', 'Обиделся? Я нет', 'Сам фрик', 'Запомнил. Отомщу в раздаче'],
     lysy: ['Аргументируй', 'Слабый панч', 'Ты даже оскорбить нормально не можешь', 'Быдло, но без интеллекта'],
     vitaha: ['Ахаха, ладно, справедливо', 'Ору, люблю тебя', 'Обнимемся и забудем', 'Ахах, сам такой'],
     oleg: ['Это баг', 'В патче поправлю. Тебя', 'Админ всё видит', 'Бан выписать?'],
@@ -1405,14 +1428,20 @@ details.sets summary::-webkit-details-marker{display:none}
   // За своих шестерых играет только хозяин аккаунта (ник без учёта регистра). Олег, автор, может брать любого.
   // Чужие берут нейтральных (персонажи без хозяина). Ботами свои сидят у кого угодно.
   // Замок включается сам, когда в CHAR появится хотя бы один нейтральный персонаж.
-  const OWNERS = { oleg: 'олег', dantl: 'дантл', lysy: 'лысый', elvis: 'элвис', vitaha: 'siegriech', zema: null };
+  // Значения по умолчанию. На сервере их можно поменять из «Админки» (без перезаливки), клиент получает их через /api/cfg.
+  const OWNERS = { oleg: 'олег', dantl: 'дантл', lysy: 'лысый', elvis: 'элвис', vitaha: 'siegriech', zema: 'зёма' };
   const ADMIN = 'олег';
+  let ALL = [];                    // ники, которым админ разрешил брать любого из своих
+  function setOwners(o, all) {
+    if (o) for (const id of Object.keys(OWNERS)) OWNERS[id] = o[id] ? String(o[id]).trim().toLowerCase() : null;
+    if (all) ALL = all.map((x) => String(x).trim().toLowerCase());
+  }
   const neutralIds = () => Object.keys(CHAR).filter((id) => !(id in OWNERS) && !CHAR[id].boss);
   const lockOn = () => neutralIds().length > 0;
   function canUse(id, nick) {
     if (!(id in OWNERS) || !lockOn()) return true;
     const k = String(nick || '').trim().toLowerCase();
-    return !!k && (k === ADMIN || OWNERS[id] === k);
+    return !!k && (k === ADMIN || ALL.includes(k) || OWNERS[id] === k);
   }
   // ---------- Горловка: мы шокаем ----------
   // В основном «шо» и «шоб», но не всегда: примерно 2 фразы из 10 звучат с «что/чё».
@@ -1451,7 +1480,7 @@ details.sets summary::-webkit-details-marker{display:none}
   }
   // Свои пацанские фразы по ситуациям
   const GORL = {
-    start: ['Ну шо, пацики, понеслась каточка?', 'Ну шо, рóдные, раскидали?', 'Погнали, головы', 'Ну шо, скидываемся по 20 грн на полку?'],
+    start: ['Ну шо, рóдные, раскидали?', 'Погнали, головы', 'Ну шо, скидываемся по 20 грн на полку?'],
     yourTurn: ['{n}, голова, твой выход!', 'Внимательно смотрю в твои честные глаза, {n}...', 'Ну давай, {n}, удиви меня своим куриным мозгом', 'Ну шо ты, голова?'],
     slow: ['Алло, Хьюстон, у нас завис процессор!', 'Ты там мемуары на картах пишешь?', 'Астрологи объявили неделю размышлений?', 'Твой ход в этом тысячелетии планируется?', 'Ну шо ты, голова?', 'Голова... попаянная'],
     peek: ['Кто пасёт — тот хуй сосёт!', 'Шо ты там пасёшь, а?', 'Пасёт он... Кто пасёт — тот хуй сосёт!'],
@@ -1632,7 +1661,7 @@ details.sets summary::-webkit-details-marker{display:none}
     zema: { win: ['Ксерокопия ключа, а дверь открыла', 'Трёхочковый!'], lose: ['Мучёнка немытая...', 'Ксерокопия ключа. Не открывает'] },
     oleg: { win: ['Так и задумано разработчиком', 'Логи не врут'], lose: ['Это не баг, это фича', 'Для себя я эту взятку выиграл'] },
     lysy: { win: ['Панчлайн: взятка моя', 'Интеллект не пропьёшь'], lose: ['Интеллектуально я её выиграл', 'Шопенгауэр предупреждал'] },
-    dantl: { win: ['А чё такого?', 'Прочитай меня, если сможешь'], lose: ['Это был блеф. Длинный', 'Я специально отдал. Наверное'] },
+    dantl: { win: ['А чё такого?', 'Прочитай меня, если сможешь'], lose: ['Это был блеф. Длинный', 'На Строителе такой хуйни не было', 'Ещё раз так сделаешь, и я звоню Терентьичу'] },
     vitaha: { win: ['Ору с вас!', 'Обнимашки за взятку!'], lose: ['Ахах, ну и ладно!', 'Забирай, я тебя всё равно люблю'] },
   };
   function react(seats, s, kind, fallback) {
@@ -1730,6 +1759,9 @@ details.sets summary::-webkit-details-marker{display:none}
       if (aceDead && Math.random() < .6) out.push({ seat: ly, text: 'Голый туз — дорога в сраку!' });
       else if (jacks >= 2 && Math.random() < .7) out.push({ seat: ly, text: 'Два валета и вот это!' });
     }
+    // Дантл: зашли с бубей
+    const dn = seats ? seats.findIndex((x) => x && x.char === 'dantl') : -1;
+    if (dn >= 0 && led === 'D' && out.length < 3 && !out.some((o) => o.seat === dn) && Math.random() < .4) out.unshift({ seat: dn, text: 'Бубей хоть хуем бей' });
     return pace(out, 300);
   }
   // Долго думает: кто подгоняет (у Лысого своё)
@@ -1804,11 +1836,11 @@ details.sets summary::-webkit-details-marker{display:none}
     },
   };
   // seats: [{char}], R: случайность (общее зерно по сети), start: погода только что сменилась
-  function wxLine(kind, seats, R, start) {
+  function wxLine(kind, seats, R, start, fixed) {
     R = R || Math.random;
     const live = seats.map((x, i) => (x ? i : -1)).filter((i) => i >= 0);
     if (!live.length) return null;
-    const seat = live[Math.floor(R() * live.length)], ch = seats[seat].char, own = WXL.byChar[ch] && WXL.byChar[ch][kind];
+    const pickS = live[Math.floor(R() * live.length)], seat = fixed !== undefined && fixed !== null && seats[fixed] ? fixed : pickS, ch = seats[seat].char, own = WXL.byChar[ch] && WXL.byChar[ch][kind];
     const pool = own && R() < .5 ? own : (start ? WXL.start[kind] : WXL.idle[kind]) || WXL.start[kind];
     if (!pool) return null;
     return { seat, text: pool[Math.floor(R() * pool.length)] };
@@ -1843,7 +1875,7 @@ details.sets summary::-webkit-details-marker{display:none}
   }
   // Реплика из GORL по ситуации, {n} = к кому обращаются
   function gorl(kind, name) { const t = pickNR('gorl:' + kind, GORL[kind]); return t ? t.replace('{n}', name || 'голова') : null; }
-  const api = { L, CATCH, wxLine, slowLine, sho, OWNERS, canUse, lockOn, neutralIds, gorl, GORL, rollFind, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
+  const api = { L, CATCH, wxLine, slowLine, sho, OWNERS, ADMIN, setOwners, canUse, lockOn, neutralIds, gorl, GORL, rollFind, findHint, chatter, CHAR, banter, REPLY, pickNR, pace, readMs, bomzh };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelLines = api;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -2305,8 +2337,7 @@ function enableDrag(d, c, mine) {
     const move = (ev) => {
       const dx = ev.clientX - sx, dy = ev.clientY - sy;
       if (!drag && !swipe && !folded) {
-        if (dy > 14 && dy > Math.abs(dx)) swipe = true; // смахнул вниз: прятать
-        else if (Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy)) { drag = true; dragging = true; d.classList.add('dragging'); }
+        if (Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy)) { drag = true; dragging = true; d.classList.add('dragging'); }
       }
       if (swipe) { $('hand').style.transform = 'translateY(' + Math.max(0, Math.min(70, dy)) + 'px)'; return; }
       if (drag && !folded) d.style.transform = 'translate(' + dx + 'px,' + Math.min(0, dy) + 'px)';
@@ -2541,18 +2572,20 @@ function showFind(f, local) {
   e.onclick = (ev) => { ev.stopPropagation(); if (!FINDS[f.id]) return; /* уже подняли: второй тык не считается */ if (local) foundFind(f.id, 0, f); else Net.send('grab', { id: f.id }); };
   stage.appendChild(e); FINDS[f.id] = { e, f };
   if (f.hint) { const R = seeded(f.seed || f.id); setTimeout(() => { if (!FINDS[f.id]) return; const t = KozelLines.findHint(f.x, f.y, R); if ((LAY.yard || LAY.base) && !bomzhBusy) showBomzh(t, null, null); else { const n = document.createElement('div'); n.className = 'wxnote plate'; n.innerHTML = '🗣 <b>Витя Гудок из-за угла:</b> ' + t; stage.appendChild(n); setTimeout(() => n.remove(), 6000); } }, 1500); }
-  if (local) setTimeout(() => goneFind(f.id), 30000);
+  if (local) setTimeout(() => goneFind(f.id), 45000);
+  $('seekBtn').classList.add('ping');
 }
-function goneFind(id) { const x = FINDS[id]; if (!x) return; x.e.classList.add('gone'); setTimeout(() => x.e.remove(), 500); delete FINDS[id]; }
+function goneFind(id) { const x = FINDS[id]; if (!x) return; setTimeout(() => $('seekBtn').classList.toggle('ping', Object.keys(FINDS).length > 0), 50); x.e.classList.add('gone'); setTimeout(() => x.e.remove(), 500); delete FINDS[id]; }
 function foundFind(id, seat, f) {
   const x = FINDS[id]; f = f || (x && x.f) || {};
   if (x) { x.e.classList.add('took'); setTimeout(() => x.e.remove(), 700); delete FINDS[id]; }
+  $('seekBtn').classList.toggle('ping', Object.keys(FINDS).length > 0); if (seat === 0) seekOff();
   const it = RES[f.item]; if (!it) return;
   const n = document.createElement('div'); n.className = 'wxnote plate'; n.style.borderColor = RAR[f.rar].c;
   n.innerHTML = (seat === 0 ? '✨ Ты нашёл: ' : '😤 ' + NAMES[seat] + ' первым схватил: ') + '<b style="color:' + (f.rar ? RAR[f.rar].c : 'inherit') + '">' + it.i + ' ' + it.n + ' ×' + f.qty + '</b> <small>(' + RAR[f.rar].n.toLowerCase() + ')</small>';
   stage.appendChild(n); setTimeout(() => n.remove(), 4500);
-  if (seat === 0) { gain(f.item, f.qty); saveStats(); Snd.good(); if (f.rar >= 2) talk(2, pickOne(['Везёт же!', 'Ну ты глазастый', 'Это моё было!'])); }
-  else if (round) talk(seat, pickOne(['Моё!', 'Кто успел, тот и съел', 'Спасибо, что не заметили']));
+  if (seat === 0) { gain(f.item, f.qty); saveStats(); Snd.good(); if (f.rar >= 2) sharedTalk(2, pickOne(['Везёт же!', 'Ну ты глазастый', 'Это моё было!'])); }
+  else if (round && (!online || (isHost() && Net.view.seats[seat] && Net.view.seats[seat].bot))) sharedTalk(seat, pickOne(['Моё!', 'Кто успел, тот и съел', 'Спасибо, что не заметили'])); // за бота говорит хозяин стола
 }
 // С ботами: находки сами по себе, боты тоже иногда хватают
 (function findLoopLocal() {
@@ -2563,7 +2596,7 @@ function foundFind(id, seat, f) {
       if (Math.random() < .35) setTimeout(() => { if (FINDS[f.id]) foundFind(f.id, 1 + Math.floor(Math.random() * 3), f); }, 10000 + Math.random() * 14000);
     }
     findLoopLocal();
-  }, 90000 + Math.random() * 90000);
+  }, 60000 + Math.random() * 50000);
 })();
 
 // ---------- Ранги ----------
@@ -2676,7 +2709,7 @@ function xpGain(amount, why) {
     const perks = PERKS.filter((p) => p.lvl === l);
     achQueue.push({ i: '⬆️', n: 'Уровень ' + l + (TITLES.some((t) => t[0] === l) ? ', ' + after.name : ''), d: perks.length ? 'Открыто: ' + perks.map((p) => p.n).join(', ') : 'Так держать, до следующего ещё ' + (LVL_NEED(l)) + ' опыта', lvlUp: true });
   }
-  if (after.lvl > before) { if (achQueue.length && !achShowing) showAch(); setTimeout(() => talk(0, 'Уровень ' + after.lvl + '!'), 700); }
+  if (after.lvl > before) { if (achQueue.length && !achShowing) showAch(); sharedTalk(0, 'Уровень ' + after.lvl + '!', 700); }
   applyPerks();
   renderPickers();
   if (round) render();
@@ -2730,6 +2763,7 @@ function render() {
   $('logBtn').hidden = !lite;
 
   $('emoQuick').hidden = false; $('emoQuick').style.top = ($('me').offsetTop + $('me').offsetHeight + 8) + 'px';
+  $('seekBtn').hidden = false; $('seekBtn').style.top = ($('emoQuick').offsetTop + $('emoQuick').offsetHeight + 8) + 'px'; $('seekBtn').classList.toggle('ping', Object.keys(FINDS).length > 0);
   if (!lite) $('logPanel').classList.remove('open');
   if ($('logPanel').classList.contains('open')) renderLog();
   if (lite) {
@@ -2816,7 +2850,7 @@ function render() {
     if (!mine && queued === c.id) { d.classList.add('queued'); d.title = 'Заряжена: пойдёт сама, когда будет твой ход'; }
     d.dataset.id = c.id;
     enableDrag(d, c, mine);
-    if (!mine && queued !== c.id) d.title = folded ? 'Тыкни, чтобы открыть карты' : 'Тыкни, чтобы зарядить карту на свой ход. Смахни вниз, чтобы спрятать карты';
+    if (!mine && queued !== c.id) d.title = folded ? 'Тыкни, чтобы открыть карты' : 'Тыкни, чтобы зарядить карту на свой ход.';
     if (mine) { d.tabIndex = 0; d.onkeydown = (e) => { if (e.key === 'Enter') myPlay(c.id, d); }; }
     return d;
   }));
@@ -2845,6 +2879,7 @@ function turnWatch(mine) {
   setTimeout(() => turnAlert(false), 60);
 }
 function turnAlert(nudge) {
+  seekOff(); // твой ход: выходим из поиска
   if (!round || turnKey === null) return;
   const el = document.createElement('div');
   el.className = 'yturn' + (nudge ? ' nudge' : '');
@@ -2886,6 +2921,7 @@ function fireQueued() {
   setTimeout(() => { if (round && round.turn === 0 && !busy) { const el = document.querySelector('#hand .card[data-id="' + id + '"]'); myPlay(id, el); } }, 380);
 }
 function setFold(v) {
+  folded = false; return; // прятать карты больше нельзя (владелец попросил убрать)
   folded = v;
   Snd.flick(); setTimeout(() => Snd.flick(), 90);
   if (round) { render(); setTimeout(() => round && placeFold(!round.over && round.turn === 0 && !busy), 420); }
@@ -3314,7 +3350,7 @@ function finish(keepMsg) {
 }
 
 function clearTable() {
-  queued = null; $('emoQuick').hidden = true; $('emoPanel').classList.remove('open'); $('foldBtn').hidden = true; folded = false;
+  queued = null; $('emoQuick').hidden = true; $('seekBtn').hidden = true; seekOff(); $('emoPanel').classList.remove('open'); $('foldBtn').hidden = true; folded = false;
   for (const i of [0, 1, 2, 3]) $('f' + i).hidden = true;
   $('logPanel').classList.remove('open'); $('logBtn').hidden = true;
   for (const id of ['pile', 'fx', 'hand', 's1', 's2', 's3', 'me']) $(id).replaceChildren();
@@ -3337,7 +3373,7 @@ async function startRound() {
   const g = gen;
   const fresh = match.praise.slice();
   round = K.newRound(match);
-  round.bomzhAt = Math.random() < .5 ? 2 + Math.floor(Math.random() * 5) : -1;
+  round.bomzhAt = Math.random() < .75 ? 2 + Math.floor(Math.random() * 5) : -1;
   handOrder = [];
   voids = []; busy = true;
   if ($('nextBtn')) $('nextBtn').hidden = true;
@@ -3571,6 +3607,14 @@ const LINES = {
   lusya: ['Люся! Ха-ха!', 'Вот это люся!', '<i>*ржёт на весь двор*</i>'],
   babka: ['Да щас, бабуль!', 'Тёть Валь, мы тихо!', 'Всё-всё, не орём', '<i>*прячет карты под стол*</i>'],
 };
+// Реплика, которую видят все за столом одинаково. С ботами просто talk(); по сети шлём на сервер, он раздаёт всем (и нам тоже)
+const isHost = () => online && Net.view && Net.view.host === 0;
+function sharedTalk(seat, text, delay) {
+  if (!text) return;
+  if (!online) return delay ? setTimeout(() => talk(seat, text), delay) : talk(seat, text);
+  const go = () => Net.send('say', { seat, text });
+  if (delay) setTimeout(go, delay); else go();
+}
 function talk(seat, text, chatter) {
   if (seat === undefined || seat === null || !round || !text) return;
   const old = document.querySelector('.talk[data-seat="' + seat + '"]');
@@ -4105,7 +4149,7 @@ Snd.onTrack = (t) => {
   stage.appendChild(el);
   setTimeout(() => el.remove(), 4200);
   syncToggles();
-  if (round && !round.over && Math.random() < .7 && TRACK_TALK[t]) setTimeout(() => talk(pickOne([1, 2, 3]), pickOne(TRACK_TALK[t])), 1800);
+  if (!online && round && !round.over && Math.random() < .7 && TRACK_TALK[t]) setTimeout(() => talk(pickOne([1, 2, 3]), pickOne(TRACK_TALK[t])), 1800);
 };
 function syncToggles() {
   document.querySelectorAll('[data-wx]').forEach((b) => { b.textContent = wxOn ? '🌦 Погода: вкл (сейчас ' + WX[wxKind].n.toLowerCase() + ')' : '🌦 Погода: выкл'; });
@@ -4146,7 +4190,7 @@ let yelling = false;
 async function babka(R = Math.random, rs = null) {
   const { pk, pn } = rngKit(R);
   const b = $('babka');
-  if (yelling || !round || paused() || !Snd.amb || document.hidden || !LAY.yard) return;
+  if (yelling || !round || paused() || !Snd.amb || document.hidden || !(LAY.yard || LAY.base)) return;
   yelling = true;
   const text = pn('babka', BABKA);
   Snd.creak();
@@ -4173,7 +4217,7 @@ const NEIGHBORS = [
 ];
 async function neighbor(R = Math.random) {
   const { pk, pn } = rngKit(R);
-  if (yelling || !round || paused() || !Snd.amb || document.hidden || !LAY.yard) return;
+  if (yelling || !round || paused() || !Snd.amb || document.hidden || !(LAY.yard || LAY.base)) return;
   yelling = true;
   const n = pn('neigh', NEIGHBORS), b = $('neigh');
   $('neighWin').innerHTML = '<svg viewBox="0 0 60 70">' + n.svg + '</svg>';
@@ -4190,9 +4234,9 @@ async function neighbor(R = Math.random) {
   b.classList.remove('out');
   yelling = false;
 }
-(function neighLoop() { setTimeout(() => { if (!online) neighbor(); neighLoop(); }, 150000 + Math.random() * 150000); })();
+(function neighLoop() { setTimeout(() => { if (!online) neighbor(); neighLoop(); }, 80000 + Math.random() * 70000); })();
 let babkaFirst = true;
-(function babkaLoop() { setTimeout(() => { if (!online) babka(); babkaLoop(); }, babkaFirst ? (babkaFirst = false, 70000 + Math.random() * 40000) : 160000 + Math.random() * 120000); })();
+(function babkaLoop() { setTimeout(() => { if (!online) babka(); babkaLoop(); }, babkaFirst ? (babkaFirst = false, 35000 + Math.random() * 30000) : 80000 + Math.random() * 60000); })();
 
 // ---------- Игра по сети ----------
 const Net = (() => {
@@ -4246,6 +4290,8 @@ const Net = (() => {
     else if (ev.type === 'find') showFind(ev, false);
     else if (ev.type === 'found') foundFind(ev.id, ev.seat, ev);
     else if (ev.type === 'findGone') goneFind(ev.id);
+    else if (ev.type === 'prank') prankFx(ev);
+    else if (ev.type === 'talk') talk(ev.seat, ev.text);
   }
   function send(type, extra) {
     return api('/api/action', Object.assign({ code, token: tok, type }, extra || {}))
@@ -4369,7 +4415,7 @@ const Net = (() => {
   }
   async function netVerdict(ev) {
     const acc = ev.accuser, who = ev.accused, n = ev.trickNo + 1;
-    const line = pickOne(VOICE.accuse);
+    const line = VOICE.accuse[(ev.trickNo * 7 + (ev.guilty ? 3 : 0)) % VOICE.accuse.length]; // у всех одна и та же
     Snd.whistle(); Snd.voice(line, .8);
     talk(acc, line);
     await sleep(900);
@@ -4488,7 +4534,7 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.50') { localStorage.setItem('kozel-seen-ver', '2.50'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.52') { localStorage.setItem('kozel-seen-ver', '2.52'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
 // Точка: при запуске, если пацан поработал больше 10 минут, забираем
 setTimeout(() => { try { if (farmIdx() < 0) { STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + 1; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); } else { const p = farmPending(); if (p && p.h >= 1 / 6) farmCollect(); } renderPickers(); } catch (e) {} }, 1500);
 $('tPlay').onclick = () => { Snd.init(); hide('title'); open('menu'); };
@@ -4733,14 +4779,14 @@ async function runGuest(g, R = Math.random, rs = null) {
     const list = GUESTS[LOC];
     if (list && Snd.amb && !online) runGuest(LOC === 'baza' ? list[Math.random() < .6 ? 0 : 1] : pickOne(list));
     guestLoop();
-  }, 90000 + Math.random() * 80000);
+  }, 60000 + Math.random() * 50000);
 })();
 // Сценка от сервера: зерно общее, поэтому у всех тот же гость, те же слова, тот же, кто отвечает
 function netScene(ev) {
   if (!Snd.amb) return;
   const R = seeded(ev.seed), rs = ev.seat;
-  if (ev.kind === 'babka' && LAY.yard) return babka(R, rs);
-  if (ev.kind === 'neigh' && LAY.yard) return neighbor(R);
+  if (ev.kind === 'babka' && (LAY.yard || LAY.base)) return babka(R, rs);
+  if (ev.kind === 'neigh' && (LAY.yard || LAY.base)) return neighbor(R);
   const list = GUESTS[LOC]; if (!list) return;
   runGuest(LOC === 'baza' ? list[R() < .6 ? 0 : 1] : list[Math.floor(R() * list.length)], R, rs);
 }
@@ -4755,7 +4801,7 @@ function setWeather(kind, seed, seat, quiet) {
   if (changed && !quiet && wxHere() && round) {
     const n = document.createElement('div'); n.className = 'wxnote plate'; n.textContent = ({ storm: '⛈ ', rain: '🌧 ', drizzle: '🌦 ', wind: '🍃 ', leaves: '🍂 ', heat: '🔥 ', rainbow: '🌈 ', cloudy: '☁ ' }[kind] || '☀ ') + 'Погода: ' + WX[kind].n;
     stage.appendChild(n); setTimeout(() => n.remove(), 4600);
-    const l = KozelLines.wxLine(kind, seatInfo(), wxR, true);
+    const l = KozelLines.wxLine(kind, seatInfo(), wxR, true, seat);
     if (l) setTimeout(() => talk(l.seat, l.text), 2200);
   }
 }
@@ -4806,7 +4852,7 @@ function applyWeather() {
       f.animate([{ opacity: 0 }, { opacity: near ? .85 : .45 }, { opacity: .1 }, { opacity: near ? .7 : .3 }, { opacity: 0 }], { duration: 450, easing: 'ease-out' });
       if (out) { const x = .15 + R() * .7, p = [[x, 0]]; let y = 0, xx = x; while (y < .42) { y += .04 + R() * .06; xx += (R() - .5) * .07; p.push([xx, y]); } wxBolt = { t: performance.now(), p }; }
       Snd.thunder(near, !out);
-      if (near && round && R() < .5) setTimeout(() => talk(1 + Math.floor(R() * 3), ['Ох ё!', 'Мать!', 'Чуть в стол не шарахнуло', '<i>*подпрыгивает на лавке*</i>', 'Это знак!'][Math.floor(R() * 5)]), 900);
+      if (near && round && R() < .5 && (!online || isHost())) sharedTalk(1 + Math.floor(R() * 3), ['Ох ё!', 'Мать!', 'Чуть в стол не шарахнуло', '<i>*подпрыгивает на лавке*</i>', 'Это знак!'][Math.floor(R() * 5)], 900);
     } else if (w.wind && wxOutdoor() && wxHere()) {
       // порыв: листья летят вбок
       for (let k = 0; k < 14; k++) setTimeout(() => { const l = document.createElement('div'); l.className = 'leaf gust'; l.innerHTML = '<svg viewBox="0 0 20 20"><path d="M10 1 C14 5 19 7 18 12 C16 17 11 19 10 19 C9 19 4 17 2 12 C1 7 6 5 10 1 Z" fill="' + pickOne(LEAF_C) + '"/></svg>'; l.style.top = (10 + Math.random() * 60) + '%'; l.style.fontSize = (.6 + Math.random() * .8) + 'em'; $('fxbg').appendChild(l); setTimeout(() => l.remove(), 4200); }, k * 120);
@@ -5147,10 +5193,11 @@ const Acct = (() => {
       b.hidden = !enabled;
       if (!enabled) return;
       const on = last.list.filter((x) => x.status !== 'off' && !x.me).length;
-      b.innerHTML = token ? 'Ты: <b>' + nick + '</b><button class="btn" data-yard><span class="dot"></span>Двор' + (on ? ': ' + on + ' на связи' : '') + '</button><button class="btn alt" data-logout>Выйти</button>'
+      b.innerHTML = token ? 'Ты: <b>' + nick + '</b><button class="btn" data-yard><span class="dot"></span>Двор' + (on ? ': ' + on + ' на связи' : '') + '</button>' + (isAdmin() ? '<button class="btn alt" data-admin>🛠 Админка</button>' : '') + '<button class="btn alt" data-logout>Выйти</button>'
         : '<button class="btn" data-login>Войти по нику и PIN</button><span class="note" style="margin:0">чтобы прогресс был на любом устройстве и видеть, кто онлайн</span>';
       b.querySelectorAll('[data-login]').forEach((x) => { x.onclick = () => { $('acErr').textContent = ''; $('acNick').value = nick || savedName() || ''; open('acctBox'); $('acNick').focus(); }; });
       b.querySelectorAll('[data-yard]').forEach((x) => { x.onclick = openYard; });
+      b.querySelectorAll('[data-admin]').forEach((x) => { x.onclick = openAdmin; });
       b.querySelectorAll('[data-logout]').forEach((x) => { x.onclick = () => { api('logout', { token }).catch(() => {}); setSession(null, null); }; });
     });
   }
@@ -5500,6 +5547,114 @@ $('tMap').onclick = openMap;
 $('mapClose').onclick = () => hide('mapov');
 $('mapCraft').onclick = () => { renderCraft(); open('craft'); };
 $('mapSell').onclick = () => { renderSell(); open('sell'); };
+
+
+// ======================= Админка (только для аккаунта админа) =======================
+// Кто за кого из своих играет, доступ ко всем, аккаунты и PIN, приколы над пацанами. Сервер сам проверяет, шо это админ.
+const isAdmin = () => (Acct.nick || '').trim().toLowerCase() === KozelLines.ADMIN;
+const OWN6 = ['oleg', 'dantl', 'lysy', 'elvis', 'vitaha', 'zema'];
+const PRANK_LIST = [
+  ['say', '🗣', 'Сказать за него', 'Его пацан говорит твой текст, все видят'],
+  ['babka', '👵', 'Бабка наорёт', 'Бабка с балкона орёт на него твой текст'],
+  ['gudok', '🚂', 'Витя Гудок шепнёт', 'Гудок проходит и говорит твой текст'],
+  ['tomato', '🍅', 'Закидать помидорами', 'В него летят помидоры и какашки'],
+  ['goat', '🐐', 'Козёл дня', 'Над ним на минуту висит «Козёл дня»'],
+  ['flip', '🙃', 'Перевернуть мир', 'У него экран на 6 секунд вверх ногами'],
+  ['quake', '🌋', 'Землетрясение', 'Трясёт весь стол, гремит гром'],
+  ['rain', '⛈', 'Гроза над столом', 'Включает грозу у его стола'],
+];
+let ADM = { users: [], cfg: { owners: {}, all: [] } };
+async function admApi(name, body) {
+  const r = await fetch('/api/admin/' + name, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ token: Acct.token }, body || {})) });
+  const j = await r.json().catch(() => ({ error: 'Сервер молчит' }));
+  if (!r.ok) throw new Error(j.error || 'Ошибка');
+  return j;
+}
+function admNote(t, bad) { const n = $('admNote'); n.textContent = t; n.className = 'admnote' + (bad ? ' bad' : ''); clearTimeout(admNote.t); admNote.t = setTimeout(() => { n.textContent = ''; }, 4000); }
+async function openAdmin() {
+  open('admin'); $('admIn').innerHTML = '<p class="note">Загружаю...</p>';
+  try { ADM = await admApi('state'); renderAdmin(); } catch (e) { $('admIn').innerHTML = '<p class="note">' + e.message + '</p>'; }
+}
+function renderAdmin() {
+  const users = ADM.users, owners = Object.assign({}, KozelLines.OWNERS, (ADM.cfg && ADM.cfg.owners) || {}), all = (ADM.cfg && ADM.cfg.all) || [];
+  const opt = (sel) => '<option value="">никто</option>' + users.map((u) => '<option value="' + u.key + '"' + (u.key === sel ? ' selected' : '') + '>' + u.nick + '</option>').join('');
+  const ago = (s) => (s === null ? 'давно' : s < 25 ? '🟢 в сети' : s < 3600 ? Math.round(s / 60) + ' мин назад' : s < 86400 ? Math.round(s / 3600) + ' ч назад' : Math.round(s / 86400) + ' дн назад');
+  const online = users.filter((u) => u.table && u.key !== KozelLines.ADMIN);
+  $('admIn').innerHTML =
+    '<h3>😈 Приколы над пацанами</h3>' +
+    (online.length ? '<div class="admrow"><label>Кого: <select id="prTo">' + online.map((u) => '<option value="' + u.nick + '">' + u.nick + ' (стол ' + u.table.code + ')</option>').join('') + '</select></label>' +
+      '<input id="prText" maxlength="140" placeholder="Текст для «сказать», бабки и Гудка"></div><div class="crg admpr">' +
+      PRANK_LIST.map(([k, i, n, d]) => '<button class="crc" data-prank="' + k + '"><i>' + i + '</i><b>' + n + '</b><small>' + d + '</small></button>').join('') + '</div>'
+      : '<p class="note">Сейчас никто из пацанов не сидит за столом по сети. Приколы работают, когда пацан играет.</p>') +
+    '<h3>Кто за кого играет</h3><div class="admgrid">' + OWN6.map((id) => '<label><img alt="" src="' + CHAR_IMG[id] + '"><b>' + charById(id).name + '</b><select data-own="' + id + '">' + opt(owners[id]) + '</select></label>').join('') + '</div>' +
+    '<h3>Аккаунты</h3><div class="admusers">' + users.map((u) => '<div class="admu"><img alt="" src="' + (CHAR_IMG[u.char] || '') + '"><span><b>' + u.nick + '</b><small>' + ago(u.seenAgo) + (u.table ? ' · за столом ' + u.table.code : '') + ' · ур. ' + rankOf(u.xp).lvl + '</small></span>' +
+      '<label class="admall" title="Может брать любого из своих шестерых"><input type="checkbox" data-all="' + u.key + '"' + (all.includes(u.key) || u.key === KozelLines.ADMIN ? ' checked' : '') + (u.key === KozelLines.ADMIN ? ' disabled' : '') + '> любой герой</label>' +
+      '<span class="admpin"><input inputmode="numeric" maxlength="6" placeholder="новый PIN" data-pinv="' + u.nick + '"><button class="btn alt" data-pin="' + u.nick + '">Сбросить PIN</button></span></div>').join('') + '</div>' +
+    '<button class="btn wide" id="admSave">💾 Сохранить, кто за кого играет</button><p class="admnote" id="admNote"></p>';
+  $('admSave').onclick = async () => {
+    const o = {}; document.querySelectorAll('[data-own]').forEach((s) => { o[s.dataset.own] = s.value || null; });
+    const a = [...document.querySelectorAll('[data-all]:checked:not(:disabled)')].map((c) => c.dataset.all);
+    try { const r = await admApi('owners', { owners: o, all: a }); ADM.cfg = r.cfg; KozelLines.setOwners(r.cfg.owners, r.cfg.all); renderPickers(); admNote('Сохранено. Пацаны увидят сразу, перезаливать не надо'); Snd.good(); } catch (e) { admNote(e.message, true); }
+  };
+  document.querySelectorAll('[data-pin]').forEach((b) => { b.onclick = async () => {
+    const v = document.querySelector('[data-pinv="' + b.dataset.pin + '"]').value.trim();
+    try { await admApi('pin', { nick: b.dataset.pin, pin: v }); admNote('PIN для ' + b.dataset.pin + ' теперь ' + v); } catch (e) { admNote(e.message, true); }
+  }; });
+  document.querySelectorAll('[data-prank]').forEach((b) => { b.onclick = async () => {
+    try { await admApi('prank', { to: $('prTo').value, kind: b.dataset.prank, text: $('prText').value.trim() }); admNote('Готово 😈'); Snd.click(); } catch (e) { admNote(e.message, true); }
+  }; });
+}
+$('admClose').onclick = () => hide('admin');
+// что видят за столом, когда админ прикалывается
+function prankFx(ev) {
+  const s = ev.seat, who = s === 0 ? 'Тебя' : NAMES[s], R = seeded(ev.seed || 1);
+  const note = (html, ms) => { const n = document.createElement('div'); n.className = 'wxnote plate'; n.innerHTML = html; stage.appendChild(n); setTimeout(() => n.remove(), ms || 5000); };
+  switch (ev.kind) {
+    case 'say': talk(s, ev.text); break;
+    case 'babka':
+      Snd.creak && Snd.creak(); figFx(s, 'shake');
+      note('👵 <b>Бабка с балкона:</b> «' + KozelLines.sho(ev.text) + '»', 6000);
+      setTimeout(() => talk(s, ['Бабуля, это не я!', 'Шо я сделал?!', 'Да иду я, иду!', 'Это меня? За шо?!'][Math.floor(R() * 4)]), 1800);
+      break;
+    case 'gudok': showBomzh(ev.text, null, null); break;
+    case 'tomato': Snd.whistle(); figFx(s, 'shake'); poopRain(s, R); setTimeout(() => talk(s, ['Э! Кто кидается?!', 'Фу, блин!', 'Ну всё, кто это был?'][Math.floor(R() * 3)]), 900); break;
+    case 'goat': {
+      const f = s === 0 ? $('me') : $('f' + s).hidden ? $('s' + s) : $('f' + s), q = f.getBoundingClientRect(), r = stage.getBoundingClientRect();
+      const g = document.createElement('div'); g.className = 'goatday'; g.innerHTML = '🐐<b>Козёл дня</b>';
+      g.style.left = (q.left - r.left + q.width / 2) + 'px'; g.style.top = (q.top - r.top + (s === 0 ? q.height + 8 : 0)) + 'px';
+      stage.appendChild(g); setTimeout(() => g.remove(), 60000);
+      Snd.voice && Snd.voice(NAMES[s] + ', козёл дня!');
+      break;
+    }
+    case 'flip':
+      note('🙃 У ' + (s === 0 ? 'тебя' : NAMES[s]) + ' перевернулся мир', 4000);
+      if (s === 0) stage.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(180deg)', offset: .1 }, { transform: 'rotate(180deg)', offset: .88 }, { transform: 'rotate(0)' }], { duration: 6500, easing: 'ease-in-out' });
+      break;
+    case 'quake':
+      Snd.thunder && Snd.thunder(true); note('🌋 <b>Землетрясение!</b> Стол ходуном', 4000);
+      stage.animate([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((k) => ({ transform: k % 10 ? 'translate(' + ((R() - .5) * 26) + 'px,' + ((R() - .5) * 18) + 'px) rotate(' + ((R() - .5) * 2) + 'deg)' : 'none' })), { duration: 1600 });
+      break;
+  }
+}
+// кто за кого играет: берём с сервера (меняется в «Админке»)
+if (/^https?:/.test(location.protocol)) fetch('/api/cfg').then((r) => r.json()).then((c) => { KozelLines.setOwners(c.owners, c.all); renderPickers(); }).catch(() => {});
+
+
+// ---------- 🔍 Поиск находок: пока не твой ход, всё лишнее гаснет, находки крупные ----------
+let seekT = null;
+function seekOff() { clearTimeout(seekT); stage.classList.remove('seek'); document.querySelectorAll('.seeklbl,.seekvig').forEach((e) => e.remove()); }
+function seekOn() {
+  if (!round || round.over) return;
+  if (round.turn === 0 && !round.closing) { const n = document.createElement('div'); n.className = 'wxnote plate'; n.textContent = 'Сначала сходи, потом шарь по двору'; stage.appendChild(n); setTimeout(() => n.remove(), 2500); return; }
+  if (stage.classList.contains('seek')) return seekOff();
+  stage.classList.add('seek'); Snd.click();
+  const v = document.createElement('div'); v.className = 'seekvig'; stage.appendChild(v);
+  const l = document.createElement('div'); l.className = 'seeklbl plate';
+  l.textContent = Object.keys(FINDS).length ? '🔍 Шо-то блестит! Тыкай' : '🔍 Пусто... ничего не блестит. Глянь попозже';
+  l.onclick = seekOff; stage.appendChild(l);
+  seekT = setTimeout(seekOff, Object.keys(FINDS).length ? 9000 : 2500);
+}
+$('seekBtn').onclick = (e) => { e.stopPropagation(); seekOn(); };
 
 // Меню, правила и «Что нового» тоже шокают не на 100%: каждый кусок текста один раз при загрузке (80/20)
 (function shoUI() {
