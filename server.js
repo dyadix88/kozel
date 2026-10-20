@@ -53,7 +53,7 @@ const seatOf = (room, tok) => room.seats.findIndex((s) => s && s.token === tok);
 
 function createRoom(name, mode, ch, xp, acct, loc, honest, noEmo, stake) {
   const code = newCode();
-  const room = { code, loc: ['baza', 'yard', 'office', 'space'].includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', honest: !!honest, noEmo: !!noEmo, stake: KC.STAKES[stake] ? Number(stake) : 0, seats: [null, null, null, null], host: 0,
+  const room = { code, loc: KL.LOC_IDS.includes(loc) ? loc : 'baza', mode: ['lite', 'turbo'].includes(mode) ? mode : 'hard', phase: 'lobby', honest: !!honest, noEmo: !!noEmo, stake: KC.STAKES[stake] ? Number(stake) : 0, seats: [null, null, null, null], host: 0,
     match: null, round: null, voids: [], timer: null, deadline: 0, touched: Date.now() };
   rooms.set(code, room);
   const tok = token();
@@ -126,7 +126,7 @@ function sceneLoop(room) {
     if (!rooms.has(room.code)) return;
     if (room.phase === 'playing' && !room.paused && room.seats.some((x) => x && !x.bot && x.conns.size)) {
       const r = Math.random();
-      const kind = room.loc === 'yard' || room.loc === 'baza' ? (r < .4 ? 'guest' : r < .75 ? 'babka' : 'neigh') : 'guest';
+      const kind = (KL.LOCMETA[room.loc] || {}).balc ? (r < .4 ? 'guest' : r < .75 ? 'babka' : 'neigh') : 'guest';
       blast(room, [{ type: 'scene', kind, seed: Math.floor(Math.random() * 2 ** 31), seat: Math.floor(Math.random() * 4) }]);
     }
     sceneLoop(room);
@@ -150,7 +150,7 @@ function findLoop(room) {
   clearTimeout(room.findT);
   room.findT = setTimeout(() => {
     if (!rooms.has(room.code)) return;
-    if (liveTable(room)) dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollFind(null, room.loc)), 45000);
+    if (liveTable(room)) dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollFind(null, KL.bgOf(room.loc, room.code))), 45000);
     findLoop(room);
   }, Number(process.env.FIND_MS) || 35000 + Math.random() * 35000); // FIND_MS только для проверок
 }
@@ -158,7 +158,7 @@ function coinLoop(room) {
   clearTimeout(room.coinT);
   room.coinT = setTimeout(() => {
     if (!rooms.has(room.code)) return;
-    if (liveTable(room)) dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollCoin(null, room.loc)), 14000);
+    if (liveTable(room)) dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollCoin(null, KL.bgOf(room.loc, room.code))), 14000);
     coinLoop(room);
   }, Number(process.env.FIND_MS) || 20000 + Math.random() * 20000);
 }
@@ -170,7 +170,7 @@ function grabFind(room, id, seat) {
   return true;
 }
 // админ подкинул монет на стол
-function coinRain(room, n) { for (let k = 0; k < n; k++) setTimeout(() => dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollCoin(null, room.loc)), 12000, true), k * 350); }
+function coinRain(room, n) { for (let k = 0; k < n; k++) setTimeout(() => dropFind(room, Object.assign({ id: findSeq++, seed: Math.floor(Math.random() * 2 ** 31) }, KL.rollCoin(null, KL.bgOf(room.loc, room.code))), 12000, true), k * 350); }
 
 // Погода: одна на стол, меняется раз в 2.5-5 минут, без снега
 const WX_KINDS = ['clear', 'clear', 'cloudy', 'cloudy', 'drizzle', 'drizzle', 'rain', 'rain', 'storm', 'storm', 'wind', 'leaves', 'leaves', 'heat', 'rainbow'];
@@ -303,7 +303,7 @@ function chatter(room, evs, res) {
     else if (x < .7 && bot(mate)) gest(mate, 'clap', 900);
     else if (bot(res.winner)) gest(res.winner, 'wink', 700);
   }
-  if ((room.loc === 'yard' || room.loc === 'baza') && room.bomzhAt === r.tricks.length && !r.closing && !r.over) {
+  if ((KL.LOCMETA[room.loc] || {}).out && room.bomzhAt === r.tricks.length && !r.closing && !r.over) {
     const b = KL.bomzh(seatsInfo(room), r.hands, r.trump);
     evs.push({ type: 'bomzh', text: b.text, seat: b.reply.seat, reply: b.reply.text, delay: 2500 });
   }
@@ -540,9 +540,9 @@ function act(room, seat, body) {
       // хозяин стола выбирает место: в лобби и между раздачами
       if (seat !== room.host) throw new Error('Место выбирает хозяин стола');
       if (!['lobby', 'roundEnd', 'matchEnd'].includes(room.phase)) throw new Error('Пересядем после раздачи');
-      if (!['baza', 'yard', 'office', 'space'].includes(body.loc)) throw new Error('Нет такого места');
+      if (!KL.LOC_IDS.includes(body.loc)) throw new Error('Нет такого места');
       room.loc = body.loc;
-      broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { baza: 'на БАЗУ', yard: 'во двор', office: 'в кабинет', space: 'в космос' }[body.loc] + '*</i>' }]);
+      broadcast(room, [{ type: room.phase === 'lobby' ? 'lobby' : 'talk', seat, text: '<i>*пересаживает всех: ' + { baza: 'на БАЗУ', yard: 'во двор', office: 'в кабинет', space: 'в космос', cherem: 'на Черёмушки', stroy: 'на Строитель', centr: 'в Центр' }[body.loc] + '*</i>' }]);
       return;
     }
     case 'opts': { // хозяин в лобби меняет режим, честняк, смайлы и ставку

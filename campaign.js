@@ -10,7 +10,7 @@
   // Уровни ботов (см. ai.js): 0 слабый, 1 средний, 2 сильный, 3 деды
   const DISTRICTS = [
     {
-      id: 'd1', name: 'Район 1', level: 0, loc: 'yard',
+      id: 'd1', name: 'Черёмушки', level: 0, loc: 'cherem',
       area: [[60, 63], [70, 60], [78, 60], [88, 72], [80, 88], [66, 90], [58, 78]], pin: [71, 75],
       pair: {
         name: 'Голубятня', chars: ['kolya', 'tema'],
@@ -25,7 +25,7 @@
       billiard: false,
     },
     {
-      id: 'd2', name: 'Район 2', level: 1, loc: 'yard',
+      id: 'd2', name: 'Короленко', level: 1, loc: 'yard', // своя картинка позже
       area: [[66, 45], [86, 42], [98, 30], [99, 36], [88, 48], [82, 63], [72, 59], [65, 53]], pin: [79, 50],
       pair: {
         name: 'У ставка', chars: ['seryy', 'rybak'],
@@ -37,7 +37,7 @@
       need: 'bilet', find: 'blesna', reward: { uah: 70, xp: 180 }, billiard: true,
     },
     {
-      id: 'd3', name: 'Район 3', level: 1, loc: 'yard',
+      id: 'd3', name: 'Строитель', level: 1, loc: 'stroy',
       area: [[53, 10], [66, 8], [77, 22], [78, 42], [66, 45], [54, 42], [52, 25]], pin: [64, 27],
       pair: {
         name: 'Гаражные', chars: ['vovan', 'palych'],
@@ -49,7 +49,7 @@
       need: 'spravka', find: 'kvit', reward: { uah: 110, xp: 260 }, billiard: false,
     },
     {
-      id: 'd4', name: 'Район 4', level: 2, loc: 'yard',
+      id: 'd4', name: 'Центр', level: 2, loc: 'centr',
       area: [[36, 30], [52, 40], [66, 47], [66, 58], [50, 66], [38, 62], [34, 45]], pin: [50, 52],
       pair: {
         name: 'Рыночные', chars: ['zhora', 'valya'],
@@ -61,7 +61,7 @@
       need: 'propusk', find: 'cennik', reward: { uah: 170, xp: 360 }, billiard: true,
     },
     {
-      id: 'd5', name: 'Район 5', level: 2, loc: 'yard',
+      id: 'd5', name: 'Водоканал', level: 2, loc: 'yard', // своя картинка позже
       area: [[7, 7], [24, 6], [42, 10], [42, 28], [30, 30], [18, 30], [6, 20]], pin: [20, 17],
       pair: {
         name: 'Шахтная', chars: ['mihalych', 'zoya'],
