@@ -197,14 +197,14 @@ function schedule(room, delay) {
   if (room.phase !== 'playing' || !r || r.over) { room.deadline = 0; return; }
   const s = room.seats[r.turn];
   const afterHuman = room.undoSnap && room.round.log.length === room.undoSnap.logLen && Date.now() - room.undoSnap.at < 3000;
-  if (s.bot) { room.deadline = 0; room.timer = setTimeout(() => botAct(room), delay + BOT_DELAY + (afterHuman ? 1600 : 0)); return; }
+  if (s.bot) { room.deadline = 0; room.timer = setTimeout(() => botAct(room), delay + BOT_DELAY + (afterHuman ? 1600 : 0) + botStyle(s.char).think * (.6 + Math.random() * .8)); return; }
   const limit = s.conns.size ? (room.mode === 'turbo' ? 45000 : TURN_MS) : AWAY_TURN_MS;
   room.deadline = Date.now() + delay + limit;
   // подколы живому: «Голова, твой выход!» и если долго думает
   const who = r.turn, logN = r.log.length, other = () => pick([0, 1, 2, 3].filter((i) => i !== who));
   clearTimeout(room.slowT);
   if (Math.random() < .1) setTimeout(() => { if (room.round === r && r.turn === who && r.log.length === logN) broadcast(room, [{ type: 'talk', seat: other(), text: KL.gorl('yourTurn', s.name) }]); }, delay + 1200);
-  room.slowT = setTimeout(() => { if (room.round === r && r.turn === who && r.log.length === logN && !room.paused && !room.undo && Math.random() < .7) broadcast(room, [{ type: 'talk', seat: other(), text: KL.gorl('slow') }]); }, delay + 28000);
+  room.slowT = setTimeout(() => { if (room.round === r && r.turn === who && r.log.length === logN && !room.paused && !room.undo && Math.random() < .7) { const sp = other(); broadcast(room, [{ type: 'talk', seat: sp, text: KL.slowLine(room.seats, sp) }]); } }, delay + 28000);
   room.timer = setTimeout(() => timeoutAct(room), delay + limit);
 }
 
@@ -226,8 +226,9 @@ function doPlay(room, seat, cardId) {
     ev.used = true;
     const judges = [0, 1, 2, 3].filter((b) => room.seats[b].bot && K.teamOf(b) !== K.teamOf(seat));
     const prev = r.log.find((x) => x.trickNo === ev.trickNo && x.seat === seat);
-    if (judges.length && !prev.checked && Math.random() < .75) {
-      const judge = pick(judges);
+    const sharp = judges.slice().sort((a, b) => botStyle(room.seats[b].char).catch - botStyle(room.seats[a].char).catch);
+    if (judges.length && !prev.checked && Math.random() < botStyle(room.seats[sharp[0]].char).catch) {
+      const judge = Math.random() < .7 ? sharp[0] : pick(judges);
       evs.push(verdictEvent(room, judge, ev.trickNo, seat, entry.card));
       delay = AFTER_VERDICT;
     }
@@ -340,7 +341,7 @@ function endRound(room) {
 function botAct(room) {
   const r = room.round;
   if (!r || r.over || room.phase !== 'playing' || room.paused || room.undo || !room.seats[r.turn].bot) return;
-  try { doPlay(room, r.turn, botMove(r, r.turn)); } catch (e) { console.error('bot', e); }
+  try { doPlay(room, r.turn, botMove(r, r.turn, botStyle(room.seats[r.turn].char))); } catch (e) { console.error('bot', e); }
 }
 function timeoutAct(room) {
   const r = room.round;
@@ -355,7 +356,10 @@ function timeoutAct(room) {
 }
 
 // Боты играют просто и иногда лезут на трояк
-function botMove(r, s) {
+// характер бота: как часто крысит, как часто ловит, сколько думает (lines.js CHAR[].style)
+function botStyle(ch) { return Object.assign({ cheat: .18, catch: .75, think: 0 }, (KL.CHAR[ch] && KL.CHAR[ch].style) || {}); }
+function botMove(r, s, st) {
+  st = st || botStyle(null);
   const hand = r.hands[s];
   const trickCards = r.trick.map((e) => e.card);
   const legal = K.legalCards(hand, trickCards, r.trump);
@@ -369,7 +373,7 @@ function botMove(r, s) {
   const best = pw(trickCards[cur]);
   const partnerWins = K.teamOf(r.trick[cur].seat) === K.teamOf(s);
   const onTable = trickCards.reduce((x, c) => x + c.points, 0);
-  if (!r.honest && !partnerWins && onTable >= 10 && legal.length < hand.length && Math.random() < 0.18) {
+  if (!r.honest && !partnerWins && onTable >= (st.cheat > .3 ? 4 : 10) && legal.length < hand.length && Math.random() < st.cheat) {
     const cheat = hand.filter((c) => !legal.includes(c) && pw(c) > best);
     if (cheat.length) return cheat.reduce((a, b) => (pw(a) < pw(b) ? a : b)).id;
   }
@@ -377,8 +381,9 @@ function botMove(r, s) {
     const plain = legal.filter((c) => !K.isTrump(c, r.trump));
     return (plain.length ? plain : legal).reduce((a, b) => (a.points >= b.points ? a : b)).id;
   }
+  if (st.wild && Math.random() < st.wild) return legal[Math.floor(Math.random() * legal.length)].id; // по вдохновению
   const win = legal.filter((c) => pw(c) > best);
-  if (win.length && (onTable >= 10 || r.trick.length === 3)) return win.reduce((a, b) => (pw(a) < pw(b) ? a : b)).id;
+  if (win.length && (onTable >= 10 || (st.trumps && onTable >= 3) || r.trick.length === 3)) return win.reduce((a, b) => (pw(a) < pw(b) ? a : b)).id;
   return legal.reduce((a, b) => (a.points < b.points || (a.points === b.points && pw(a) < pw(b)) ? a : b)).id;
 }
 
