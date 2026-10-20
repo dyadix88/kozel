@@ -177,7 +177,8 @@ function startRound(room) {
   room.phase = 'playing';
   const evs = [{ type: 'deal' }];
   const h = room.round.hvalSeat;
-  if (room.seats[h].bot && Math.random() < .6) evs.push({ type: 'talk', seat: h, text: pick(LINES.hval) });
+  if (Math.random() < .45) evs.push({ type: 'talk', seat: Math.floor(Math.random() * 4), text: KL.gorl('start'), delay: 1200 });
+  else if (room.seats[h].bot && Math.random() < .6) evs.push({ type: 'talk', seat: h, text: pick(LINES.hval) });
   schedule(room, 1600);
   broadcast(room, evs);
 }
@@ -192,6 +193,11 @@ function schedule(room, delay) {
   if (s.bot) { room.deadline = 0; room.timer = setTimeout(() => botAct(room), delay + BOT_DELAY + (afterHuman ? 1600 : 0)); return; }
   const limit = s.conns.size ? (room.mode === 'turbo' ? 45000 : TURN_MS) : AWAY_TURN_MS;
   room.deadline = Date.now() + delay + limit;
+  // подколы живому: «Голова, твой выход!» и если долго думает
+  const who = r.turn, logN = r.log.length, other = () => pick([0, 1, 2, 3].filter((i) => i !== who));
+  clearTimeout(room.slowT);
+  if (Math.random() < .1) setTimeout(() => { if (room.round === r && r.turn === who && r.log.length === logN) broadcast(room, [{ type: 'talk', seat: other(), text: KL.gorl('yourTurn', s.name) }]); }, delay + 1200);
+  room.slowT = setTimeout(() => { if (room.round === r && r.turn === who && r.log.length === logN && !room.paused && !room.undo && Math.random() < .7) broadcast(room, [{ type: 'talk', seat: other(), text: KL.gorl('slow') }]); }, delay + 28000);
   room.timer = setTimeout(() => timeoutAct(room), delay + limit);
 }
 
@@ -312,6 +318,10 @@ function checkMayak(room, res) {
 }
 
 function endRound(room) {
+  if (K.matchLoser(room.match) !== null) { // конец матча: победители подкалывают
+    const L = K.matchLoser(room.match), w = [0, 1, 2, 3].filter((i) => K.teamOf(i) !== L), l = [0, 1, 2, 3].filter((i) => K.teamOf(i) === L);
+    setTimeout(() => broadcast(room, [{ type: 'talk', seat: pick(w), text: KL.gorl('win', room.seats[pick(l)].name.replace(' (бот)', '')) }]), 2500);
+  }
   room.undoSnap = null; if (room.undo) { clearTimeout(room.undoT); room.undo = null; }
   room.paused = null; clearTimeout(room.pauseT);
   const m = room.match;
@@ -525,6 +535,13 @@ function act(room, seat, body) {
       s.gest[g] = now;
       markSignal(room, s);
       broadcast(room, [{ type: 'gesture', seat, g }]);
+      return;
+    }
+    case 'peek': { // открыл журнал или «Предъявить»: «кто пасёт...»
+      const now = Date.now();
+      if (now - (room.peekAt || 0) < 30000 || Math.random() > .5) return;
+      room.peekAt = now;
+      broadcast(room, [{ type: 'talk', seat: pick([0, 1, 2, 3].filter((i) => K.teamOf(i) !== K.teamOf(seat))), text: KL.gorl('peek') }]);
       return;
     }
     case 'grab':
