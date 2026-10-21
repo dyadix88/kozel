@@ -1039,7 +1039,13 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
 .kgame{display:flex;flex-direction:column;align-items:center;gap:.15em;padding:.6em .4em;border:.12em solid rgba(111,20,15,.35);border-radius:.6em;background:rgba(255,255,255,.45);cursor:pointer;font:inherit;color:var(--ink)}
 .kgame.on{background:linear-gradient(#2e8a55,#155b35);color:#f3ffe9;border-color:#0b3a21}.kgame .kgi{font:400 2em 'Russo One',sans-serif}.kgame b{font-family:'Russo One',sans-serif;font-weight:400;font-size:1.1em}.kgame small{font-size:.75em;opacity:.85}
 .kend{font-size:1.1em;line-height:1.5}.kend.good b{color:var(--good)}
-.tiles{grid-template-columns:repeat(5,1fr)!important}.tile.wide2{grid-column:span 2}
+.tile.wide2{grid-column:span 2}
+.games2{margin:.9em 0 .4em;padding:.6em .7em .7em;border-radius:.7em;background:linear-gradient(160deg,#1d4a33,#0f2a1d);box-shadow:inset 0 0 0 .12em #c99a4a;text-align:left}
+.g2h{font:400 1.1em 'Russo One',sans-serif;color:#ffd45a;margin-bottom:.45em}.g2h small{font:400 .7em 'PT Sans',sans-serif;color:#cfe8d6;margin-left:.4em}
+.g2row{display:grid;grid-template-columns:1fr 1fr;gap:.6em}
+.g2{display:flex;align-items:center;gap:.7em;padding:.5em .7em;border:.12em solid rgba(255,212,90,.45);border-radius:.6em;background:rgba(255,255,255,.07);color:#f3ffe9;cursor:pointer;font:inherit;text-align:left;transition:transform .12s,background .15s}
+.g2:hover{background:rgba(255,255,255,.14);transform:translateY(-.1em)}.g2 .g2i{width:3.2em;height:3.2em;flex:none;font-size:1em}
+.g2 b{display:block;font:400 1.15em 'Russo One',sans-serif;color:#ffd45a}.g2 small{font-size:.8em;opacity:.85}
 .ktimer{color:#ff8a7a;font-family:'Russo One',sans-serif}.knext{color:#fff3c4;font-family:'Russo One',sans-serif;text-shadow:0 .1em .3em #000}
 .kpeople{display:flex;flex-wrap:wrap;gap:.5em;justify-content:center;margin:.6em 0}.kpeople .lbs{position:relative;width:8.5em}
 .kopts{padding:0 1.4em}
@@ -1139,18 +1145,19 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       <button class="btn" id="tBack" hidden></button>
       <div class="tplayrow"><button class="btn tplay" id="tPlay">ИГРАТЬ</button><button class="btn tplay tmap" id="tMap" hidden>🗺 РАЙОН</button><button class="btn tplay tbil" id="tBil" hidden>🎱 БИЛЬЯРДНАЯ</button></div>
       <div class="trow"><button class="btn alt" id="tProf">👤 Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button><button class="btn alt" data-open="rules">📖 Правила</button></div>
-      <small class="tver">версия 2.81</small>
+      <small class="tver">версия 2.82</small>
     </div>
   </div>
   <div class="ov" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.81</button></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.82</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
           <div class="mmcol">
             <div class="mmh">1. Твой пацан</div>
             <div data-mychar></div>
+        <div class="games2"><div class="g2h">🎲 Другие игры <small>отдельно от козла: свой стол, свои правила</small></div><div class="g2row" id="g2row"></div></div>
             <button id="profBtn" hidden></button>
           </div>
           <div class="mmcol">
@@ -1257,7 +1264,8 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.81 · Сегодня</h3><ul><li>🃏 Катран у Жоры — отдельный подвал, плитка «Катран» в меню. Дурак (подкидной и переводной, от 2 до 4, можно парами), покер на 36 картах и очко против банкира. На интерес, на семки или на гривны. С ботами трёх уровней и по сети с пацанами</li><li>⭐ Талисманы качаются до ★3: каждая звезда +50% к бонусу</li><li>🖼 Оправы аватара по уровню теперь картинками: дерево, медь, сталь, золото, аметист, лава, драконы и царская</li><li>🎁 Ещё картинки: подарок у заданий, кубок в итогах матча, мешок гривен</li><li>8 ачивок за катран</li></ul>
+        <h3>Версия 2.82 · Сегодня</h3><ul><li>🎱 Новые правила «Местный» (вместо «Руской»): бьёшь любым шаром в любой, главное — задеть другой шар. Не задел — соперник ставит шар куда хочет. Забей 7 любых, потом чёрную восьмёрку. Чёрный раньше времени — проиграл</li><li>🎱 Шары катятся по-настоящему: номер проворачивается вместе с шаром. Звук удара шаров мягче</li><li>🎲 Бильярдная и Катран — отдельным блоком «Другие игры» в меню</li><li>🗺 На карте района карточки открываются по клику, а не при наведении — до бильярдной теперь легко дойти мышкой</li><li>«Русская баня» теперь «Супер-баня»</li><li>Починили: журнал добычи снова открывается, бильярдная больше не зависает под меню</li></ul>
+        <h3>Версия 2.81</h3><ul><li>🃏 Катран у Жоры — отдельный подвал, плитка «Катран» в меню. Дурак (подкидной и переводной, от 2 до 4, можно парами), покер на 36 картах и очко против банкира. На интерес, на семки или на гривны. С ботами трёх уровней и по сети с пацанами</li><li>⭐ Талисманы качаются до ★3: каждая звезда +50% к бонусу</li><li>🖼 Оправы аватара по уровню теперь картинками: дерево, медь, сталь, золото, аметист, лава, драконы и царская</li><li>🎁 Ещё картинки: подарок у заданий, кубок в итогах матча, мешок гривен</li><li>8 ачивок за катран</li></ul>
         <h3>Версия 2.80</h3><ul><li>🧿 Талисманы! 9 штук, у каждого свой бонус: больше опыта и добычи, точка пашет бодрее, находки лежат дольше, кулёк щедрее, скидка у Жоры. С ботами и на районе ещё: Гудок врёт реже, «второй шанс» на ложную предъяву, местные крысят реже. Выиграть в козла по сети талисман не поможет</li><li>👤 «Мой профиль» по-новому: аватар в центре, вокруг ячейки — оправа, фон, значок, рубашка, скатерть, эффекты и три ячейки талисманов. Тык по ячейке — выбираешь, шо надеть</li><li>👀 Экипировку пацанов видно в досье за столом и во «Дворе»</li><li>🖼 Новые картинки вместо смайликов: ресурсы, гривна, кульки, сундуки, рамки редкости, разделы. Шесть новых значков у ника</li><li>🏠 Меню навели порядок: сверху твой пацан, под ним запас (тыкни ресурс — подскажет, где брать), разделы крупными плитками. Район и Бильярдная теперь там, на стартовом экране — только козёл</li><li>🗺 На районе по два боя. «Центр» и «Отшиб» на карте подвинули, «Белладжио» теперь под Центром</li><li>🎱 «Московская» в бильярде теперь «Руская»</li></ul>
         <h3>Версия 2.70</h3><ul><li>🏚 Барахолка — крафт 2.0. Украшения качаются до ★3: блеск, свечение, искры. Лишнее можно разобрать и вернуть часть ресурсов</li><li>Новые украшения: рубашки карт, скатерть на стол, эффект победы (салют, голуби, дождь из семок и гривен), эффект жирной взятки (молния, огонь, крышки фонтаном) и след летящей карты. По сети это видят все за столом</li><li>💌 Альбом вкладышей «Love is»: три набора по 10, за собранный — значок и звание. Повторки меняешь у Барыги</li><li>🚂 Задания Вити Гудка: три в день, серия дней подряд даёт бонус</li><li>🏪 Ларёк Жоры: каждый день новый товар, иногда редкое «только сегодня»</li><li>🛍 Кулёк с рынка за каждую победу: внутри ресурсы, а может и украшение</li></ul>
         <h3>Версия 2.63</h3><ul><li>🗺 На Черёмушках три боя подряд, каждый сильнее: «Голубятня», «Лавочка у подъезда» (Баба Зоя и Тётя Валя палят крыс сразу) и «Хозяева двора» (Боксёр Санёк и Таксист Палыч). Район пройден, когда выиграны все три</li><li>Районы на карте аккуратно разложены по городу, навести проще</li><li>Справа вверху новое место — «Отшиб». Пока закрыто, скоро откроем</li></ul>
@@ -2584,7 +2592,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
   const MAP_FILE = 'map';
   // Бильярдные на карте: hall — id из billiard.js HALLS, pin — точка в процентах
   const BIL_PINS = [
-    { hall: 'banya', pin: [7, 41] },     // «Русская баня» — на Черёмушках, нужна для Строителя
+    { hall: 'banya', pin: [7, 41] },     // «Супер-баня» — на Черёмушках, нужна для Строителя
     { hall: 'bellagio', pin: [48, 42] },  // «Белладжио» — прямо под названием Центра, нужна для Центра
     { hall: 'bar', pin: [56, 73] },       // «Местный бар» — на БАЗЕ, без него к дедам не пускают
   ];
@@ -2795,7 +2803,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
   // и одна строчка тут. felt — где на картинке стола сукно (края бортов), в процентах: [лево, верх, право, низ].
   const HALLS = [
     { id: 'bellagio', name: 'Белладжио', desc: 'Местный пафосный клуб: люстры, бархат, бар. Кий держи ровно, тут на тебя смотрят', felt: [7.476, 17.003, 92.524, 75.983], music: 'blat' },
-    { id: 'banya', name: 'Русская баня', desc: 'Бильярдная «Русская баня». Скоро откроется', soon: true },
+    { id: 'banya', name: 'Супер-баня', desc: 'Бильярдная «Супер-баня». Скоро откроется', soon: true },
     { id: 'bar', name: 'Местный бар', desc: 'Бар возле БАЗЫ, стол с прожжённым сукном. Скоро', soon: true },
   ];
 
@@ -2832,8 +2840,9 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
   function simulate(state, shot, onFrame) {
     const st = clone(state);
     const B = st.balls.filter((b) => !b.out).map((b) => ({ n: b.n, x: b.x, y: b.y, vx: 0, vy: 0, out: false, ref: b }));
-    const cue = B.find((b) => b.n === 0);
-    const ev = { first: null, pocketed: [], off: [], rails: 0, cueRailsBeforeHit: 0, hits: [], t: 0 };
+    const sn = shot.ball === undefined ? 0 : +shot.ball; // каким шаром бьём (в «Местном» — любым)
+    const cue = B.find((b) => b.n === sn);
+    const ev = { striker: sn, first: null, pocketed: [], off: [], rails: 0, cueRailsBeforeHit: 0, hits: [], t: 0 };
     if (!cue) return { state: st, ev };
     const len = Math.sqrt(shot.dx * shot.dx + shot.dy * shot.dy) || 1;
     const p = Math.max(0.02, Math.min(1, +shot.power || 0));
@@ -2872,7 +2881,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
           if (rv >= 0) continue;
           const jimp = -(1 + PH.eBall) * rv / 2;
           a.vx -= jimp * nx; a.vy -= jimp * ny; c.vx += jimp * nx; c.vy += jimp * ny;
-          if (ev.first === null && (a.n === 0 || c.n === 0)) ev.first = a.n === 0 ? c.n : a.n;
+          if (ev.first === null && (a.n === sn || c.n === sn)) ev.first = a.n === sn ? c.n : a.n;
           ev.hits.push({ t, k: 'ball', v: -rv });
           moving = true;
         }
@@ -2890,18 +2899,18 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
         }
         // длинные борта (верх и низ)
         if (b.y < R && !inGapX(b.x)) {
-          if (b.vy < 0) { if (-b.vy > jumpV && Math.abs(b.vx) < -b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vy }); }
+          if (b.vy < 0) { if (-b.vy > jumpV && Math.abs(b.vx) < -b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vy }); }
           b.y = R;
         } else if (b.y > T.H - R && !inGapX(b.x)) {
-          if (b.vy > 0) { if (b.vy > jumpV && Math.abs(b.vx) < b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vy }); }
+          if (b.vy > 0) { if (b.vy > jumpV && Math.abs(b.vx) < b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vy }); }
           b.y = T.H - R;
         }
         // короткие борта (лево и право)
         if (b.x < R && !inGapY(b.y)) {
-          if (b.vx < 0) { if (-b.vx > jumpV && Math.abs(b.vy) < -b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vx }); }
+          if (b.vx < 0) { if (-b.vx > jumpV && Math.abs(b.vy) < -b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vx }); }
           b.x = R;
         } else if (b.x > T.W - R && !inGapY(b.y)) {
-          if (b.vx > 0) { if (b.vx > jumpV && Math.abs(b.vy) < b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vx }); }
+          if (b.vx > 0) { if (b.vx > jumpV && Math.abs(b.vy) < b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vx }); }
           b.x = T.W - R;
         }
         // упал в лузу: центр ушёл за линию борта в проёме
@@ -2927,10 +2936,13 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       cueFoul: false,            // биток в лузе = штраф
       returnOnFoul: false,       // при штрафе возвращаем на стол один твой забитый шар
     },
+    // «Местный» (правила владельца): бьёшь любым шаром в любой, главное — задеть другой шар.
+    // Не задел — штраф, соперник ставит любой шар куда хочет и бьёт. Чёрный (8) — последним: сперва 7 любых, потом чёрный.
+    // Забил чёрный раньше — проиграл. Ключ moscow оставлен, шоб старые настройки не сломались.
     moscow: {
-      name: 'Руская', sub: '',
-      desc: 'Как свободная, свояк засчитывается, но после него ход переходит: соперник ставит биток с руки в «дом».',
-      cueCounts: true, afterCue: 'opp', cueFoul: false, returnOnFoul: false,
+      name: 'Местный', sub: 'как у нас',
+      desc: 'Бьёшь любым шаром в любой шар, главное — задеть другой шар. Не задел — соперник ставит шар куда хочет. Забей 7 любых, а потом чёрный. Чёрный раньше времени — проиграл.',
+      any: true, black: 8, need: 7, cueCounts: true, afterCue: 'self', cueFoul: false, returnOnFoul: false,
     },
     nevsky: {
       name: 'Невская', sub: '',
@@ -2942,7 +2954,8 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
 
   // Новая партия. n — сколько игроков (2 или 4), variant — ключ VARIANTS
   function newGame(n, variant, seed) {
-    return { n: n === 4 ? 4 : 2, variant: VARIANTS[variant] ? variant : 'free', state: rack(seed || Date.now()), turn: 0, score: [0, 0], hand: true, over: false, winner: null, shots: 0, last: null, seed: seed || 0 };
+    const v = VARIANTS[variant] ? variant : 'free';
+    return { n: n === 4 ? 4 : 2, variant: v, state: rack(seed || Date.now()), turn: 0, score: [0, 0], hand: !VARIANTS[v].any, over: false, winner: null, shots: 0, last: null, seed: seed || 0 };
   }
   const teamOf = (g, seat) => seat % 2;
   const nextSeat = (g, seat) => (seat + 1) % g.n;
@@ -2964,10 +2977,17 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     return state.balls.every((b) => b.out || b.n === 0 || (b.x - x) * (b.x - x) + (b.y - y) * (b.y - y) >= D * D);
   }
 
+  // «Местный»: шар с руки ставится в любое место стола, лишь бы не на другой шар
+  function canPlaceAny(state, n, x, y) {
+    if (x < T.R || x > T.W - T.R || y < T.R || y > T.H - T.R) return false;
+    const D = T.R * 2 + 0.05;
+    return state.balls.every((b) => b.out || b.n === n || (b.x - x) * (b.x - x) + (b.y - y) * (b.y - y) >= D * D);
+  }
   // Сыграть удар в партии g. shot: { dx, dy, power, place?: {x, y} } (place — куда поставил биток с руки).
   // Возвращает { ok, error, sim, judge } и меняет g.
   function applyShot(g, shot) {
     if (g.over) return { ok: false, error: 'Партия окончена' };
+    if (VARIANTS[g.variant].any) return applyAny(g, shot);
     const st = g.state, cue = st.balls.find((b) => b.n === 0);
     if (g.hand) {
       const pl = shot.place || { x: cue.x, y: cue.y };
@@ -2998,9 +3018,49 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     return { ok: true, sim, judge: j, before };
   }
 
+  // «Местный»: удар любым шаром, чёрный последним
+  function applyAny(g, shot) {
+    const st = g.state, V = VARIANTS[g.variant];
+    const sn = shot.ball === undefined ? 0 : +shot.ball, sb = st.balls.find((b) => b.n === sn && !b.out);
+    if (!sb) return { ok: false, error: 'Таким шаром не ударить' };
+    if (g.hand && shot.place) {
+      const pl = shot.place, pn = pl.n === undefined ? sn : +pl.n, pb = st.balls.find((b) => b.n === pn && !b.out);
+      if (!pb || !canPlaceAny(st, pn, +pl.x, +pl.y)) return { ok: false, error: 'Шар ставь на свободное место стола' };
+      pb.x = +pl.x; pb.y = +pl.y;
+    }
+    const before = { balls: st.balls.map((b) => ({ n: b.n, x: b.x, y: b.y, out: b.out })) };
+    const sh = { dx: shot.dx, dy: shot.dy, power: shot.power, ball: sn };
+    const sim = simulate(st, sh);
+    const j = judge(g, sim.ev);
+    g.state = sim.state;
+    const shooter = g.turn, team = teamOf(g, shooter);
+    for (const n of j.returnBalls) { const b = g.state.balls.find((x) => x.n === n); const p = freeSpot(g.state, T.footX, T.H / 2); b.x = p.x; b.y = p.y; b.out = false; }
+    g.score[team] += j.points;
+    g.shots++;
+    if (j.blackWin) { g.over = true; g.winner = team; }
+    else if (j.blackLoss) { g.over = true; g.winner = 1 - team; }
+    else if (!g.state.balls.some((b) => !b.out && b.n !== V.black)) { // остался один чёрный, а забивать некому — по счёту
+      const b8 = g.state.balls.find((b) => b.n === V.black); if (b8 && b8.out) { g.over = true; g.winner = g.score[0] >= g.score[1] ? 0 : 1; }
+    }
+    g.hand = j.hand; if (!j.again) g.turn = nextSeat(g, shooter);
+    g.last = { seat: shooter, shot: sh, before, judge: j };
+    return { ok: true, sim, judge: j, before };
+  }
   // Разбор удара: штраф, очки, кто бьёт дальше
   function judge(g, ev) {
     const V = VARIANTS[g.variant];
+    if (V.any) {
+      const team = teamOf(g, g.turn), pot = ev.pocketed.slice(), B = V.black;
+      let foul = null;
+      if (ev.first === null) foul = 'Не задел ни одного шара';
+      else if (ev.off.length) foul = 'Шар вылетел со стола';
+      const r = { foul, points: 0, again: false, hand: false, cue: false, potted: pot.filter((n) => n !== B), off: ev.off.slice(), returnBalls: ev.off.slice(), returned: null, svoyak: pot.includes(ev.striker) && !foul, black: pot.includes(B) };
+      if (foul) { r.returnBalls = r.returnBalls.concat(pot); r.hand = true; return r; } // забитое не считается, соперник ставит шар куда хочет
+      r.points = pot.filter((n) => n !== B).length;
+      if (pot.includes(B)) { if (g.score[team] + r.points >= V.need) r.blackWin = true; else r.blackLoss = true; }
+      r.again = r.points > 0;
+      return r;
+    }
     const objPot = ev.pocketed.filter((n) => n !== 0), cuePot = ev.pocketed.includes(0), offObj = ev.off.filter((n) => n !== 0), cueOff = ev.off.includes(0);
     let foul = null;
     if (ev.first === null) foul = cuePot ? 'Биток в лузе без касания' : 'Не попал ни в один шар';
@@ -3055,14 +3115,81 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       if (!clear) continue;
       const score = cut * cut * 100 / (al * 0.35 + tl + 25);
       const pow = Math.min(1, 0.18 + (al + tl / Math.max(cut, 0.3)) / 330);
-      out.push({ dx: ax, dy: ay, power: pow, score, ball: b.n, pocket: p });
+      out.push({ dx: ax, dy: ay, power: pow, score, target: b.n, pocket: p });
     }
     return out.sort((a, b) => b.score - a.score);
+  }
+  // «Местный»: перебираем, каким шаром бить, по какому и в какую лузу
+  function candidatesAny(g, st, override) {
+    const V = VARIANTS[g.variant], team = teamOf(g, g.turn), canBlack = g.score[team] >= V.need;
+    const live = st.balls.filter((b) => !b.out), out = [], D = T.R * 2;
+    const pos = (b) => (override && override.n === b.n ? override : b);
+    for (const s0 of live) {
+      if (s0.n === V.black && !canBlack) continue; // чёрным не бьём, пока рано
+      const s = pos(s0);
+      for (const b0 of live) {
+        if (b0 === s0 || (b0.n === V.black && !canBlack)) continue;
+        const b = pos(b0);
+        for (const p of T.pockets) {
+          const tx = p.x - b.x, ty = p.y - b.y, tl = Math.sqrt(tx * tx + ty * ty);
+          const ux = tx / tl, uy = ty / tl, gx = b.x - ux * D, gy = b.y - uy * D;
+          const ax = gx - s.x, ay = gy - s.y, al = Math.sqrt(ax * ax + ay * ay);
+          if (al < 0.5) continue;
+          const cut = (ax * ux + ay * uy) / al;
+          if (cut < 0.25 || (!p.c && Math.abs(uy) < 0.55)) continue;
+          let clear = true;
+          for (const o0 of live) {
+            if (o0 === s0 || o0 === b0) continue; const o = pos(o0);
+            if (segDist2(o.x, o.y, s.x, s.y, gx, gy) < D * D * 0.98 || segDist2(o.x, o.y, b.x, b.y, p.x, p.y) < D * D * 0.9) { clear = false; break; }
+          }
+          if (!clear) continue;
+          out.push({ dx: ax, dy: ay, power: Math.min(1, 0.18 + (al + tl / Math.max(cut, 0.3)) / 330), score: cut * cut * 100 / (al * 0.35 + tl + 25), ball: s0.n, target: b0.n });
+        }
+      }
+    }
+    return out.sort((a, b) => b.score - a.score);
+  }
+  function botShotAny(g, L, rnd) {
+    const V = VARIANTS[g.variant], st = g.state;
+    let place = null, override = null, cands;
+    if (g.hand) { // штраф соперника: ставим любой шар туда, откуда удобнее всего
+      let best = null;
+      const pool = st.balls.filter((b) => !b.out && b.n !== V.black);
+      for (let k = 0; k < 40; k++) {
+        const b = pool[Math.floor(rnd() * pool.length)]; if (!b) break;
+        const x = T.R + 1 + rnd() * (T.W - 2 * T.R - 2), y = T.R + 1 + rnd() * (T.H - 2 * T.R - 2);
+        if (!canPlaceAny(st, b.n, x, y)) continue;
+        const c = candidatesAny(g, st, { n: b.n, x, y }).filter((q) => q.ball === b.n)[0];
+        if (c && (!best || c.score > best.c.score)) best = { n: b.n, x, y, c };
+      }
+      if (best) { place = { n: best.n, x: best.x, y: best.y }; override = place; }
+    }
+    if (g.shots === 0) { // разбой: белым в пирамиду
+      const cue = st.balls.find((b) => b.n === 0), apex = st.balls.filter((b) => b.n !== 0).reduce((a, b) => (b.x < a.x ? b : a));
+      return noisy({ dx: apex.x - cue.x, dy: apex.y - cue.y + (rnd() - .5) * 1.5, power: .9 + rnd() * .1, ball: 0 }, L, rnd);
+    }
+    cands = candidatesAny(g, st, override).slice(0, L.look);
+    let pick = null, bestVal = -1e9;
+    for (const c of cands.slice(0, 6)) {
+      const test = { balls: st.balls.map((b) => (override && b.n === override.n ? { n: b.n, x: override.x, y: override.y, out: false } : b)) };
+      const r = simulate(test, c), j = judge(g, r.ev);
+      const val = (j.foul ? -50 : 0) + (j.blackLoss ? -500 : 0) + (j.blackWin ? 500 : 0) + j.points * 30 + c.score;
+      if (val > bestVal) { bestVal = val; pick = c; }
+    }
+    if (!pick) { // нечего забить: тихонько толкнём ближнюю пару шаров (не чёрным и не в чёрный)
+      const live = st.balls.filter((b) => !b.out && b.n !== V.black);
+      let pr = null;
+      for (const a of live) for (const b of live) { if (a === b) continue; const d = Math.hypot(a.x - b.x, a.y - b.y); if (!pr || d < pr.d) pr = { a, b, d }; }
+      if (!pr) { const b8 = st.balls.find((b) => !b.out); const o = st.balls.find((b) => !b.out && b !== b8) || b8; pr = { a: o, b: b8 }; }
+      pick = { dx: pr.b.x - pr.a.x, dy: pr.b.y - pr.a.y, power: .3 + rnd() * .15, ball: pr.a.n };
+    }
+    return noisy(Object.assign({}, pick, { place }), L, rnd);
   }
   // Бот выбирает удар. rnd — функция случайности (на сервере Math.random)
   function botShot(g, level, rnd) {
     rnd = rnd || Math.random;
     const L = BOT[Math.max(0, Math.min(2, level | 0))];
+    if (VARIANTS[g.variant].any) return botShotAny(g, L, rnd);
     let st = g.state, place = null;
     const cue0 = st.balls.find((b) => b.n === 0);
     // с руки: пробуем несколько точек в «доме»
@@ -3102,7 +3229,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
   function noisy(s, L, rnd) {
     const g = () => { let u = 0; for (let i = 0; i < 6; i++) u += rnd(); return (u - 3) / 1.2; }; // почти нормальный разброс
     const a = Math.atan2(s.dy, s.dx) + g() * L.aim * Math.PI / 180;
-    return { dx: Math.cos(a), dy: Math.sin(a), power: Math.max(.08, Math.min(1, s.power * (1 + g() * L.pow))), place: s.place || undefined };
+    return { dx: Math.cos(a), dy: Math.sin(a), power: Math.max(.08, Math.min(1, s.power * (1 + g() * L.pow))), place: s.place || undefined, ball: s.ball === undefined ? undefined : s.ball };
   }
 
   // ---------- Реплики за бильярдом (с «шо», без обид между своими) ----------
@@ -3158,7 +3285,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     return { rar: L.rar, item: L.item, qty: L.qty[0] + Math.floor(R() * (L.qty[1] - L.qty[0] + 1)), x: +(sp.x[0] + R() * (sp.x[1] - sp.x[0])).toFixed(1), y: +(sp.y[0] + R() * (sp.y[1] - sp.y[0])).toFixed(1), at: sp.n, bil: true };
   }
 
-  const api = { BIL_LOOT, BIL_SPOTS, rollBilFind, HALLS, LINES, pickLine, T, PH, JAWS, VARIANTS, TO_WIN, BOT, rack, simulate, newGame, applyShot, judge, canPlace, freeSpot, botShot, teamOf, nextSeat };
+  const api = { canPlaceAny, BIL_LOOT, BIL_SPOTS, rollBilFind, HALLS, LINES, pickLine, T, PH, JAWS, VARIANTS, TO_WIN, BOT, rack, simulate, newGame, applyShot, judge, canPlace, freeSpot, botShot, teamOf, nextSeat };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelBil = api;
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -5180,7 +5307,7 @@ function renderPickers() {
       '<div class="lv">Ур. ' + r.lvl + ' · ' + r.name + '</div><div class="xpbar"><i style="width:' + r.pct + '%"></i></div><small>до уровня ' + (r.lvl + 1) + ' ещё ' + (r.next - myXp) + ' опыта</small>' +
       (talOn().length ? '<div class="mtal">' + talOn().map((id) => { const t = talById(id); return '<span title="' + t.n + '">' + (IC(t.ic) || t.e) + '</span>'; }).join('') + '</div>' : '') + '</div></div>' +
       '<div class="stockw">' + stockHtml() + '</div>' +
-      '<div class="tiles">' + tile('map') + tile('bil') + tile('kat') + tile('craft') + tile('sell') + tile('jour') + tile('klad', (bal('karta') + kladCount()) || '') + tile('farm', fp && fp.h >= 1 ? Math.floor(fp.h) + ' ч' : '') +
+      '<div class="tiles">' + tile('map') + tile('craft') + tile('sell') + tile('jour') + tile('klad', (bal('karta') + kladCount()) || '') + tile('farm', fp && fp.h >= 1 ? Math.floor(fp.h) + ' ч' : '') +
       '<button class="tile wide2" data-sec="prof"><span class="ti tav"><img alt="" src="' + CHAR_IMG[myChar] + '"></span><span>Мой профиль</span></button></div>' +
       '<div class="tiles2">' + tile('daily', dqReady() || '') + tile('album') + (bal('kulek') ? tile('kulek', bal('kulek'), ' kulb') : '') + '</div>' +
       '<div class="rstrip">' + others.map((id) => '<span class="rcw"><button class="rc" data-sw="' + id + '" title="Переключиться"><img alt="" src="' + CHAR_IMG[id] + '">' + charById(id).name + ' <i>' + rankOf(ROSTER[id].xp || 0).lvl + '</i></button><button class="rdel" data-del="' + id + '" title="Удалить пацана">×</button></span>').join('') +
@@ -6206,7 +6333,7 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.81') { localStorage.setItem('kozel-seen-ver', '2.81'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.82') { localStorage.setItem('kozel-seen-ver', '2.82'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
 // Точка: при запуске, если пацан поработал больше 10 минут, забираем
 setTimeout(() => { try { if (farmIdx() < 0) { STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + 2; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); } else { const p = farmPending(); if (p && p.h >= 1 / 6) farmCollect(); } renderPickers(); } catch (e) {} }, 1500);
 $('tPlay').onclick = () => { Snd.init(); hide('title'); open('menu'); };
@@ -7180,13 +7307,13 @@ function renderMap() {
     const st = dState(i), p = document.createElementNS(ns, 'polygon');
     p.setAttribute('points', d.area.map((q) => q.join(',')).join(' '));
     p.setAttribute('class', 'dz ' + st + (dCanEnter(i) ? ' ready' : ''));
-    p.onclick = () => showDCard(i); p.onmouseenter = () => showDCard(i);
+    p.onclick = () => showDCard(i); // только по клику: при наведении карточка прыгала, пока ведёшь мышку
     svg.appendChild(p);
     const pin = document.createElement('button');
     pin.className = 'dpin ' + st + (d.boss ? ' boss' : '');
     pin.style.left = d.pin[0] + '%'; pin.style.top = d.pin[1] + '%';
     pin.innerHTML = '<i>' + (st === 'done' ? '🚩' : st === 'open' ? (d.boss ? '👑' : '⚔️') : st === 'beta' ? '🚧' : dCanEnter(i) ? '🔓' : '🔒') + '</i><b>' + d.name + '</b>' + (st === 'beta' ? '<small>скоро</small>' : '');
-    pin.onclick = () => showDCard(i); pin.onmouseenter = () => showDCard(i);
+    pin.onclick = () => showDCard(i);
     $('mapPins').appendChild(pin);
   });
   // бильярдные на карте
@@ -7915,6 +8042,13 @@ document.addEventListener('click', (ev) => {
   if (b) { stockTip(b.closest('.stock').parentElement, b.dataset.res, b); Snd.click(); return; }
   document.querySelectorAll('.stip').forEach((t) => { if (!ev.target.closest('.stip')) t.hidden = true; });
 });
+// «Другие игры» в меню: бильярдная и катран отдельным блоком
+(function otherGames() {
+  const g = $('g2row'); if (!g) return;
+  g.innerHTML = '<button class="g2 bil" data-sec="bil">' + secIc('bil', 'g2i') + '<span><b>Бильярдная</b><small>Шары и кий. С ботами или с пацанами по сети</small></span></button>' +
+    '<button class="g2 kat" data-sec="kat">' + secIc('kat', 'g2i') + '<span><b>Катран у Жоры</b><small>Дурак, покер, очко. На интерес, семки или гривны</small></span></button>';
+  bindSec(g);
+})();
 // картинки разделов на кнопках карты, стартового экрана и в заголовках окон
 (function decorateSections() {
   const set = (id, k, txt) => { const b = $(id); if (b && ICONS[SEC[k][0]]) b.innerHTML = secIc(k, 'bi') + ' ' + txt; };
@@ -8758,9 +8892,9 @@ const Bil = (() => {
     q('[data-bsize]').forEach((b) => { b.onclick = () => { opts.size = +b.dataset.bsize; saveOpts(); openMenu(); }; });
     q('[data-blvl]').forEach((b) => { b.onclick = () => { opts.level = +b.dataset.blvl; saveOpts(); openMenu(); }; });
     q('[data-close]').forEach((b) => { b.onclick = () => hide('bilMenu'); });
-    el('bilBots').onclick = () => { hide('bilMenu'); hide('title'); startBots(); };
+    el('bilBots').onclick = () => { hide('bilMenu'); hide('menu'); hide('title'); startBots(); };
     if (el('bilNet')) el('bilNet').onclick = async () => {
-      try { await Net.createBil({ hall: opts.hall, variant: opts.variant, size: opts.size, botLevel: opts.level }); hide('bilMenu'); hide('title'); }
+      try { await Net.createBil({ hall: opts.hall, variant: opts.variant, size: opts.size, botLevel: opts.level }); hide('bilMenu'); hide('menu'); hide('title'); }
       catch (e) { el('bilMenuIn').querySelector('.bvdesc').textContent = e.message; }
     };
     open('bilMenu');
@@ -8800,20 +8934,29 @@ const Bil = (() => {
     return false;
   }
   const handNow = () => (mode === 'bots' ? g && g.hand : view && view.g && view.g.hand);
-  const cueBall = () => ballsNow().find((b) => b.n === 0);
+  // «Местный»: бить можно любым шаром — selN, какой выбран (тык по шару)
+  const curVar = () => KB.VARIANTS[(mode === 'net' ? view && view.variant : g && g.variant) || 'free'] || KB.VARIANTS.free;
+  const anyMode = () => !!curVar().any;
+  let selN = 0;
+  const cueBall = () => {
+    const B = ballsNow();
+    if (!anyMode()) return B.find((b) => b.n === 0);
+    return B.find((b) => b.n === selN && !b.out) || B.find((b) => b.n === 0 && !b.out) || B.find((b) => !b.out && b.n !== curVar().black) || B.find((b) => !b.out);
+  };
 
   function draw() {
     const c = el('bilCv'); if (!c || el('bil').hidden) return;
     const x = c.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, cw, ch);
     const f = F(), r = T.R * f.s;
     // «дом», когда биток с руки
-    if (myTurn() && handNow()) {
+    if (myTurn() && handNow() && !anyMode()) {
       const [ax, ay] = toPx(0, 0), [bx, by] = toPx(T.kitchen, T.H);
       x.fillStyle = 'rgba(255,240,180,.08)'; x.fillRect(ax, ay, bx - ax, by - ay);
       x.setLineDash([6, 6]); x.strokeStyle = 'rgba(255,240,180,.55)'; x.lineWidth = 1.5; x.beginPath(); x.moveTo(bx, ay); x.lineTo(bx, by); x.stroke(); x.setLineDash([]);
     }
     // прицел
     const cue = cueBall();
+    if (anyMode() && cue && myTurn() && !anim) { const [cx, cy] = toPx(cue.x, cue.y); x.strokeStyle = 'rgba(255,212,90,.95)'; x.lineWidth = 2.5; x.setLineDash([4, 3]); x.beginPath(); x.arc(cx, cy, r * 1.45, 0, Math.PI * 2); x.stroke(); x.setLineDash([]); }
     if (aim && cue && aim.power > 0.01) drawAim(x, cue, f, r);
     x.globalAlpha = .18; for (const b of fx2.trail) drawBall(x, b, f, r, true); x.globalAlpha = 1;
     for (const b of ballsNow()) if (!b.out) drawBall(x, b, f, r);
@@ -8843,7 +8986,9 @@ const Bil = (() => {
     const [px, py] = toPx(b.x, b.y);
     x.fillStyle = 'rgba(0,0,0,.35)'; x.beginPath(); x.ellipse(px + r * .25, py + r * .35, r * 1.02, r * .9, 0, 0, Math.PI * 2); x.fill();
     const gr = x.createRadialGradient(px - r * .35, py - r * .4, r * .1, px, py, r * 1.05);
-    if (b.n === 0) { gr.addColorStop(0, '#fffef6'); gr.addColorStop(.6, '#f3e2a6'); gr.addColorStop(1, '#b89a4e'); }
+    const blk = anyMode() && b.n === curVar().black;
+    if (blk) { gr.addColorStop(0, '#5a5a5a'); gr.addColorStop(.55, '#1a1a1a'); gr.addColorStop(1, '#000'); }
+    else if (b.n === 0) { gr.addColorStop(0, '#fffef6'); gr.addColorStop(.6, '#f3e2a6'); gr.addColorStop(1, '#b89a4e'); }
     else { gr.addColorStop(0, '#ffffff'); gr.addColorStop(.6, '#efe9dc'); gr.addColorStop(1, '#a89f8c'); }
     x.fillStyle = gr; x.beginPath(); x.arc(px, py, r, 0, Math.PI * 2); x.fill();
     if (!ghost) {
@@ -8851,6 +8996,7 @@ const Bil = (() => {
       x.save(); x.beginPath(); x.arc(px, py, r * .98, 0, Math.PI * 2); x.clip();
       for (const v of [u, [-u[0], -u[1], -u[2]]]) decal(x, px, py, r, [v[0] * .75, v[1] * .75, v[2]], () => {
         if (b.n === 0) { x.fillStyle = '#c0261c'; x.beginPath(); x.arc(0, 0, r * .24, 0, Math.PI * 2); x.fill(); }
+        else if (blk) { x.fillStyle = '#f4f1ea'; x.beginPath(); x.arc(0, 0, r * .36, 0, Math.PI * 2); x.fill(); x.fillStyle = '#111'; x.font = '700 ' + Math.max(6, r * .5) + 'px "PT Sans",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('8', 0, r * .03); }
         else { x.fillStyle = 'rgba(29,26,22,.85)'; x.font = '700 ' + Math.max(6, r * .62) + 'px "PT Sans",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(b.n), 0, r * .03); }
       });
       x.restore();
@@ -8905,8 +9051,12 @@ const Bil = (() => {
       const r = c.getBoundingClientRect(), [ux, uy] = toU(e.clientX - r.left, e.clientY - r.top), cue = cueBall();
       if (!cue) return;
       c.setPointerCapture(e.pointerId);
+      if (anyMode()) { // тык по шару: этим бьём; после чужого промаха его можно ещё и перетащить куда угодно
+        const hit = ballsNow().filter((b) => !b.out && Math.hypot(ux - b.x, uy - b.y) <= T.R * 1.6).sort((a, b) => Math.hypot(ux - a.x, uy - a.y) - Math.hypot(ux - b.x, uy - b.y))[0];
+        if (hit) { selN = hit.n; Snd.click && Snd.click(); if (handNow()) ptr = { place: true }; else ptr = null; draw(); render(); return; }
+      }
       // с руки: хватаешь биток и тащишь его по «дому»
-      if (handNow() && Math.hypot(ux - cue.x, uy - cue.y) <= T.R * 3.2) { ptr = { place: true }; return; }
+      if (handNow() && !anyMode() && Math.hypot(ux - cue.x, uy - cue.y) <= T.R * 3.2) { ptr = { place: true }; return; }
       // прицел: тянешь от битка, сила — насколько оттянул от точки, где нажал
       ptr = { aim: true, d0: Math.max(T.R * 1.2, Math.hypot(ux - cue.x, uy - cue.y)) }; updAim(ux, uy);
     });
@@ -8918,12 +9068,17 @@ const Bil = (() => {
     const up = () => {
       if (!ptr) return;
       const was = ptr; ptr = null; el('bilPow').hidden = true;
-      if (was.aim && aim && aim.power >= .04) { const s = { dx: aim.dx, dy: aim.dy, power: aim.power }; aim = null; shoot(s); }
+      if (was.aim && aim && aim.power >= .04) { const s = { dx: aim.dx, dy: aim.dy, power: aim.power }; if (anyMode()) s.ball = (cueBall() || { n: 0 }).n; aim = null; shoot(s); }
       else { aim = null; draw(); }
     };
     c.addEventListener('pointerup', up); c.addEventListener('pointercancel', () => { ptr = null; aim = null; el('bilPow').hidden = true; draw(); });
   }
   function movePlace(ux, uy) {
+    if (anyMode()) { // «Местный»: в любое свободное место стола
+      const x = Math.max(T.R + .1, Math.min(T.W - T.R - .1, ux)), y = Math.max(T.R + .1, Math.min(T.H - T.R - .1, uy)), b = cueBall();
+      if (b && KB.canPlaceAny({ balls: ballsNow() }, b.n, x, y)) { b.x = x; b.y = y; place = { n: b.n, x, y }; draw(); }
+      return;
+    }
     const x = Math.max(T.R + .1, Math.min(T.kitchen, ux)), y = Math.max(T.R + .1, Math.min(T.H - T.R - .1, uy));
     const st = { balls: ballsNow() };
     if (KB.canPlace(st, x, y)) { const cue = cueBall(); cue.x = x; cue.y = y; place = { x, y }; draw(); }
@@ -8944,7 +9099,7 @@ const Bil = (() => {
       const hits = sim.ev.hits.slice(); let hi = 0, lastClick = 0, prev = before.balls;
       anim = true; aim = null; Snd.bshot && Snd.bshot(shot.power);
       // облачко мела у битка
-      const cue0 = before.balls.find((b) => b.n === 0);
+      const cue0 = before.balls.find((b) => b.n === (shot.ball === undefined ? 0 : shot.ball));
       if (cue0) for (let k = 0; k < 10; k++) { const a = Math.atan2(-shot.dy, -shot.dx) + (Math.random() - .5) * 1.4, v = 6 + Math.random() * 10; fx2.parts.push({ x: cue0.x, y: cue0.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t0: performance.now(), life: 500 + Math.random() * 300 }); }
       if (shot.power > .85) el('bil').animate([{ transform: 'none' }, { transform: 'translate(3px,-2px)' }, { transform: 'translate(-3px,2px)' }, { transform: 'translate(2px,1px)' }, { transform: 'none' }], { duration: 260 });
       const t0 = performance.now();
@@ -9069,11 +9224,12 @@ const Bil = (() => {
     const tk = mode === 'net' ? (view && view.taken) || [] : taken;
     const plate = (i) => { const s = S[i]; if (!s) return ''; return '<div class="bpl ' + (i % 2 ? 'them' : 'us') + (turn === i ? ' turn' : '') + '" data-bseat="' + i + '">' + (CHAR_IMG[s.char] ? '<img alt="" src="' + CHAR_IMG[s.char] + '">' : '') + '<span><b>' + (i === 0 ? 'Ты' : s.name) + '</b><small>🎱 ' + (tk[i] || 0) + (s.bot ? ' · ' + LVL[s.level !== undefined ? s.level : 1].toLowerCase() : '') + '</small></span></div>'; };
     const us = [0, 2].filter((i) => i < n).map(plate).join(''), them = [1, 3].filter((i) => i < n).map(plate).join('');
-    el('bilTop').innerHTML = '<div class="bteam">' + us + '</div><div class="bscore"><small>МЫ</small><b>' + score[0] + '</b><i>:</i><b>' + score[1] + '</b><small>ОНИ</small><em>до ' + KB.TO_WIN + ' · ' + KB.VARIANTS[mode === 'net' ? view.variant : g.variant].name.toLowerCase() + '</em></div><div class="bteam">' + them + '</div>';
+    el('bilTop').innerHTML = '<div class="bteam">' + us + '</div><div class="bscore"><small>МЫ</small><b>' + score[0] + '</b><i>:</i><b>' + score[1] + '</b><small>ОНИ</small><em>' + (anyMode() ? curVar().need + ' + чёрный' : 'до ' + KB.TO_WIN) + ' · ' + KB.VARIANTS[mode === 'net' ? view.variant : g.variant].name.toLowerCase() + '</em></div><div class="bteam">' + them + '</div>';
     let msg = '';
     if (ended || (mode === 'bots' && g && g.over) || (mode === 'net' && view && view.g && view.g.over)) msg = 'Партия окончена';
     else if (anim) msg = '';
-    else if (myTurn()) msg = handNow() ? 'Твой удар с руки: перетащи биток по «дому», потом тяни назад и отпускай' : 'Твой удар: тяни назад от битка и отпускай';
+    else if (myTurn()) msg = anyMode() ? (handNow() ? 'Соперник промазал: тыкни любой шар и поставь куда хочешь, потом тяни назад и отпускай' : 'Твой удар: тыкни шар, которым бьёшь, потом тяни назад и отпускай') + (score[0] >= curVar().need ? ' · теперь можно чёрный!' : '')
+      : handNow() ? 'Твой удар с руки: перетащи биток по «дому», потом тяни назад и отпускай' : 'Твой удар: тяни назад от битка и отпускай';
     else if (turn !== undefined && turn !== null && S[turn]) msg = 'Бьёт ' + (S[turn].name || '');
     if (msg) setMsg(msg);
     setFigs();
@@ -9120,7 +9276,8 @@ const Bil = (() => {
     }
   }
   async function doShot(seat, shot) {
-    if (g.hand) shot.place = shot.place || place || { x: cueBall().x, y: cueBall().y };
+    if (g.hand && !KB.VARIANTS[g.variant].any) shot.place = shot.place || place || { x: cueBall().x, y: cueBall().y };
+    if (g.hand && KB.VARIANTS[g.variant].any && seat === 0 && !shot.place && place) shot.place = place;
     const r = KB.applyShot(g, shot);
     if (!r.ok) { setMsg(r.error, true); return next(); }
     place = null;
@@ -9143,7 +9300,7 @@ const Bil = (() => {
   function shoot(s) {
     if (mode === 'bots') return doShot(0, s);
     if (mode === 'net') {
-      if (handNow()) s.place = place || { x: cueBall().x, y: cueBall().y };
+      if (handNow()) s.place = anyMode() ? place || undefined : place || { x: cueBall().x, y: cueBall().y };
       waitNet = true; Net.send('shot', s).then(() => {}).catch(() => {}).finally(() => { setTimeout(() => { waitNet = false; }, 400); });
     }
   }

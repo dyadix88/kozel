@@ -763,8 +763,10 @@ function bilShoot(room, seat, shot, auto) {
   const g = room.g, L = KB.LINES;
   if (!g || g.over || g.turn !== seat) throw new Error('Сейчас не твой удар');
   const sh = { dx: Number(shot.dx) || 0, dy: Number(shot.dy) || 0, power: Math.max(0, Math.min(1, Number(shot.power) || 0)) };
+  if (shot.ball !== undefined && shot.ball !== null) sh.ball = Math.max(0, Math.min(15, Math.floor(Number(shot.ball) || 0))); // «Местный»: бьют любым шаром
   if (!sh.dx && !sh.dy) throw new Error('Куда бьёшь?');
-  if (g.hand) sh.place = shot.place && { x: Number(shot.place.x), y: Number(shot.place.y) };
+  if (g.hand && shot.place) sh.place = { x: Number(shot.place.x), y: Number(shot.place.y) };
+  if (sh.place && shot.place.n !== undefined) sh.place.n = Math.max(0, Math.min(15, Math.floor(Number(shot.place.n) || 0)));
   const r = KB.applyShot(g, sh);
   if (!r.ok) throw new Error(r.error);
   g.last.place = sh.place || null;

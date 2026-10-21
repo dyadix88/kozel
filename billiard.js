@@ -32,7 +32,7 @@
   // и одна строчка тут. felt — где на картинке стола сукно (края бортов), в процентах: [лево, верх, право, низ].
   const HALLS = [
     { id: 'bellagio', name: 'Белладжио', desc: 'Местный пафосный клуб: люстры, бархат, бар. Кий держи ровно, тут на тебя смотрят', felt: [7.476, 17.003, 92.524, 75.983], music: 'blat' },
-    { id: 'banya', name: 'Русская баня', desc: 'Бильярдная «Русская баня». Скоро откроется', soon: true },
+    { id: 'banya', name: 'Супер-баня', desc: 'Бильярдная «Супер-баня». Скоро откроется', soon: true },
     { id: 'bar', name: 'Местный бар', desc: 'Бар возле БАЗЫ, стол с прожжённым сукном. Скоро', soon: true },
   ];
 
@@ -69,8 +69,9 @@
   function simulate(state, shot, onFrame) {
     const st = clone(state);
     const B = st.balls.filter((b) => !b.out).map((b) => ({ n: b.n, x: b.x, y: b.y, vx: 0, vy: 0, out: false, ref: b }));
-    const cue = B.find((b) => b.n === 0);
-    const ev = { first: null, pocketed: [], off: [], rails: 0, cueRailsBeforeHit: 0, hits: [], t: 0 };
+    const sn = shot.ball === undefined ? 0 : +shot.ball; // каким шаром бьём (в «Местном» — любым)
+    const cue = B.find((b) => b.n === sn);
+    const ev = { striker: sn, first: null, pocketed: [], off: [], rails: 0, cueRailsBeforeHit: 0, hits: [], t: 0 };
     if (!cue) return { state: st, ev };
     const len = Math.sqrt(shot.dx * shot.dx + shot.dy * shot.dy) || 1;
     const p = Math.max(0.02, Math.min(1, +shot.power || 0));
@@ -109,7 +110,7 @@
           if (rv >= 0) continue;
           const jimp = -(1 + PH.eBall) * rv / 2;
           a.vx -= jimp * nx; a.vy -= jimp * ny; c.vx += jimp * nx; c.vy += jimp * ny;
-          if (ev.first === null && (a.n === 0 || c.n === 0)) ev.first = a.n === 0 ? c.n : a.n;
+          if (ev.first === null && (a.n === sn || c.n === sn)) ev.first = a.n === sn ? c.n : a.n;
           ev.hits.push({ t, k: 'ball', v: -rv });
           moving = true;
         }
@@ -127,18 +128,18 @@
         }
         // длинные борта (верх и низ)
         if (b.y < R && !inGapX(b.x)) {
-          if (b.vy < 0) { if (-b.vy > jumpV && Math.abs(b.vx) < -b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vy }); }
+          if (b.vy < 0) { if (-b.vy > jumpV && Math.abs(b.vx) < -b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vy }); }
           b.y = R;
         } else if (b.y > T.H - R && !inGapX(b.x)) {
-          if (b.vy > 0) { if (b.vy > jumpV && Math.abs(b.vx) < b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vy }); }
+          if (b.vy > 0) { if (b.vy > jumpV && Math.abs(b.vx) < b.vy * 0.35) { fly(b); continue; } b.vy = -b.vy * PH.eRail; b.vx *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vy }); }
           b.y = T.H - R;
         }
         // короткие борта (лево и право)
         if (b.x < R && !inGapY(b.y)) {
-          if (b.vx < 0) { if (-b.vx > jumpV && Math.abs(b.vy) < -b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vx }); }
+          if (b.vx < 0) { if (-b.vx > jumpV && Math.abs(b.vy) < -b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: -b.vx }); }
           b.x = R;
         } else if (b.x > T.W - R && !inGapY(b.y)) {
-          if (b.vx > 0) { if (b.vx > jumpV && Math.abs(b.vy) < b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === 0 && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vx }); }
+          if (b.vx > 0) { if (b.vx > jumpV && Math.abs(b.vy) < b.vx * 0.35) { fly(b); continue; } b.vx = -b.vx * PH.eRail; b.vy *= 0.97; ev.rails++; if (b.n === sn && ev.first === null) ev.cueRailsBeforeHit++; ev.hits.push({ t, k: 'rail', v: b.vx }); }
           b.x = T.W - R;
         }
         // упал в лузу: центр ушёл за линию борта в проёме
@@ -164,10 +165,13 @@
       cueFoul: false,            // биток в лузе = штраф
       returnOnFoul: false,       // при штрафе возвращаем на стол один твой забитый шар
     },
+    // «Местный» (правила владельца): бьёшь любым шаром в любой, главное — задеть другой шар.
+    // Не задел — штраф, соперник ставит любой шар куда хочет и бьёт. Чёрный (8) — последним: сперва 7 любых, потом чёрный.
+    // Забил чёрный раньше — проиграл. Ключ moscow оставлен, шоб старые настройки не сломались.
     moscow: {
-      name: 'Руская', sub: '',
-      desc: 'Как свободная, свояк засчитывается, но после него ход переходит: соперник ставит биток с руки в «дом».',
-      cueCounts: true, afterCue: 'opp', cueFoul: false, returnOnFoul: false,
+      name: 'Местный', sub: 'как у нас',
+      desc: 'Бьёшь любым шаром в любой шар, главное — задеть другой шар. Не задел — соперник ставит шар куда хочет. Забей 7 любых, а потом чёрный. Чёрный раньше времени — проиграл.',
+      any: true, black: 8, need: 7, cueCounts: true, afterCue: 'self', cueFoul: false, returnOnFoul: false,
     },
     nevsky: {
       name: 'Невская', sub: '',
@@ -179,7 +183,8 @@
 
   // Новая партия. n — сколько игроков (2 или 4), variant — ключ VARIANTS
   function newGame(n, variant, seed) {
-    return { n: n === 4 ? 4 : 2, variant: VARIANTS[variant] ? variant : 'free', state: rack(seed || Date.now()), turn: 0, score: [0, 0], hand: true, over: false, winner: null, shots: 0, last: null, seed: seed || 0 };
+    const v = VARIANTS[variant] ? variant : 'free';
+    return { n: n === 4 ? 4 : 2, variant: v, state: rack(seed || Date.now()), turn: 0, score: [0, 0], hand: !VARIANTS[v].any, over: false, winner: null, shots: 0, last: null, seed: seed || 0 };
   }
   const teamOf = (g, seat) => seat % 2;
   const nextSeat = (g, seat) => (seat + 1) % g.n;
@@ -201,10 +206,17 @@
     return state.balls.every((b) => b.out || b.n === 0 || (b.x - x) * (b.x - x) + (b.y - y) * (b.y - y) >= D * D);
   }
 
+  // «Местный»: шар с руки ставится в любое место стола, лишь бы не на другой шар
+  function canPlaceAny(state, n, x, y) {
+    if (x < T.R || x > T.W - T.R || y < T.R || y > T.H - T.R) return false;
+    const D = T.R * 2 + 0.05;
+    return state.balls.every((b) => b.out || b.n === n || (b.x - x) * (b.x - x) + (b.y - y) * (b.y - y) >= D * D);
+  }
   // Сыграть удар в партии g. shot: { dx, dy, power, place?: {x, y} } (place — куда поставил биток с руки).
   // Возвращает { ok, error, sim, judge } и меняет g.
   function applyShot(g, shot) {
     if (g.over) return { ok: false, error: 'Партия окончена' };
+    if (VARIANTS[g.variant].any) return applyAny(g, shot);
     const st = g.state, cue = st.balls.find((b) => b.n === 0);
     if (g.hand) {
       const pl = shot.place || { x: cue.x, y: cue.y };
@@ -235,9 +247,49 @@
     return { ok: true, sim, judge: j, before };
   }
 
+  // «Местный»: удар любым шаром, чёрный последним
+  function applyAny(g, shot) {
+    const st = g.state, V = VARIANTS[g.variant];
+    const sn = shot.ball === undefined ? 0 : +shot.ball, sb = st.balls.find((b) => b.n === sn && !b.out);
+    if (!sb) return { ok: false, error: 'Таким шаром не ударить' };
+    if (g.hand && shot.place) {
+      const pl = shot.place, pn = pl.n === undefined ? sn : +pl.n, pb = st.balls.find((b) => b.n === pn && !b.out);
+      if (!pb || !canPlaceAny(st, pn, +pl.x, +pl.y)) return { ok: false, error: 'Шар ставь на свободное место стола' };
+      pb.x = +pl.x; pb.y = +pl.y;
+    }
+    const before = { balls: st.balls.map((b) => ({ n: b.n, x: b.x, y: b.y, out: b.out })) };
+    const sh = { dx: shot.dx, dy: shot.dy, power: shot.power, ball: sn };
+    const sim = simulate(st, sh);
+    const j = judge(g, sim.ev);
+    g.state = sim.state;
+    const shooter = g.turn, team = teamOf(g, shooter);
+    for (const n of j.returnBalls) { const b = g.state.balls.find((x) => x.n === n); const p = freeSpot(g.state, T.footX, T.H / 2); b.x = p.x; b.y = p.y; b.out = false; }
+    g.score[team] += j.points;
+    g.shots++;
+    if (j.blackWin) { g.over = true; g.winner = team; }
+    else if (j.blackLoss) { g.over = true; g.winner = 1 - team; }
+    else if (!g.state.balls.some((b) => !b.out && b.n !== V.black)) { // остался один чёрный, а забивать некому — по счёту
+      const b8 = g.state.balls.find((b) => b.n === V.black); if (b8 && b8.out) { g.over = true; g.winner = g.score[0] >= g.score[1] ? 0 : 1; }
+    }
+    g.hand = j.hand; if (!j.again) g.turn = nextSeat(g, shooter);
+    g.last = { seat: shooter, shot: sh, before, judge: j };
+    return { ok: true, sim, judge: j, before };
+  }
   // Разбор удара: штраф, очки, кто бьёт дальше
   function judge(g, ev) {
     const V = VARIANTS[g.variant];
+    if (V.any) {
+      const team = teamOf(g, g.turn), pot = ev.pocketed.slice(), B = V.black;
+      let foul = null;
+      if (ev.first === null) foul = 'Не задел ни одного шара';
+      else if (ev.off.length) foul = 'Шар вылетел со стола';
+      const r = { foul, points: 0, again: false, hand: false, cue: false, potted: pot.filter((n) => n !== B), off: ev.off.slice(), returnBalls: ev.off.slice(), returned: null, svoyak: pot.includes(ev.striker) && !foul, black: pot.includes(B) };
+      if (foul) { r.returnBalls = r.returnBalls.concat(pot); r.hand = true; return r; } // забитое не считается, соперник ставит шар куда хочет
+      r.points = pot.filter((n) => n !== B).length;
+      if (pot.includes(B)) { if (g.score[team] + r.points >= V.need) r.blackWin = true; else r.blackLoss = true; }
+      r.again = r.points > 0;
+      return r;
+    }
     const objPot = ev.pocketed.filter((n) => n !== 0), cuePot = ev.pocketed.includes(0), offObj = ev.off.filter((n) => n !== 0), cueOff = ev.off.includes(0);
     let foul = null;
     if (ev.first === null) foul = cuePot ? 'Биток в лузе без касания' : 'Не попал ни в один шар';
@@ -292,14 +344,81 @@
       if (!clear) continue;
       const score = cut * cut * 100 / (al * 0.35 + tl + 25);
       const pow = Math.min(1, 0.18 + (al + tl / Math.max(cut, 0.3)) / 330);
-      out.push({ dx: ax, dy: ay, power: pow, score, ball: b.n, pocket: p });
+      out.push({ dx: ax, dy: ay, power: pow, score, target: b.n, pocket: p });
     }
     return out.sort((a, b) => b.score - a.score);
+  }
+  // «Местный»: перебираем, каким шаром бить, по какому и в какую лузу
+  function candidatesAny(g, st, override) {
+    const V = VARIANTS[g.variant], team = teamOf(g, g.turn), canBlack = g.score[team] >= V.need;
+    const live = st.balls.filter((b) => !b.out), out = [], D = T.R * 2;
+    const pos = (b) => (override && override.n === b.n ? override : b);
+    for (const s0 of live) {
+      if (s0.n === V.black && !canBlack) continue; // чёрным не бьём, пока рано
+      const s = pos(s0);
+      for (const b0 of live) {
+        if (b0 === s0 || (b0.n === V.black && !canBlack)) continue;
+        const b = pos(b0);
+        for (const p of T.pockets) {
+          const tx = p.x - b.x, ty = p.y - b.y, tl = Math.sqrt(tx * tx + ty * ty);
+          const ux = tx / tl, uy = ty / tl, gx = b.x - ux * D, gy = b.y - uy * D;
+          const ax = gx - s.x, ay = gy - s.y, al = Math.sqrt(ax * ax + ay * ay);
+          if (al < 0.5) continue;
+          const cut = (ax * ux + ay * uy) / al;
+          if (cut < 0.25 || (!p.c && Math.abs(uy) < 0.55)) continue;
+          let clear = true;
+          for (const o0 of live) {
+            if (o0 === s0 || o0 === b0) continue; const o = pos(o0);
+            if (segDist2(o.x, o.y, s.x, s.y, gx, gy) < D * D * 0.98 || segDist2(o.x, o.y, b.x, b.y, p.x, p.y) < D * D * 0.9) { clear = false; break; }
+          }
+          if (!clear) continue;
+          out.push({ dx: ax, dy: ay, power: Math.min(1, 0.18 + (al + tl / Math.max(cut, 0.3)) / 330), score: cut * cut * 100 / (al * 0.35 + tl + 25), ball: s0.n, target: b0.n });
+        }
+      }
+    }
+    return out.sort((a, b) => b.score - a.score);
+  }
+  function botShotAny(g, L, rnd) {
+    const V = VARIANTS[g.variant], st = g.state;
+    let place = null, override = null, cands;
+    if (g.hand) { // штраф соперника: ставим любой шар туда, откуда удобнее всего
+      let best = null;
+      const pool = st.balls.filter((b) => !b.out && b.n !== V.black);
+      for (let k = 0; k < 40; k++) {
+        const b = pool[Math.floor(rnd() * pool.length)]; if (!b) break;
+        const x = T.R + 1 + rnd() * (T.W - 2 * T.R - 2), y = T.R + 1 + rnd() * (T.H - 2 * T.R - 2);
+        if (!canPlaceAny(st, b.n, x, y)) continue;
+        const c = candidatesAny(g, st, { n: b.n, x, y }).filter((q) => q.ball === b.n)[0];
+        if (c && (!best || c.score > best.c.score)) best = { n: b.n, x, y, c };
+      }
+      if (best) { place = { n: best.n, x: best.x, y: best.y }; override = place; }
+    }
+    if (g.shots === 0) { // разбой: белым в пирамиду
+      const cue = st.balls.find((b) => b.n === 0), apex = st.balls.filter((b) => b.n !== 0).reduce((a, b) => (b.x < a.x ? b : a));
+      return noisy({ dx: apex.x - cue.x, dy: apex.y - cue.y + (rnd() - .5) * 1.5, power: .9 + rnd() * .1, ball: 0 }, L, rnd);
+    }
+    cands = candidatesAny(g, st, override).slice(0, L.look);
+    let pick = null, bestVal = -1e9;
+    for (const c of cands.slice(0, 6)) {
+      const test = { balls: st.balls.map((b) => (override && b.n === override.n ? { n: b.n, x: override.x, y: override.y, out: false } : b)) };
+      const r = simulate(test, c), j = judge(g, r.ev);
+      const val = (j.foul ? -50 : 0) + (j.blackLoss ? -500 : 0) + (j.blackWin ? 500 : 0) + j.points * 30 + c.score;
+      if (val > bestVal) { bestVal = val; pick = c; }
+    }
+    if (!pick) { // нечего забить: тихонько толкнём ближнюю пару шаров (не чёрным и не в чёрный)
+      const live = st.balls.filter((b) => !b.out && b.n !== V.black);
+      let pr = null;
+      for (const a of live) for (const b of live) { if (a === b) continue; const d = Math.hypot(a.x - b.x, a.y - b.y); if (!pr || d < pr.d) pr = { a, b, d }; }
+      if (!pr) { const b8 = st.balls.find((b) => !b.out); const o = st.balls.find((b) => !b.out && b !== b8) || b8; pr = { a: o, b: b8 }; }
+      pick = { dx: pr.b.x - pr.a.x, dy: pr.b.y - pr.a.y, power: .3 + rnd() * .15, ball: pr.a.n };
+    }
+    return noisy(Object.assign({}, pick, { place }), L, rnd);
   }
   // Бот выбирает удар. rnd — функция случайности (на сервере Math.random)
   function botShot(g, level, rnd) {
     rnd = rnd || Math.random;
     const L = BOT[Math.max(0, Math.min(2, level | 0))];
+    if (VARIANTS[g.variant].any) return botShotAny(g, L, rnd);
     let st = g.state, place = null;
     const cue0 = st.balls.find((b) => b.n === 0);
     // с руки: пробуем несколько точек в «доме»
@@ -339,7 +458,7 @@
   function noisy(s, L, rnd) {
     const g = () => { let u = 0; for (let i = 0; i < 6; i++) u += rnd(); return (u - 3) / 1.2; }; // почти нормальный разброс
     const a = Math.atan2(s.dy, s.dx) + g() * L.aim * Math.PI / 180;
-    return { dx: Math.cos(a), dy: Math.sin(a), power: Math.max(.08, Math.min(1, s.power * (1 + g() * L.pow))), place: s.place || undefined };
+    return { dx: Math.cos(a), dy: Math.sin(a), power: Math.max(.08, Math.min(1, s.power * (1 + g() * L.pow))), place: s.place || undefined, ball: s.ball === undefined ? undefined : s.ball };
   }
 
   // ---------- Реплики за бильярдом (с «шо», без обид между своими) ----------
@@ -395,7 +514,7 @@
     return { rar: L.rar, item: L.item, qty: L.qty[0] + Math.floor(R() * (L.qty[1] - L.qty[0] + 1)), x: +(sp.x[0] + R() * (sp.x[1] - sp.x[0])).toFixed(1), y: +(sp.y[0] + R() * (sp.y[1] - sp.y[0])).toFixed(1), at: sp.n, bil: true };
   }
 
-  const api = { BIL_LOOT, BIL_SPOTS, rollBilFind, HALLS, LINES, pickLine, T, PH, JAWS, VARIANTS, TO_WIN, BOT, rack, simulate, newGame, applyShot, judge, canPlace, freeSpot, botShot, teamOf, nextSeat };
+  const api = { canPlaceAny, BIL_LOOT, BIL_SPOTS, rollBilFind, HALLS, LINES, pickLine, T, PH, JAWS, VARIANTS, TO_WIN, BOT, rack, simulate, newGame, applyShot, judge, canPlace, freeSpot, botShot, teamOf, nextSeat };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.KozelBil = api;
 })(typeof window !== 'undefined' ? window : globalThis);
