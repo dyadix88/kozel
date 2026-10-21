@@ -349,7 +349,7 @@ button{font:inherit;color:inherit}
 @keyframes kli{from{opacity:0;transform:translateY(1em) scale(.6)}to{opacity:1;transform:none}}
 .jrow{display:flex;gap:.7em;text-align:left;padding:.5em .4em;border-bottom:.06em solid rgba(111,20,15,.18)}.jic{font-size:2em;width:1.4em;text-align:center;flex:none;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif}
 .jtx b{font:400 1.05em 'Russo One',sans-serif;color:var(--red-dk)}.jhave{font:700 .7em 'PT Sans',sans-serif;color:#2f7d22;background:rgba(90,165,72,.15);border-radius:1em;padding:.05em .5em;margin-left:.4em}
-.jtx ul{margin:.25em 0 0;padding-left:1.1em;font-size:.9em}.jtx li{margin:.1em 0}.juse{margin:.3em 0 0;font-size:.82em;color:var(--ink-soft)}
+.jrow[data-jid]{cursor:pointer;align-items:center}.jrow[data-jid]:hover{background:rgba(111,20,15,.06)}.jrow.open{align-items:flex-start}.jtx{flex:1;min-width:0}.jhd{display:flex;flex-wrap:wrap;align-items:center;gap:.3em}.jhd .jr{font-size:.7em}.jarr{margin-left:auto;font-style:normal;color:var(--red-dk);transition:transform .2s}.jrow.open .jarr{transform:rotate(90deg)}.jdet{display:none}.jrow.open .jdet{display:block}.jrar{display:flex;flex-wrap:wrap;align-items:center;gap:.35em;margin:.5em 0 .2em;font-size:.9em}.jrb{border:0;cursor:pointer;font:inherit;font-size:.95em;padding:.15em .6em;border-radius:.8em}.jrb[aria-pressed=true]{outline:.15em solid #ffd34a;transform:scale(1.08)}.jall{background:#5a3a2a;color:#fff}.jtip{margin:.2em 0 .4em;font-size:.8em}.jtx .ic.u,.juse .ic{width:1.2em;height:1.2em;vertical-align:-.2em}.jtx ul{margin:.25em 0 0;padding-left:1.1em;font-size:.9em}.jtx li{margin:.1em 0}.juse{margin:.3em 0 0;font-size:.82em;color:var(--ink-soft)}
 .jr{font-weight:700;padding:0 .4em;border-radius:.6em;background:color-mix(in srgb,var(--rc) 30%,#3a2a1a);color:#fff;text-shadow:0 0 .2em rgba(0,0,0,.6)}.crc.rare{box-shadow:inset 0 0 0 .12em #c58cff}
 .pvw{margin-top:.6em}.fpend{margin:.5em 0 .8em;padding:.5em .7em;background:rgba(90,165,72,.15);border-radius:.3em;text-align:left}.fpend .btn{font-size:.8em;padding:.25em .7em;margin-left:.4em}
 .badge{margin-right:.25em}
@@ -1145,12 +1145,12 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       <button class="btn" id="tBack" hidden></button>
       <div class="tplayrow"><button class="btn tplay" id="tPlay">ИГРАТЬ</button><button class="btn tplay tmap" id="tMap" hidden>🗺 РАЙОН</button><button class="btn tplay tbil" id="tBil" hidden>🎱 БИЛЬЯРДНАЯ</button></div>
       <div class="trow"><button class="btn alt" id="tProf">👤 Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button><button class="btn alt" data-open="rules">📖 Правила</button></div>
-      <small class="tver">версия 2.82</small>
+      <small class="tver">версия 2.83</small>
     </div>
   </div>
   <div class="ov" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.82</button></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.83</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -1264,7 +1264,8 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.82 · Сегодня</h3><ul><li>🎱 Новые правила «Местный» (вместо «Руской»): бьёшь любым шаром в любой, главное — задеть другой шар. Не задел — соперник ставит шар куда хочет. Забей 7 любых, потом чёрную восьмёрку. Чёрный раньше времени — проиграл</li><li>🎱 Шары катятся по-настоящему: номер проворачивается вместе с шаром. Звук удара шаров мягче</li><li>🎲 Бильярдная и Катран — отдельным блоком «Другие игры» в меню</li><li>🗺 На карте района карточки открываются по клику, а не при наведении — до бильярдной теперь легко дойти мышкой</li><li>«Русская баня» теперь «Супер-баня»</li><li>Починили: журнал добычи снова открывается, бильярдная больше не зависает под меню</li></ul>
+        <h3>Версия 2.83 · Сегодня</h3><ul><li>📖 Журнал добычи компактнее: тыкни на вещь — раскроется, где её брать и для чего она нужна</li><li>Тык по редкости (белая, зелёная, синяя...) — покажет все вещи этой редкости</li><li>Вместо значка ₴ теперь монетка-гривна</li></ul>
+        <h3>Версия 2.82</h3><ul><li>🎱 Новые правила «Местный» (вместо «Руской»): бьёшь любым шаром в любой, главное — задеть другой шар. Не задел — соперник ставит шар куда хочет. Забей 7 любых, потом чёрную восьмёрку. Чёрный раньше времени — проиграл</li><li>🎱 Шары катятся по-настоящему: номер проворачивается вместе с шаром. Звук удара шаров мягче</li><li>🎲 Бильярдная и Катран — отдельным блоком «Другие игры» в меню</li><li>🗺 На карте района карточки открываются по клику, а не при наведении — до бильярдной теперь легко дойти мышкой</li><li>«Русская баня» теперь «Супер-баня»</li><li>Починили: журнал добычи снова открывается, бильярдная больше не зависает под меню</li></ul>
         <h3>Версия 2.81</h3><ul><li>🃏 Катран у Жоры — отдельный подвал, плитка «Катран» в меню. Дурак (подкидной и переводной, от 2 до 4, можно парами), покер на 36 картах и очко против банкира. На интерес, на семки или на гривны. С ботами трёх уровней и по сети с пацанами</li><li>⭐ Талисманы качаются до ★3: каждая звезда +50% к бонусу</li><li>🖼 Оправы аватара по уровню теперь картинками: дерево, медь, сталь, золото, аметист, лава, драконы и царская</li><li>🎁 Ещё картинки: подарок у заданий, кубок в итогах матча, мешок гривен</li><li>8 ачивок за катран</li></ul>
         <h3>Версия 2.80</h3><ul><li>🧿 Талисманы! 9 штук, у каждого свой бонус: больше опыта и добычи, точка пашет бодрее, находки лежат дольше, кулёк щедрее, скидка у Жоры. С ботами и на районе ещё: Гудок врёт реже, «второй шанс» на ложную предъяву, местные крысят реже. Выиграть в козла по сети талисман не поможет</li><li>👤 «Мой профиль» по-новому: аватар в центре, вокруг ячейки — оправа, фон, значок, рубашка, скатерть, эффекты и три ячейки талисманов. Тык по ячейке — выбираешь, шо надеть</li><li>👀 Экипировку пацанов видно в досье за столом и во «Дворе»</li><li>🖼 Новые картинки вместо смайликов: ресурсы, гривна, кульки, сундуки, рамки редкости, разделы. Шесть новых значков у ника</li><li>🏠 Меню навели порядок: сверху твой пацан, под ним запас (тыкни ресурс — подскажет, где брать), разделы крупными плитками. Район и Бильярдная теперь там, на стартовом экране — только козёл</li><li>🗺 На районе по два боя. «Центр» и «Отшиб» на карте подвинули, «Белладжио» теперь под Центром</li><li>🎱 «Московская» в бильярде теперь «Руская»</li></ul>
         <h3>Версия 2.70</h3><ul><li>🏚 Барахолка — крафт 2.0. Украшения качаются до ★3: блеск, свечение, искры. Лишнее можно разобрать и вернуть часть ресурсов</li><li>Новые украшения: рубашки карт, скатерть на стол, эффект победы (салют, голуби, дождь из семок и гривен), эффект жирной взятки (молния, огонь, крышки фонтаном) и след летящей карты. По сети это видят все за столом</li><li>💌 Альбом вкладышей «Love is»: три набора по 10, за собранный — значок и звание. Повторки меняешь у Барыги</li><li>🚂 Задания Вити Гудка: три в день, серия дней подряд даёт бонус</li><li>🏪 Ларёк Жоры: каждый день новый товар, иногда редкое «только сегодня»</li><li>🛍 Кулёк с рынка за каждую победу: внутри ресурсы, а может и украшение</li></ul>
@@ -4235,7 +4236,7 @@ function foundFind(id, seat, f) {
   const it = RES[f.item]; if (!it) return;
   if (MSTAT && seat >= 0 && seat < 4) { MSTAT.loot[seat][f.item] = (MSTAT.loot[seat][f.item] || 0) + f.qty; if (f.coin) MSTAT.coins[seat]++; else MSTAT.finds[seat]++; }
   const who = seat === 0 ? '<b>Ты</b>' : '<b>' + NAMES[seat] + '</b>', col = f.rar ? RAR[f.rar].c : '#ffe9a8', R5 = RAR[f.rar] || RAR[0];
-  feed((f.coin ? '🪙 ' + who + (seat === 0 ? ' словил' : ' словил') + ' <b style="color:#ffd45a">1 ₴</b> на столе' : (seat === 0 ? '✨ ' : '😤 ') + who + (seat === 0 ? ' нашёл ' : ' нашёл ') + '<b style="color:' + col + '">' + it.i + ' ' + it.n + ' ×' + f.qty + '</b>' + (f.at ? ' <small>' + f.at + '</small>' : '') + (f.rar ? ' <small style="color:' + col + '">' + RAR[f.rar].n.toLowerCase() + '</small>' : '')), (seat === 0 ? 'mine' : '') + (f.rar >= 3 ? ' big' : ''));
+  feed((f.coin ? '🪙 ' + who + (seat === 0 ? ' словил' : ' словил') + ' <b style="color:#ffd45a">1 ' + UAH() + '</b> на столе' : (seat === 0 ? '✨ ' : '😤 ') + who + (seat === 0 ? ' нашёл ' : ' нашёл ') + '<b style="color:' + col + '">' + it.i + ' ' + it.n + ' ×' + f.qty + '</b>' + (f.at ? ' <small>' + f.at + '</small>' : '') + (f.rar ? ' <small style="color:' + col + '">' + RAR[f.rar].n.toLowerCase() + '</small>' : '')), (seat === 0 ? 'mine' : '') + (f.rar >= 3 ? ' big' : ''));
   if (f.rar >= 3) { const n = document.createElement('div'); n.className = 'wxnote plate'; n.style.borderColor = RAR[f.rar].c; n.innerHTML = (seat === 0 ? '✨ Ты нашёл: ' : '😤 ' + NAMES[seat] + ' первым схватил: ') + '<b style="color:' + col + '">' + it.i + ' ' + it.n + ' ×' + f.qty + '</b> <small>(' + RAR[f.rar].n.toLowerCase() + ')</small>'; stage.appendChild(n); setTimeout(() => n.remove(), 4500); }
   if (seat === 0 && MGEAR.has('podkova') && Math.random() < .3) { f.qty *= 2; feed('🧲 Подкова сработала: вдвое больше!', 'mine'); }
   if (seat === 0 && !f.coin && !it.tal && talB('loot')) { const h = f.qty * (1 + talB('loot')); f.qty = Math.floor(h) + (Math.random() < h % 1 ? 1 : 0); } // талисманы: +% добычи
@@ -4308,7 +4309,7 @@ function stakeEnd(won) {
   const st = CUR_STAKE; CUR_STAKE = null;
   if (!st) return '';
   if (won) { STATS[rk('e', st.r)] = (STATS[rk('e', st.r)] || 0) + st.n * 2; saveStats(); }
-  return '<p class="stkres ' + (won ? 'win' : 'lose') + '">' + (won ? '🎲 Ставка сыграла: +' + st.n + ' ' + (st.r === 'uah' ? '₴' : '🌻') + ' сверху (забрал ' + st.n * 2 + ')' : '🎲 Ставка сгорела: −' + st.n + ' ' + (st.r === 'uah' ? '₴' : '🌻')) + '</p>';
+  return '<p class="stkres ' + (won ? 'win' : 'lose') + '">' + (won ? '🎲 Ставка сыграла: +' + st.n + ' ' + (st.r === 'uah' ? UAH() : '🌻') + ' сверху (забрал ' + st.n * 2 + ')' : '🎲 Ставка сгорела: −' + st.n + ' ' + (st.r === 'uah' ? UAH() : '🌻')) + '</p>';
 }
 
 // ---------- Ранги ----------
@@ -6333,7 +6334,7 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.82') { localStorage.setItem('kozel-seen-ver', '2.82'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.83') { localStorage.setItem('kozel-seen-ver', '2.83'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
 // Точка: при запуске, если пацан поработал больше 10 минут, забираем
 setTimeout(() => { try { if (farmIdx() < 0) { STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + 2; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); } else { const p = farmPending(); if (p && p.h >= 1 / 6) farmCollect(); } renderPickers(); } catch (e) {} }, 1500);
 $('tPlay').onclick = () => { Snd.init(); hide('title'); open('menu'); };
@@ -7762,7 +7763,7 @@ function dqClaim(j) {
     const last = Math.floor((STATS.dqStr || 0) / 100), prev = (STATS.dqStr || 0) % 100, str = last === DAY() - 1 ? prev + 1 : last === DAY() ? prev : 1;
     STATS.dqStr = DAY() * 100 + Math.min(99, str);
     const b = Math.min(7, str) * 5; gain('uah', b); if (str % 3 === 0) gain('kulek', 1);
-    bonus = ' Серия ' + str + ' ' + (str === 1 ? 'день' : str < 5 ? 'дня' : 'дней') + ' подряд: +' + b + ' ₴' + (str % 3 === 0 ? ' и кулёк' : '');
+    bonus = ' Серия ' + str + ' ' + (str === 1 ? 'день' : str < 5 ? 'дня' : 'дней') + ' подряд: +' + b + ' ' + UAH() + (str % 3 === 0 ? ' и кулёк' : '');
     STATS.dqBest = Math.max(STATS.dqBest || 0, str);
   }
   STATS.dqTotal = (STATS.dqTotal || 0) + 1;
@@ -8028,7 +8029,7 @@ function stockTip(box, r, btn) {
   if (tip.dataset.r === r && !tip.hidden) { tip.hidden = true; return; }
   const src = (typeof JSRC !== 'undefined' && JSRC[r]) || [];
   tip.dataset.r = r; tip.hidden = false;
-  tip.innerHTML = '<b>' + RES[r].i + ' ' + RES[r].n + '</b> <span>есть: ' + bal(r) + '</span>' + (src.length ? '<ul>' + src.slice(0, 3).map((x) => '<li>' + x + '</li>').join('') + '</ul>' : '<p>Падает в игре: находки, кулёк, клады.</p>') + '<small>Всё про добычу — в Журнале</small>';
+  tip.innerHTML = '<b>' + RES[r].i + ' ' + RES[r].n + '</b> <span>есть: ' + bal(r) + '</span>' + (src.length ? '<ul>' + src.slice(0, 3).map((x) => '<li>' + String(x).replace(/₴/g, UAH()) + '</li>').join('') + '</ul>' : '<p>Падает в игре: находки, кулёк, клады.</p>') + '<small>Всё про добычу — в Журнале</small>';
   const b = btn.getBoundingClientRect(), p = box.getBoundingClientRect();
   tip.style.setProperty('--ax', Math.max(8, Math.min(p.width - 8, b.left - p.left + b.width / 2)) + 'px');
 }
@@ -8550,10 +8551,15 @@ const JSRC = {
   skey: ['Зелёные находки', 'Верстак: 10 медяков и зуб', 'Барыга Жора продаёт за 12 ₴', 'Иногда лежит в сундуке или гараже'],
   uah: ['Монеты 1 ₴ падают на стол: кто первый тыкнул', 'Победа в матче: +3 ₴', 'Точка: «Подработка на рынке» 1,2/ч', 'Продажа Барыге Жоре и Тёте Вале', 'Победы на районах, игра на гривны'],
 };
-let jTab = 'res';
+let jTab = 'res', jRar = -1;
+const JOPEN = new Set(); // какие строки журнала раскрыты
 function renderJournal() {
   const L = KozelLines, S = KozelCamp.SELL, rarN = ['белая', 'зелёная', 'синяя', 'фиолетовая', 'оранжевая'];
+  const money = (t) => String(t).replace(/₴/g, UAH());
+  const bilL = (typeof KozelBil !== 'undefined' && KozelBil.BIL_LOOT) || [];
   const findP = (id) => { const out = []; L.FIND_TABLE.forEach((row, r) => row.forEach(([it]) => { if (it === id) out.push({ r, p: L.RAR_P[r] / row.length * 100 }); })); return out; };
+  const rarsOf = (id) => { const r = new Set(findP(id).map((x) => x.r)); bilL.forEach((x) => { if (x.item === id) r.add(x.rar); }); if (CAMPD.some((d) => d.find === id)) r.add(3); return [...r].sort(); };
+  const chip = (r) => '<span class="jr" style="--rc:' + RAR[r].c + '">' + rarN[r] + '</span>';
   const uses = (id) => {
     const u = [];
     CRAFT.forEach((c) => { if (c.cost && c.cost[id]) u.push(c.i + ' ' + c.n + ' (' + c.cost[id] + ')'); }); // у вещей из кулька/ларька/альбома рецепта нет
@@ -8563,20 +8569,34 @@ function renderJournal() {
     Object.values(AFK_UP).forEach((up) => { if (up.cost.some((c) => c && c[id])) u.push(up.i + ' ' + up.n + ' на Точке'); });
     return u;
   };
+  const distWhere = (d) => { const loc = Object.keys(L.LOC_ITEM).find((k) => L.LOC_ITEM[k] === d.find);
+    return ['Бой на районе «' + d.name + '»: падает с шансом ' + Math.round(KozelCamp.FIND_CHANCE * 100) + '% за раздачу, ещё +1 за победу', loc ? 'Обычная игра на месте «' + LAYOUTS[loc].name + '»: примерно 1 находка из ' + Math.round(1 / L.LOC_ITEM_P) + (locOpen(loc) ? '' : ' (место откроется, когда пройдёшь район)') : 'Только в бою на этом районе']; };
+  const whereOf = (id) => { if (JSRC[id]) return JSRC[id]; const d = CAMPD.find((x) => x.find === id); if (d) return distWhere(d); return []; };
+  // строка: сверху коротко (картинка, имя, сколько есть, редкость), по тыку раскрывается остальное
   const row = (id, where) => { const it = RES[id] || CITEM[id]; if (!it) return '';
-    const fp = findP(id), use = uses(id), price = S[id];
-    return '<div class="jrow"><div class="jic">' + it.i + '</div><div class="jtx"><b>' + it.n + ' <span class="jhave">у тебя: ' + bal(id) + '</span></b>' +
-      '<ul>' + where.map((w) => '<li>' + w + '</li>').join('') + (fp.length ? '<li>Находки: ' + fp.map((x) => '<span class="jr" style="--rc:' + RAR[x.r].c + '">' + rarN[x.r] + '</span> ~' + (x.p < 1 ? x.p.toFixed(1).replace('.', ',') : Math.round(x.p)) + '%').join(', ') + ' от каждой находки</li>' : '') +
-      (price ? '<li>Продать: ₴ ' + String(price).replace('.', ',') + ' за штуку</li>' : '') + '</ul>' + (use.length ? '<p class="juse">Нужно для: ' + use.join(', ') + '</p>' : '') + '</div></div>'; };
+    const fp = findP(id), use = uses(id), price = S[id], rs = rarsOf(id), op = JOPEN.has(id);
+    const det = '<ul>' + where.map((w) => '<li>' + money(w) + '</li>').join('') +
+      (fp.length ? '<li>Находки: ' + fp.map((x) => chip(x.r) + ' ~' + (x.p < 1 ? x.p.toFixed(1).replace('.', ',') : Math.round(x.p)) + '%').join(', ') + ' от каждой находки</li>' : '') +
+      (price ? '<li>Продать: ' + UAH() + ' ' + String(price).replace('.', ',') + ' за штуку</li>' : '') + '</ul>' +
+      (use.length ? '<p class="juse"><b>Нужно для:</b> ' + money(use.join(', ')) + '</p>' : '');
+    return '<div class="jrow' + (op ? ' open' : '') + '" data-jid="' + id + '"><div class="jic">' + it.i + '</div><div class="jtx"><div class="jhd"><b>' + it.n + '</b> <span class="jhave">у тебя: ' + bal(id) + '</span>' +
+      rs.map(chip).join('') + '<i class="jarr">▸</i></div><div class="jdet">' + det + '</div></div></div>'; };
   let body = '';
-  if (jTab === 'res') body = Object.keys(JSRC).map((id) => row(id, JSRC[id])).join('');
-  else if (jTab === 'dist') body = CAMPD.filter((d) => d.find).map((d) => { const loc = Object.keys(L.LOC_ITEM).find((k) => L.LOC_ITEM[k] === d.find);
-      return row(d.find, ['Бой на районе «' + d.name + '»: падает с шансом ' + Math.round(KozelCamp.FIND_CHANCE * 100) + '% за раздачу, ещё +1 за победу', loc ? 'Обычная игра на месте «' + LAYOUTS[loc].name + '»: примерно 1 находка из ' + Math.round(1 / L.LOC_ITEM_P) + (locOpen(loc) ? '' : ' (место откроется, когда пройдёшь район)') : 'Только в бою на этом районе']); }).join('');
-  else body = Object.entries(CITEM).filter(([, v]) => v.pass).map(([id, v]) => { const di = CAMPD.findIndex((d) => d.need === id);
-      return '<div class="jrow"><div class="jic">' + v.i + '</div><div class="jtx"><b>' + v.n + ' <span class="jhave">' + (di >= 0 && dOpen(di) ? 'предъявлен ✔' : bal(id) ? 'есть' : 'нет') + '</span></b><ul><li>Вход в район «' + (CAMPD[di] || {}).name + '»</li><li>Крафт на Верстаке: ' + costHtml(v.cost) + '</li></ul></div></div>'; }).join('');
-  $('jourIn').innerHTML = '<div class="stabs"><button class="lbc" data-jt="res" aria-pressed="' + (jTab === 'res') + '">🎒 Ресурсы</button><button class="lbc" data-jt="dist" aria-pressed="' + (jTab === 'dist') + '">🗺 Находки районов</button><button class="lbc" data-jt="pass" aria-pressed="' + (jTab === 'pass') + '">🎫 Пропуска</button></div>' +
-    '<p class="note">Редкость находок: <span class="jr" style="--rc:' + RAR[0].c + '">белая</span> <span class="jr" style="--rc:' + RAR[1].c + '">зелёная</span> <span class="jr" style="--rc:' + RAR[2].c + '">синяя</span> <span class="jr" style="--rc:' + RAR[3].c + '">фиолетовая</span> <span class="jr" style="--rc:' + RAR[4].c + '">оранжевая</span>. С ботами добычи вдвое меньше, чем по сети.</p>' + body;
-  $('jourIn').querySelectorAll('[data-jt]').forEach((b) => { b.onclick = () => { jTab = b.dataset.jt; renderJournal(); }; });
+  if (jRar >= 0) { // фильтр по редкости: все вещи, которые бывают такой редкости
+    const ids = []; const add = (id) => { if (!ids.includes(id) && (RES[id] || CITEM[id]) && rarsOf(id).includes(jRar)) ids.push(id); };
+    Object.keys(JSRC).forEach(add); CAMPD.forEach((d) => d.find && add(d.find)); L.FIND_TABLE[jRar].forEach(([it]) => add(it)); bilL.forEach((x) => add(x.item));
+    body = ids.length ? ids.map((id) => row(id, whereOf(id))).join('') : '<p class="note">Ничего такого нет.</p>';
+  } else if (jTab === 'res') body = Object.keys(JSRC).map((id) => row(id, JSRC[id])).join('');
+  else if (jTab === 'dist') body = CAMPD.filter((d) => d.find).map((d) => row(d.find, distWhere(d))).join('');
+  else body = Object.entries(CITEM).filter(([, v]) => v.pass).map(([id, v]) => { const di = CAMPD.findIndex((d) => d.need === id), op = JOPEN.has(id);
+      return '<div class="jrow' + (op ? ' open' : '') + '" data-jid="' + id + '"><div class="jic">' + v.i + '</div><div class="jtx"><div class="jhd"><b>' + v.n + '</b> <span class="jhave">' + (di >= 0 && dOpen(di) ? 'предъявлен ✔' : bal(id) ? 'есть' : 'нет') + '</span><i class="jarr">▸</i></div><div class="jdet"><ul><li>Вход в район «' + (CAMPD[di] || {}).name + '»</li><li>Крафт на Верстаке: ' + costHtml(v.cost) + '</li></ul></div></div></div>'; }).join('');
+  $('jourIn').innerHTML = '<div class="stabs"><button class="lbc" data-jt="res" aria-pressed="' + (jRar < 0 && jTab === 'res') + '">🎒 Ресурсы</button><button class="lbc" data-jt="dist" aria-pressed="' + (jRar < 0 && jTab === 'dist') + '">🗺 Находки районов</button><button class="lbc" data-jt="pass" aria-pressed="' + (jRar < 0 && jTab === 'pass') + '">🎫 Пропуска</button></div>' +
+    '<div class="jrar">Редкость: ' + rarN.map((n, r) => '<button class="jr jrb" data-jrar="' + r + '" aria-pressed="' + (jRar === r) + '" style="--rc:' + RAR[r].c + '">' + n + '</button>').join('') +
+    (jRar >= 0 ? '<button class="jrb jall" data-jrar="-1">✕ все</button>' : '') + '</div>' +
+    '<p class="note jtip">Тыкни на вещь — покажет, где брать и для чего. С ботами добычи вдвое меньше, чем по сети.</p>' + body;
+  $('jourIn').querySelectorAll('[data-jt]').forEach((b) => { b.onclick = () => { jTab = b.dataset.jt; jRar = -1; renderJournal(); }; });
+  $('jourIn').querySelectorAll('[data-jrar]').forEach((b) => { b.onclick = () => { const r = +b.dataset.jrar; jRar = jRar === r ? -1 : r; renderJournal(); }; });
+  $('jourIn').querySelectorAll('.jrow[data-jid]').forEach((r) => { r.onclick = () => { const id = r.dataset.jid; r.classList.toggle('open') ? JOPEN.add(id) : JOPEN.delete(id); }; });
 }
 function openJournal() { renderJournal(); open('journal'); }
 // ---------- 🧭 Клады: карта показывает сундук или гараж, ключ открывает ----------
