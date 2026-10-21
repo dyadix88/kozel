@@ -662,6 +662,13 @@
     // Дантл: зашли с бубей
     const dn = seats ? seats.findIndex((x) => x && x.char === 'dantl') : -1;
     if (dn >= 0 && led === 'D' && out.length < 3 && !out.some((o) => o.seat === dn) && Math.random() < .4) out.unshift({ seat: dn, text: 'Бубей хоть хуем бей' });
+    // Элвис: на каждого валета своё (если валетов несколько — на самого старшего)
+    const el = seats ? seats.findIndex((x) => x && x.char === 'elvis') : -1;
+    if (el >= 0) {
+      const JL = { C: 'ВОТ ОН! КРЕСТОШ!', S: 'О ПИКАШИК!', H: 'ОПА ЧЕРВАШИК!', D: 'БУБАШ!' };
+      const j = ['C', 'S', 'H', 'D'].find((su) => plays.some((p) => p.card.rank === 'J' && p.card.suit === su));
+      if (j && Math.random() < .85) { for (let k = out.length - 1; k >= 0; k--) if (out[k].seat === el) out.splice(k, 1); out.unshift({ seat: el, text: JL[j] }); if (out.length > 3) out.length = 3; }
+    }
     return pace(out, 300);
   }
   // Долго думает: кто подгоняет (у Лысого своё)

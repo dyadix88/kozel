@@ -68,7 +68,7 @@ const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
 // надетые украшения: только id из букв/цифр и звёзды 0..3
 function cleanCos(c) {
   const out = { s: {} }; if (!c || typeof c !== 'object') return out;
-  for (const k of ['f', 'b', 'i', 'c', 't', 'w', 'g', 'r']) if (typeof c[k] === 'string' && /^[a-z0-9]{1,10}$/.test(c[k])) { out[k] = c[k]; const st = c.s && Number(c.s[c[k]]); out.s[c[k]] = st >= 0 && st <= 3 ? Math.floor(st) : 0; }
+  for (const k of ['f', 'b', 'i', 'c', 't', 'p', 'w', 'g', 'r']) if (typeof c[k] === 'string' && /^[a-z0-9]{1,10}$/.test(c[k])) { out[k] = c[k]; const st = c.s && Number(c.s[c[k]]); out.s[c[k]] = st >= 0 && st <= 3 ? Math.floor(st) : 0; }
   if (Array.isArray(c.m)) out.m = c.m.filter((x) => typeof x === 'string' && /^[a-z]{2,10}$/.test(x)).slice(0, 3); // талисманы (только показать)
   return out;
 }
