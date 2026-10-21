@@ -183,7 +183,7 @@ async function yard(body, tableOf) {
   const list = [...users.entries()].map(([k, x]) => {
     const s = seen.get(k), on = s && now - s.at < 25000;
     const t = on ? tableOf(k) : null;
-    const sx = x.stats || {}, pick = ['wins', 'rounds', 'totalPts', 'best', 'caught', 'gotCaught', 'lusya', 'eqF', 'eqB', 'eqI'];
+    const sx = x.stats || {}, pick = ['wins', 'rounds', 'totalPts', 'best', 'caught', 'gotCaught', 'lusya'].concat(Object.keys(sx).filter((k) => /^eq[A-Z][a-z]?$/.test(k) || /^[uz][a-z]{2,12}$/.test(k))); // + надетое и звёзды (для досье во «Дворе»)
     const ch = x.char || (x.roster && Object.keys(x.roster)[0]) || null;
     return { nick: x.nick, char: ch, xp: x.xp, wins: sx.wins || 0, rounds: sx.rounds || 0, stats: Object.fromEntries(pick.map((k) => [k, sx[k] || 0])), roster: x.roster ? Object.fromEntries(Object.entries(x.roster).map(([id, d]) => [id, { xp: d.xp }])) : null,
       status: !on ? 'off' : t ? (t.phase === 'lobby' ? 'lobby' : 'playing') : 'yard', table: t, seenAgo: s ? Math.round((now - s.at) / 1000) : null, me: k === key };

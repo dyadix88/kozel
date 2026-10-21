@@ -688,11 +688,11 @@
       vitaha: ['Ахаха, Гудок! Держи сигаретку, только не гуди'], oleg: ['Витя, я тебя в игру добавил, а ты палишь. Понерфлю'], lysy: ['Витя, ты как Диоген, только с рынка'], dantl: ['Гудок, блефуешь хуже меня'] },
   };
   // hands: руки по местам, trump: козырь, seats: [{name, char}]. Вернёт { text, about, reply: {seat, text} }
-  function bomzh(seats, hands, trump) {
+  function bomzh(seats, hands, trump, truth) { // truth — шанс правды (по умолчанию 50%)
     const live = seats.map((x, i) => (x ? i : -1)).filter((i) => i >= 0);
     const holder = hands ? hands.findIndex((h) => h && h.some && h.some((c) => c.rank === '6' && c.suit === trump)) : -1;
     if (holder < 0) return { text: pickNR('bomzh:gone', BOMZH.gone), about: null, reply: replyTo(seats, live, null) };
-    const target = Math.random() < .5 ? holder : pick(live.filter((i) => i !== holder));
+    const target = Math.random() < (truth || .5) ? holder : pick(live.filter((i) => i !== holder));
     const text = pickNR('bomzh:say', BOMZH.say).replace('{n}', seats[target].name);
     return { text, about: target, reply: replyTo(seats, live, target) };
   }
@@ -752,8 +752,8 @@
     [['semki', 3, 7], ['kryshki', 1, 3], ['uah', 1, 1], ['izolenta', 1, 2], ['provoloka', 1, 3]],
     [['semki', 8, 12], ['kryshki', 4, 6], ['medyak', 1, 2], ['uah', 2, 3], ['skey', 1, 1]],
     [['medyak', 3, 4], ['pirog', 1, 1], ['uah', 4, 6], ['karta', 1, 1], ['batareyka', 1, 1]],
-    [['zub', 1, 2], ['fiksa', 1, 1], ['uah', 10, 15]],
-    [['klyuch', 1, 1], ['vkladysh', 1, 1], ['uah', 30, 40]],
+    [['zub', 1, 2], ['fiksa', 1, 1], ['uah', 10, 15], ['amlapa', 1, 1]],
+    [['klyuch', 1, 1], ['vkladysh', 1, 1], ['uah', 30, 40], ['amkoz', 1, 1]],
   ];
   // Точки, где может лежать добро, по локациям: n — где (для оповещений), x/y — прямоугольник в % экрана, w — как часто
   const SPOTS = {

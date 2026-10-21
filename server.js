@@ -11,6 +11,7 @@ const KL = require('./lines.js');
 const A = require('./accounts.js');
 const KC = require('./campaign.js');
 const KB = require('./billiard.js');
+const KK = require('./katran.js');
 
 const PORT = process.env.PORT || 8080;
 const TURN_MS = 60000;          // минута на ход
@@ -68,6 +69,7 @@ const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
 function cleanCos(c) {
   const out = { s: {} }; if (!c || typeof c !== 'object') return out;
   for (const k of ['f', 'b', 'i', 'c', 't', 'w', 'g', 'r']) if (typeof c[k] === 'string' && /^[a-z0-9]{1,10}$/.test(c[k])) { out[k] = c[k]; const st = c.s && Number(c.s[c[k]]); out.s[c[k]] = st >= 0 && st <= 3 ? Math.floor(st) : 0; }
+  if (Array.isArray(c.m)) out.m = c.m.filter((x) => typeof x === 'string' && /^[a-z]{2,10}$/.test(x)).slice(0, 3); // талисманы (только показать)
   return out;
 }
 // хватает ли у игрока на ставку (браузер сам сообщает баланс action 'bal')
@@ -76,6 +78,7 @@ function canPay(room, s) { const st = KC.STAKES[room.stake]; return !st || !st.r
 // Места поворачиваются так, что сам игрок всегда на месте 0, напарник на 2.
 function viewFor(room, my) {
   if (room.game === 'bil') return bilView(room, my);
+  if (room.game === 'kat') return katView(room, my);
   const R = (a) => (a - my + 4) % 4;
   const rot = (arr) => [0, 1, 2, 3].map((r) => arr[(r + my) % 4]);
   const t = my % 2;
@@ -115,7 +118,7 @@ function broadcast(room, events) {
   room.touched = Date.now();
   room.seats.forEach((s, i) => {
     if (!s || s.bot || !s.conns.size) return;
-    const msg = 'data: ' + JSON.stringify({ events: (events || []).map((e) => convEvent(e, i, room.seats.length)), view: viewFor(room, i) }) + '\n\n';
+    const msg = 'data: ' + JSON.stringify({ events: (events || []).map((e) => (room.game === 'kat' ? e : convEvent(e, i, room.seats.length))), view: viewFor(room, i) }) + '\n\n';
     for (const res of s.conns) res.write(msg);
   });
 }
@@ -124,7 +127,7 @@ function broadcast(room, events) {
 function blast(room, events) {
   room.seats.forEach((s, i) => {
     if (!s || s.bot || !s.conns.size) return;
-    const msg = 'data: ' + JSON.stringify({ fx: events.map((e) => convEvent(e, i, room.seats.length)) }) + '\n\n';
+    const msg = 'data: ' + JSON.stringify({ fx: events.map((e) => (room.game === 'kat' ? e : convEvent(e, i, room.seats.length))) }) + '\n\n';
     for (const res of s.conns) res.write(msg);
   });
 }
@@ -466,6 +469,7 @@ function resumeRoom(room, seat) {
 // ---------- Действия игроков ----------
 function act(room, seat, body) {
   if (room.game === 'bil') return bilAct(room, seat, body);
+  if (room.game === 'kat') return katAct(room, seat, body);
   const s = room.seats[seat];
   const abs = (rel) => (Number(rel) + seat) % 4;
   if (room.paused && ['play', 'accuse', 'ready'].includes(body.type)) throw new Error('Передых: сначала снимите паузу');
@@ -851,6 +855,155 @@ function bilAct(room, seat, body) {
   }
 }
 
+
+// ======================= 🃏 Катран по сети: дурак, покер, очко =======================
+// Правила katran.js. Места НЕ поворачиваются: вид отдаётся как есть плюс me (какое место твоё).
+// Ставки каждый браузер списывает и получает у себя (по событиям kstart/kdeal и итогу партии) — как ставки в козле.
+const KAT_N = { durak: [2, 4], poker: [2, 6], ochko: [1, 4] };
+const katNorm = (kg, n) => Math.max(KAT_N[kg][0], Math.min(KAT_N[kg][1], Number(n) || KAT_N[kg][0]));
+function createKatRoom(b, u) {
+  const kg = KK.GAMES[b.kg] ? b.kg : 'durak', code = newCode(), n = katNorm(kg, b.n);
+  const room = { game: 'kat', kg, code, phase: 'lobby', seats: new Array(n).fill(null), host: 0, kind: b.kind === 'perevod' ? 'perevod' : 'podkid', teams: !!b.teams && n === 4,
+    level: Math.max(0, Math.min(2, Number(b.level) || 1)), stake: /^[a-z0-9]{1,6}$/.test(b.stake || '') ? b.stake : 'free', stakeN: Math.max(1, Math.min(1000, Math.floor(Number(b.stakeN) || 10))),
+    st: null, kround: 0, deadline: 0, touched: Date.now() };
+  rooms.set(code, room);
+  const tok = token(), acct = u ? A.keyOf(u.nick) : null, cc = charOk(b.char, acct, room);
+  room.seats[0] = { token: tok, name: clean(b.name) || CHARS[cc], char: cc, xp: xpOk(u ? u.xp : b.xp), bot: false, conns: new Set(), acct };
+  return { room, tok, seat: 0 };
+}
+function katView(room, my) {
+  const G = KK.GAMES[room.kg];
+  const v = { game: 'kat', kg: room.kg, code: room.code, phase: room.phase, host: room.host, me: my, n: room.seats.length, kind: room.kind, teams: room.teams, level: room.level, stake: room.stake, stakeN: room.stakeN,
+    kround: room.kround, deadline: room.deadline || 0, now: Date.now(), banker: room.banker || null,
+    seats: room.seats.map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0, act: s.act || '' } : null)) };
+  if (room.st) { v.st = G.view(room.st, my); v.st.legal = G.legal(room.st, my); }
+  return v;
+}
+function katStart(room) {
+  const used = new Set(room.seats.filter(Boolean).map((x) => x.char).concat(['zhora'])), free = KL.neutralIds().filter((c) => !used.has(c)).sort(() => Math.random() - .5);
+  room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(KL.neutralIds()); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 4000), bot: true, conns: new Set() }; } });
+  room.seats.forEach((s) => { s.act = ''; });
+  const n = room.seats.length;
+  room.banker = room.kg === 'ochko' ? 'zhora' : null;
+  room.st = room.kg === 'durak' ? KK.D.newGame({ n, kind: room.kind, teams: room.teams }, Math.random)
+    : room.kg === 'poker' ? KK.P.newGame({ n, buyin: room.stakeN }, Math.random) : KK.O.newGame({ n, bet: room.stakeN }, Math.random);
+  room.phase = 'playing'; room.kround = 1;
+  broadcast(room, [{ type: 'kstart' }, { type: 'talk', seat: room.kg === 'ochko' ? 'bank' : 1 % n, text: pick(['Ну шо, раскинем?', 'Садитесь, не стесняйтесь', 'Карты чистые, отвечаю']) }]);
+  katSchedule(room, 1200);
+}
+// чей ход: бот ходит сам, живой — минута (без связи — 15 с), потом за него ходит бот
+function katSchedule(room, delay) {
+  clearTimeout(room.timer);
+  const st = room.st, G = KK.GAMES[room.kg];
+  if (!st || room.phase !== 'playing') { room.deadline = 0; return; }
+  if (st.over) return katOver(room);
+  if (st.result) { // покер и очко: показали итог раздачи, через 6 с новая
+    room.deadline = 0;
+    room.timer = setTimeout(() => { if (room.st !== st) return; if (st.over) return katOver(room); room.seats.forEach((s) => { s.act = ''; }); G.next(st, Math.random); room.kround++; broadcast(room, [{ type: 'kdeal' }]); katSchedule(room, 900); }, 6500);
+    return;
+  }
+  const m = G.toMove(st);
+  if (m < 0) { room.deadline = 0; return; }
+  const s = room.seats[m], wait = s.bot ? delay + 700 + Math.random() * 900 : delay + (s.conns.size ? 60000 : 15000);
+  room.deadline = s.bot ? 0 : Date.now() + wait;
+  room.timer = setTimeout(() => {
+    if (room.st !== st || G.toMove(st) !== m) return;
+    const a = room.kg === 'poker' && !s.bot ? (G.legal(st, m).some((x) => x.t === 'check') ? { t: 'check' } : { t: 'fold' }) : G.bot(st, m, s.bot ? room.level : 0, Math.random, { bluff: .07 });
+    katApply(room, m, a, !s.bot);
+  }, wait);
+}
+function katApply(room, seat, a, auto) {
+  const st = room.st, G = KK.GAMES[room.kg];
+  const r = G.apply(st, seat, a || {});
+  if (!r.ok) throw new Error(r.err || 'Так нельзя');
+  const ev = r.ev, s = room.seats[seat], evs = [{ type: 'kmove', seat, t: ev.t }];
+  if (room.kg === 'poker') s.act = ev.t === 'fold' ? 'пас' : ev.t === 'check' ? 'чек' : ev.t === 'call' ? 'колл ' + ev.amt : (ev.allin ? 'ва-банк ' : 'рейз до ') + ev.to;
+  if (auto) evs.push({ type: 'talk', seat, text: '<i>*долго думал, сходили за него*</i>' });
+  broadcast(room, evs);
+  katSchedule(room, 300);
+}
+function katOver(room) {
+  if (room.phase === 'over') return;
+  clearTimeout(room.timer); room.phase = 'over'; room.deadline = 0;
+  broadcast(room, [{ type: 'kover' }]);
+}
+function katAct(room, seat, body) {
+  const s = room.seats[seat], n = room.seats.length;
+  switch (body.type) {
+    case 'sit': {
+      if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
+      const to = Number(body.seat);
+      if (!(to >= 0 && to < n) || room.seats[to]) throw new Error('Место занято');
+      room.seats[to] = s; room.seats[seat] = null;
+      if (room.host === seat) room.host = to;
+      return broadcast(room, [{ type: 'lobby' }]);
+    }
+    case 'opts': {
+      if (seat !== room.host) throw new Error('Это решает хозяин стола');
+      if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
+      if (body.kind) room.kind = body.kind === 'perevod' ? 'perevod' : 'podkid';
+      if (body.level !== undefined) room.level = Math.max(0, Math.min(2, Number(body.level) || 0));
+      if (body.n !== undefined) {
+        const want = katNorm(room.kg, body.n);
+        if (want !== n) {
+          const people = room.seats.filter(Boolean);
+          if (people.length > want) throw new Error('За столом больше людей, чем мест');
+          const hostP = room.seats[room.host];
+          room.seats = new Array(want).fill(null); people.forEach((p, i) => { room.seats[i] = p; });
+          room.host = room.seats.indexOf(hostP);
+        }
+      }
+      if (body.teams !== undefined) room.teams = !!body.teams;
+      room.teams = room.teams && room.seats.length === 4 && room.kg === 'durak';
+      return broadcast(room, [{ type: 'lobby' }]);
+    }
+    case 'start':
+      if (room.phase !== 'lobby') throw new Error('Игра уже идёт');
+      if (seat !== room.host) throw new Error('Начинает хозяин стола');
+      return katStart(room);
+    case 'rematch':
+      if (room.phase !== 'over') return;
+      return katStart(room);
+    case 'kact':
+      if (room.phase !== 'playing' || !room.st) throw new Error('Сейчас не играем');
+      if (KK.GAMES[room.kg].toMove(room.st) !== seat) throw new Error('Сейчас не твой ход');
+      return katApply(room, seat, body.a && typeof body.a === 'object' ? { t: String(body.a.t || ''), card: body.a.card, k: body.a.k === undefined ? undefined : Number(body.a.k), to: Number(body.a.to) || undefined } : {});
+    case 'say': {
+      if (Date.now() - (s.sayAt || 0) < 400) return;
+      s.sayAt = Date.now();
+      const text = String(body.text || '').replace(/<(?!\/?i>)[^>]*>/g, '').slice(0, 200);
+      if (text) blast(room, [{ type: 'talk', seat, text }]);
+      return;
+    }
+    case 'leave': {
+      if (room.phase === 'lobby') {
+        room.seats[seat] = null;
+        if (!humans(room).length) { rooms.delete(room.code); return; }
+        if (room.host === seat) room.host = room.seats.findIndex((x) => x && !x.bot);
+        return broadcast(room, [{ type: 'lobby' }]);
+      }
+      // в покере фишки ушли с ним: место выбывает; в дураке и очке за него доигрывает бот
+      const st = room.st;
+      if (room.kg === 'poker' && st && !st.over) {
+        st.chips[seat] = 0; st.out[seat] = true; st.folded[seat] = true; st.allin[seat] = false;
+        if (!st.result && st.turn === seat) KK.P.advance(st, seat);
+        if (!st.result && KK.P.alive(st).length < 2 && KK.P.inHand(st).length < 2) KK.P.finish(st);
+      }
+      room.seats[seat] = { name: s.name + ' (бот)', char: s.char, bot: true, conns: new Set(), was: { token: s.token, acct: s.acct || null, name: s.name } };
+      for (const res of s.conns) res.end();
+      if (!humans(room).length) { clearTimeout(room.timer); rooms.delete(room.code); return; }
+      if (room.host === seat) room.host = room.seats.findIndex((x) => x && !x.bot);
+      broadcast(room, [{ type: 'talk', seat, text: '<i>*встал из-за стола*</i>' }]);
+      if (room.phase === 'playing') katSchedule(room, 500);
+      return;
+    }
+    case 'xp':
+      s.xp = xpOk(body.xp); return broadcast(room, []);
+    default:
+      return;
+  }
+}
+
 // ---------- HTTP ----------
 function readBody(req) {
   return new Promise((resolve, reject) => {
@@ -892,7 +1045,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/create') {
       const b = await readBody(req);
       const u = await A.userByToken(b.acct).catch(() => null);
-      const { room, tok, seat } = b.game === 'bil' ? createBilRoom(b, u) : createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest, b.emotes === false, b.stake);
+      const { room, tok, seat } = b.game === 'bil' ? createBilRoom(b, u) : b.game === 'kat' ? createKatRoom(b, u) : createRoom(b.name, b.mode, b.char, u ? u.xp : b.xp, u ? A.keyOf(u.nick) : null, b.loc, b.honest, b.emotes === false, b.stake);
       return json(res, 200, { code: room.code, token: tok, seat });
     }
     if (req.method === 'POST' && url.pathname === '/api/join') {

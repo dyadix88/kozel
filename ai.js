@@ -56,7 +56,7 @@
   // Главное: какую карту положить. ctx: { honest, mem (память бота за раздачу), R (случайность), oppCatch }
   function choose(round, seat, level, ctx) {
     ctx = ctx || {};
-    const R = ctx.R || Math.random, L = lv(level), tr = round.trump;
+    const R = ctx.R || Math.random, L = ctx.cheatK !== undefined ? Object.assign({}, lv(level), { cheat: lv(level).cheat * ctx.cheatK }) : lv(level), tr = round.trump;
     const hand = round.hands[seat];
     const trickCards = round.trick.map((e) => e.card);
     const legal = K.legalCards(hand, trickCards, tr);

@@ -165,7 +165,7 @@
       returnOnFoul: false,       // при штрафе возвращаем на стол один твой забитый шар
     },
     moscow: {
-      name: 'Московская', sub: '',
+      name: 'Руская', sub: '',
       desc: 'Как свободная, свояк засчитывается, но после него ход переходит: соперник ставит биток с руки в «дом».',
       cueCounts: true, afterCue: 'opp', cueFoul: false, returnOnFoul: false,
     },
