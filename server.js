@@ -64,6 +64,12 @@ function createRoom(name, mode, ch, xp, acct, loc, honest, noEmo, stake) {
 }
 const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
 
+// надетые украшения: только id из букв/цифр и звёзды 0..3
+function cleanCos(c) {
+  const out = { s: {} }; if (!c || typeof c !== 'object') return out;
+  for (const k of ['f', 'b', 'i', 'c', 't', 'w', 'g', 'r']) if (typeof c[k] === 'string' && /^[a-z0-9]{1,10}$/.test(c[k])) { out[k] = c[k]; const st = c.s && Number(c.s[c[k]]); out.s[c[k]] = st >= 0 && st <= 3 ? Math.floor(st) : 0; }
+  return out;
+}
 // хватает ли у игрока на ставку (браузер сам сообщает баланс action 'bal')
 function canPay(room, s) { const st = KC.STAKES[room.stake]; return !st || !st.r || (s.bal && (s.bal[st.r] || 0) >= st.n); }
 // ---------- Что видит конкретный игрок ----------
@@ -76,7 +82,7 @@ function viewFor(room, my) {
   const v = {
     code: room.code, phase: room.phase, mode: room.mode, honest: !!room.honest, noEmo: !!room.noEmo, paused: room.paused ? { by: R(room.paused.by) } : null, weather: room.weather || null, canUndo: canUndo(room, my), undo: room.undo ? { seat: R(room.undo.seat), votes: [...room.undo.votes].map(R), mine: room.undo.votes.has(my) } : null, loc: room.loc, host: R(room.host), now: Date.now(),
     stake: room.stake ? Object.assign({ i: room.stake }, KC.STAKES[room.stake]) : null,
-    seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0, poor: !!(room.stake && !s.bot && !canPay(room, s)), admin: !s.bot && s.acct === KL.ADMIN } : null)),
+    seats: rot(room.seats).map((s) => (s ? { name: s.name, bot: s.bot, char: s.char, xp: s.xp || 0, online: s.bot || s.conns.size > 0, poor: !!(room.stake && !s.bot && !canPay(room, s)), admin: !s.bot && s.acct === KL.ADMIN, cos: s.cos || null } : null)),
   };
   if (room.match) {
     const m = room.match;
@@ -566,6 +572,10 @@ function act(room, seat, body) {
       prankRoom(room, abs(body.seat), String(body.kind || ''), String(body.text || '').replace(/[<>]/g, '').slice(0, 140));
       return;
     }
+    case 'cos': // шо надето (рубашка, скатерть, эффекты): показываем всем за столом
+      s.cos = cleanCos(body.cos);
+      broadcast(room, []);
+      return;
     case 'bal': // сколько у игрока семок и гривен (для ставки)
       s.bal = { semki: Math.max(0, Number(body.semki) || 0), uah: Math.max(0, Number(body.uah) || 0) };
       if (room.phase === 'lobby') broadcast(room, []);
