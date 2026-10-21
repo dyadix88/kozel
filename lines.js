@@ -573,6 +573,7 @@
     if (pv && Math.random() < .3) return pickNR('L:' + pv, L[pv]);
     return pickNR('L:' + fallback, L[fallback]);
   }
+  let elvisJackAt = 0; // когда Элвис последний раз кричал про валета
   function chatter(plays, winner, trump, points, K, seats, hands) {
     const out = [];
     const team = (s) => K.teamOf(s);
@@ -662,12 +663,14 @@
     // Дантл: зашли с бубей
     const dn = seats ? seats.findIndex((x) => x && x.char === 'dantl') : -1;
     if (dn >= 0 && led === 'D' && out.length < 3 && !out.some((o) => o.seat === dn) && Math.random() < .4) out.unshift({ seat: dn, text: 'Бубей хоть хуем бей' });
-    // Элвис: на каждого валета своё (если валетов несколько — на самого старшего)
+    // Элвис: кричит про валета, только когда валет решил взятку (забрал её) и не чаще раза в 40 с
     const el = seats ? seats.findIndex((x) => x && x.char === 'elvis') : -1;
-    if (el >= 0) {
+    const wj = plays[wi] && plays[wi].card;
+    if (el >= 0 && wj && wj.rank === 'J' && Date.now() - elvisJackAt > 40000 && Math.random() < .4) {
       const JL = { C: 'ВОТ ОН! КРЕСТОШ!', S: 'О ПИКАШИК!', H: 'ОПА ЧЕРВАШИК!', D: 'БУБАШ!' };
-      const j = ['C', 'S', 'H', 'D'].find((su) => plays.some((p) => p.card.rank === 'J' && p.card.suit === su));
-      if (j && Math.random() < .85) { for (let k = out.length - 1; k >= 0; k--) if (out[k].seat === el) out.splice(k, 1); out.unshift({ seat: el, text: JL[j] }); if (out.length > 3) out.length = 3; }
+      elvisJackAt = Date.now();
+      for (let k = out.length - 1; k >= 0; k--) if (out[k].seat === el) out.splice(k, 1);
+      out.unshift({ seat: el, text: JL[wj.suit] }); if (out.length > 3) out.length = 3;
     }
     return pace(out, 300);
   }
@@ -683,11 +686,11 @@
   // Местная легенда с рынка Кирово: гудит, как электричка, бегает по рынку с тех пор, как пацаны были в школе.
   // Проходит мимо, заглядывает в карты и «подсказывает», у кого мать. Правда только наполовину.
   const BOMZH = {
-    say: ['ТУ-ТУУУ! Витя Гудок прибыл! {n}, у тебя мать, я с рынка видел!', '{n}! Мать у него! Отвечаю, как за рыбу на Кирово',
+    say: ['ТУУУ-ТУУУ! Витя Гудок прибыл! {n}, у тебя мать, я с рынка видел!', '{n}! Мать у него! Отвечаю, как за рыбу на Кирово',
       'Я по рынку бегал, всё видел: у {n} мать. ТУУУ!', 'Пацаны, я вас ещё со школы помню! {n} уже тогда с матерью сидел',
       '{n}, дай пятёрку, скажу, у кого мать. Ладно, бесплатно: у тебя', 'Би-би! Осторожно, мать на руках у {n}! Проезжаем, не задерживаемся',
       'Меня с Кирово гоняли, а я всё равно знаю: мать у {n}', 'Тётки с рынка просили передать: у {n} мать. И пирожок, но я его съел',
-      '<i>*гудит паровозом*</i> Ту-ту! Станция «{n}», мать на борту!', '{n}, я в картах как в семечках разбираюсь. Мать у тебя. Или семечки'],
+      '<i>*гудит паровозом*</i> Тууу-тууу! Станция «{n}», мать на борту!', '{n}, я в картах как в семечках разбираюсь. Мать у тебя. Или семечки'],
     gone: ['ТУУУ! Матери нет, уехала. Как электричка на Кирово', 'Мать вышла! Я сам видел, она на рынок пошла, за семечками',
       'Нету мамки, пацаны. Есть Витя Гудок. Налейте Гудку', 'Би-бип! Мать сыграна, поезд ушёл', 'Мать? Мать на рынке рыбу продаёт. Я спрашивал'],
     back: { def: ['Гудок, вали на рынок', 'Витя, не пали контору!', 'Не слушайте Гудка, он в прошлый раз про рыбу врал', 'Витя, иди погуди где-нибудь', 'Гудок, ты нас со школы палишь'],
@@ -835,16 +838,31 @@
     for (const s of all) { k -= s.w; if (k <= 0) { sp = s; break; } }
     return { n: sp.n, x: +(sp.x[0] + R() * (sp.x[1] - sp.x[0])).toFixed(1), y: +(sp.y[0] + R() * (sp.y[1] - sp.y[0])).toFixed(1) };
   }
-  // особая находка района падает и в обычной игре на месте этого района (примерно 1 находка из 12)
-  const LOC_ITEM = { cherem: 'pero', korolenko: 'blesna', stroy: 'kvit', centr: 'cennik', vodokanal: 'antracit' }, LOC_ITEM_P = .08;
+  // Находки прячутся по всему экрану (кроме мест под табло, аватаром и рукой); название места — ближайшая точка из SPOTS
+  function spotWide(loc, R) {
+    for (let k = 0; k < 40; k++) {
+      const x = 4 + R() * 92, y = 12 + R() * 76;
+      if (x < 18 && y < 52) continue;          // аватар и кнопки слева сверху
+      if (y < 14) continue;                    // табло и кнопки сверху
+      if (x > 36 && x < 86 && y > 76) continue; // рука
+      if (x > 90 && y > 84) continue;          // кнопка звука
+      const all = SPOTS[loc] || SPOTS.yard;
+      let best = all[0], bd = 1e9;
+      for (const sp of all) { const cx = (sp.x[0] + sp.x[1]) / 2, cy = (sp.y[0] + sp.y[1]) / 2, d = (cx - x) ** 2 + (cy - y) ** 2; if (d < bd) { bd = d; best = sp; } }
+      return { n: best.n, x: +x.toFixed(1), y: +y.toFixed(1) };
+    }
+    return spotOf(loc, R);
+  }
+  // особая находка района падает и в обычной игре на месте этого района (примерно 1 находка из 33)
+  const LOC_ITEM = { cherem: 'pero', korolenko: 'blesna', stroy: 'kvit', centr: 'cennik', vodokanal: 'antracit' }, LOC_ITEM_P = .03;
   const RAR_P = [.55, .26, .13, .048, .012];
   function rollFind(R, loc) {
     R = R || Math.random;
     const li = LOC_ITEM[String(loc || '').replace(/2$/, '')];
-    if (li && R() < LOC_ITEM_P) { const sp = spotOf(loc, R); return { rar: 3, item: li, qty: 1, x: sp.x, y: sp.y, at: sp.n, hint: R() < .5 }; }
+    if (li && R() < LOC_ITEM_P) { const sp = spotWide(loc, R); return { rar: 3, item: li, qty: 1, x: sp.x, y: sp.y, at: sp.n, hint: R() < .5 }; }
     const r = R(), rar = r < .55 ? 0 : r < .81 ? 1 : r < .94 ? 2 : r < .988 ? 3 : 4;
     const opt = FIND_TABLE[rar][Math.floor(R() * FIND_TABLE[rar].length)];
-    const sp = spotOf(loc, R);
+    const sp = spotWide(loc, R);
     return { rar, item: opt[0], qty: opt[1] + Math.floor(R() * (opt[2] - opt[1] + 1)), x: sp.x, y: sp.y, at: sp.n, hint: R() < .45 };
   }
   // Монета 1 грн падает на стол: кто первый тыкнул, того и монета

@@ -211,7 +211,7 @@ function startMatch(room) {
 }
 function startRound(room) {
   room.round = K.newRound(room.match); room.round.honest = !!room.honest;
-  room.bomzhAt = Math.random() < .75 ? 2 + Math.floor(Math.random() * 5) : -1; // бомж заходит примерно раз в две раздачи
+  room.bomzhAt = Math.random() < .3 ? 2 + Math.floor(Math.random() * 5) : -1; // Гудок заходит редко (примерно раз в три раздачи)
   room.voids = [];
   room.phase = 'playing';
   const evs = [{ type: 'deal' }];

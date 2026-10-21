@@ -184,7 +184,7 @@
   ];
 
   // Шансы на особую находку за раздачу на районе
-  const FIND_CHANCE = .65;
+  const FIND_CHANCE = .2; // особая находка района в бою: шанс за раздачу (было .65 — перья сыпались слишком часто)
 
   const api = { KLAD, MAP_FILE, BIL_PINS, DISTRICTS, ITEMS, RARE_CRAFT, SELL, CRAFT_BACK, STAKES, FIND_CHANCE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

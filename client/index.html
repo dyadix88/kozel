@@ -349,7 +349,8 @@ button{font:inherit;color:inherit}
 @keyframes kli{from{opacity:0;transform:translateY(1em) scale(.6)}to{opacity:1;transform:none}}
 .jrow{display:flex;gap:.7em;text-align:left;padding:.5em .4em;border-bottom:.06em solid rgba(111,20,15,.18)}.jic{font-size:2em;width:1.4em;text-align:center;flex:none;font-family:'Noto Color Emoji','Apple Color Emoji','Segoe UI Emoji',sans-serif}
 .jtx b{font:400 1.05em 'Russo One',sans-serif;color:var(--red-dk)}.jhave{font:700 .7em 'PT Sans',sans-serif;color:#2f7d22;background:rgba(90,165,72,.15);border-radius:1em;padding:.05em .5em;margin-left:.4em}
-.jrow[data-jid]{cursor:pointer;align-items:center}.jrow[data-jid]:hover{background:rgba(111,20,15,.06)}.jrow.open{align-items:flex-start}.jtx{flex:1;min-width:0}.jhd{display:flex;flex-wrap:wrap;align-items:center;gap:.3em}.jhd .jr{font-size:.7em}.jarr{margin-left:auto;font-style:normal;color:var(--red-dk);transition:transform .2s}.jrow.open .jarr{transform:rotate(90deg)}.jdet{display:none}.jrow.open .jdet{display:block}.jrar{display:flex;flex-wrap:wrap;align-items:center;gap:.35em;margin:.5em 0 .2em;font-size:.9em}.jrb{border:0;cursor:pointer;font:inherit;font-size:.95em;padding:.15em .6em;border-radius:.8em}.jrb[aria-pressed=true]{outline:.15em solid #ffd34a;transform:scale(1.08)}.jall{background:#5a3a2a;color:#fff}.jtip{margin:.2em 0 .4em;font-size:.8em}.jtx .ic.u,.juse .ic{width:1.2em;height:1.2em;vertical-align:-.2em}.jtx ul{margin:.25em 0 0;padding-left:1.1em;font-size:.9em}.jtx li{margin:.1em 0}.juse{margin:.3em 0 0;font-size:.82em;color:var(--ink-soft)}
+.crtabs{display:flex;flex-wrap:wrap;gap:.35em;margin:.6em 0 .4em;position:sticky;top:0;z-index:3;background:inherit;padding:.3em 0}.crtabs .lbc{font-size:.85em;padding:.3em .7em}
+.jrow[data-jid]{cursor:pointer;align-items:center}.jrow[data-jid]:hover{background:rgba(111,20,15,.06)}.jrow.open{align-items:flex-start}.jtx{flex:1;min-width:0}.jhd{display:flex;flex-wrap:wrap;align-items:center;gap:.3em}.jhd .jr{font-size:.7em}.jarr{margin-left:auto;font-style:normal;color:var(--red-dk);transition:transform .2s}.jrow.open .jarr{transform:rotate(90deg)}.jdet{display:none}.jrow.open .jdet{display:block}.jrar{display:flex;flex-wrap:wrap;align-items:center;gap:.35em;margin:.5em 0 .2em;font-size:.9em}.jrb{border:0;cursor:pointer;font:inherit;font-size:.95em;padding:.15em .6em;border-radius:.8em}.jrb[aria-pressed=true]{outline:.15em solid #ffd34a;transform:scale(1.08)}.jall{background:#5a3a2a;color:#fff}.jtip{margin:.2em 0 .4em;font-size:.8em}.jtx .ic.u{width:.9em;height:.9em;vertical-align:-.12em}.juse .ic{width:1.2em;height:1.2em;vertical-align:-.2em}.jtx ul{margin:.25em 0 0;padding-left:1.1em;font-size:.9em}.jtx li{margin:.1em 0}.juse{margin:.3em 0 0;font-size:.82em;color:var(--ink-soft)}
 .jr{font-weight:700;padding:0 .4em;border-radius:.6em;background:color-mix(in srgb,var(--rc) 30%,#3a2a1a);color:#fff;text-shadow:0 0 .2em rgba(0,0,0,.6)}.crc.rare{box-shadow:inset 0 0 0 .12em #c58cff}
 .pvw{margin-top:.6em}.fpend{margin:.5em 0 .8em;padding:.5em .7em;background:rgba(90,165,72,.15);border-radius:.3em;text-align:left}.fpend .btn{font-size:.8em;padding:.25em .7em;margin-left:.4em}
 .badge{margin-right:.25em}
@@ -365,6 +366,9 @@ button{font:inherit;color:inherit}
 .coin1.cu{color:#4a1f05;background:radial-gradient(circle at 35% 30%,#ffd3a8,#c8763a 45%,#8a4a1c 80%);box-shadow:inset 0 0 0 .09em #7a3e12,inset 0 0 0 .16em #e8a070,0 .06em .12em rgba(0,0,0,.5)}
 .cap{display:inline-block;width:.75em;height:.75em;border-radius:50%;background:conic-gradient(from 0deg,#d33 0 8%,#a11 8% 16%,#d33 16% 24%,#a11 24% 32%,#d33 32% 40%,#a11 40% 48%,#d33 48% 56%,#a11 56% 64%,#d33 64% 72%,#a11 72% 80%,#d33 80% 88%,#a11 88% 100%);box-shadow:inset 0 0 0 .1em #e9e1c8,inset 0 0 0 .15em #b51b1b,0 .05em .1em rgba(0,0,0,.6)}
 .find.coin{z-index:9}
+/* находки неприметнее (монеты на столе — как раньше): мельче, тусклее, свечение слабое */
+.find:not(.coin){font-size:1.3em;padding:.6em;opacity:.82}.find:not(.coin) i{filter:drop-shadow(0 0 .06em var(--rc)) drop-shadow(0 0 .16em var(--rc))}.find:not(.coin)::before{opacity:.45}.find:not(.coin)::after{opacity:.5}
+.stage.fonar .find:not(.coin){font-size:1.9em;opacity:1}
 .find .karrow{position:absolute;left:50%;top:-1.1em;transform:translateX(-50%);font:400 .7em 'Russo One',sans-serif;color:#ffd45a;text-shadow:0 0 .3em #000,0 0 .6em #ffb300;animation:karr .8s ease-in-out infinite;pointer-events:none}
 @keyframes karr{0%,100%{top:-1.1em}50%{top:-.7em}}
 .stage.fonar .find{font-size:3.1em}.stage.fonar .find.coin{font-size:2.5em}.stage.fonar .find i{filter:drop-shadow(0 0 .15em var(--rc)) drop-shadow(0 0 .45em var(--rc)) drop-shadow(0 0 .9em #fff6c0)}
@@ -418,7 +422,7 @@ button{font:inherit;color:inherit}
 .stage.seek :is(.seat,.talk,.board,.btns,.hints,.msg,#timer,#me,#emoQuick,#admQuick,.wxnote,.undobtn,#tblov,#trumpBox,#lootFeed,#logPanel){opacity:.1!important;pointer-events:none!important;transition:opacity .25s}
 .stage.seek :is(#hand,#pile){opacity:.28;pointer-events:none!important;transition:opacity .25s}
 .stage.seek #figs{opacity:.35;transition:opacity .25s}
-.stage.seek .find{font-size:4.2em;padding:.35em;z-index:40}.stage.seek .find.coin{font-size:3.6em}
+.stage.seek .find{font-size:4.2em;padding:.35em;z-index:40}.stage.seek .find:not(.coin){opacity:1}.stage.seek .find.coin{font-size:3.6em}
 .stage.seek.myt :is(#hand,.msg,#timer){opacity:.75!important;pointer-events:auto!important}
 .seekb.on{background:#ffd45a;box-shadow:0 0 0 .2em rgba(255,212,90,.6),0 0 1em rgba(255,212,90,.8)}
 .seeklbl small{display:block;font:400 .55em 'PT Sans',sans-serif;opacity:.8;text-align:center}
@@ -901,7 +905,7 @@ details.sets summary::-webkit-details-marker{display:none}
 
 /* ===== 2.80: иконки, рамки редкости, профиль с экипировкой, новое меню ===== */
 .ic{display:inline-block;width:1.3em;height:1.3em;background:center/contain no-repeat;vertical-align:-.3em;filter:drop-shadow(0 .06em .06em rgba(0,0,0,.35))}
-.ic.u{width:1.15em;height:1.15em}
+.ic.ic-uah{width:1em;height:1em;vertical-align:-.17em}.ic.u{width:.9em;height:.9em;vertical-align:-.12em}
 .crc>i .ic,.jic .ic{width:1.6em;height:1.6em}
 .find i .ic{width:1.5em;height:1.5em;vertical-align:middle}
 .find.tbr{filter:brightness(1.35) drop-shadow(0 0 .4em var(--rc))}.find.tbr i{animation-duration:1s}
@@ -967,7 +971,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
 .sk b{font-family:'Russo One',sans-serif;font-weight:400;color:var(--red-dk);font-size:.95em}
 .sk.zero{opacity:.42}
 .sk.uahk{margin-left:auto;background:linear-gradient(#fff0b8,#f3c24f);box-shadow:inset 0 0 0 .1em #b8860b,0 .15em .35em rgba(120,80,0,.3);padding:.15em .7em .15em .25em}
-.sk.uahk .ic{width:2.3em;height:2.3em}.sk.uahk b{font-size:1.45em;color:#5a3a00}
+.sk.uahk .ic{width:1.75em;height:1.75em}.sk.uahk b{font-size:1.45em;color:#5a3a00}
 .stip{position:absolute;left:0;right:0;top:calc(100% - .2em);z-index:7;background:#fff8e6;color:var(--ink);border:.12em solid var(--red-dk);border-radius:.55em;padding:.5em .75em;box-shadow:0 .5em 1.2em rgba(0,0,0,.35);text-align:left;font-size:.88em}
 .stip::before{content:'';position:absolute;top:-.55em;left:calc(var(--ax,2em) - .5em);border:.5em solid transparent;border-top:0;border-bottom-color:var(--red-dk)}
 .stip ul{margin:.3em 0 .2em;padding-left:1.1em}.stip small{color:var(--ink-soft)}.stip span{color:var(--ink-soft);font-size:.9em}.stip p{margin:.3em 0}
@@ -1146,12 +1150,12 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       <button class="btn" id="tBack" hidden></button>
       <div class="tplayrow"><button class="btn tplay" id="tPlay">ИГРАТЬ</button><button class="btn tplay tmap" id="tMap" hidden>🗺 РАЙОН</button><button class="btn tplay tbil" id="tBil" hidden>🎱 БИЛЬЯРДНАЯ</button></div>
       <div class="trow"><button class="btn alt" id="tProf">👤 Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button><button class="btn alt" data-open="rules">📖 Правила</button></div>
-      <small class="tver">версия 2.85</small>
+      <small class="tver">версия 2.86</small>
     </div>
   </div>
   <div class="ov" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.85</button></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.86</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -1265,7 +1269,8 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.85 · Сегодня</h3><ul><li>🧺 Скатерти теперь настоящие: клеёнка в цветочек, газета «Вечерний район», сукно, бабушкин ковёр, рыночная клеёнка</li><li>🍺 Вещи на столе нарисованы по-настоящему: термос, семки, пепельница, пивко, вобла, домино, транзистор, самовар, Кубок двора</li><li>🃏 Катран у Жоры теперь в подвале: лампа с бахромой, ковёр на стене, старый холодильник</li></ul>
+        <h3>Версия 2.86 · Сегодня</h3><ul><li>🔍 Находки теперь прячутся по всему двору и не так бросаются в глаза: ищи внимательнее. Монеты на стол падают как раньше</li><li>🚂 Витя Гудок заходит реже, гудит тише и только болтает, у кого мать. Где лежат находки — больше не палит</li><li>🪶 Особые находки районов (перья и т.п.) падают реже</li><li>🧰 Верстак по разделам: оправы, значки, рубашки, скатерти, вещи на стол, эффекты, талисманы — не надо листать вниз</li><li>🖼 Вернулись старые оправы уровня, драконы остались</li><li>Значок гривны стал аккуратнее</li></ul>
+        <h3>Версия 2.85</h3><ul><li>🧺 Скатерти теперь настоящие: клеёнка в цветочек, газета «Вечерний район», сукно, бабушкин ковёр, рыночная клеёнка</li><li>🍺 Вещи на столе нарисованы по-настоящему: термос, семки, пепельница, пивко, вобла, домино, транзистор, самовар, Кубок двора</li><li>🃏 Катран у Жоры теперь в подвале: лампа с бахромой, ковёр на стене, старый холодильник</li></ul>
         <h3>Версия 2.84</h3><ul><li>🧺 Скатерть теперь ровно лежит на столе, в перспективе, и больше не налезает на тебя</li><li>🍺 Вещи на стол: термос, семки, пепельница, пивко, вобла, домино, транзистор, самовар и Кубок двора. Крафтятся на Верстаке, стоят на столе перед тобой — их видят все. У ботов тоже бывает что-то на столе</li><li>🎤 Элвис узнаёт каждого валета</li></ul>
         <h3>Версия 2.83</h3><ul><li>📖 Журнал добычи компактнее: тыкни на вещь — раскроется, где её брать и для чего она нужна</li><li>Тык по редкости (белая, зелёная, синяя...) — покажет все вещи этой редкости</li><li>Вместо значка ₴ теперь монетка-гривна</li></ul>
         <h3>Версия 2.82</h3><ul><li>🎱 Новые правила «Местный» (вместо «Руской»): бьёшь любым шаром в любой, главное — задеть другой шар. Не задел — соперник ставит шар куда хочет. Забей 7 любых, потом чёрную восьмёрку. Чёрный раньше времени — проиграл</li><li>🎱 Шары катятся по-настоящему: номер проворачивается вместе с шаром. Звук удара шаров мягче</li><li>🎲 Бильярдная и Катран — отдельным блоком «Другие игры» в меню</li><li>🗺 На карте района карточки открываются по клику, а не при наведении — до бильярдной теперь легко дойти мышкой</li><li>«Русская баня» теперь «Супер-баня»</li><li>Починили: журнал добычи снова открывается, бильярдная больше не зависает под меню</li></ul>
@@ -2100,6 +2105,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     if (pv && Math.random() < .3) return pickNR('L:' + pv, L[pv]);
     return pickNR('L:' + fallback, L[fallback]);
   }
+  let elvisJackAt = 0; // когда Элвис последний раз кричал про валета
   function chatter(plays, winner, trump, points, K, seats, hands) {
     const out = [];
     const team = (s) => K.teamOf(s);
@@ -2189,12 +2195,14 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     // Дантл: зашли с бубей
     const dn = seats ? seats.findIndex((x) => x && x.char === 'dantl') : -1;
     if (dn >= 0 && led === 'D' && out.length < 3 && !out.some((o) => o.seat === dn) && Math.random() < .4) out.unshift({ seat: dn, text: 'Бубей хоть хуем бей' });
-    // Элвис: на каждого валета своё (если валетов несколько — на самого старшего)
+    // Элвис: кричит про валета, только когда валет решил взятку (забрал её) и не чаще раза в 40 с
     const el = seats ? seats.findIndex((x) => x && x.char === 'elvis') : -1;
-    if (el >= 0) {
+    const wj = plays[wi] && plays[wi].card;
+    if (el >= 0 && wj && wj.rank === 'J' && Date.now() - elvisJackAt > 40000 && Math.random() < .4) {
       const JL = { C: 'ВОТ ОН! КРЕСТОШ!', S: 'О ПИКАШИК!', H: 'ОПА ЧЕРВАШИК!', D: 'БУБАШ!' };
-      const j = ['C', 'S', 'H', 'D'].find((su) => plays.some((p) => p.card.rank === 'J' && p.card.suit === su));
-      if (j && Math.random() < .85) { for (let k = out.length - 1; k >= 0; k--) if (out[k].seat === el) out.splice(k, 1); out.unshift({ seat: el, text: JL[j] }); if (out.length > 3) out.length = 3; }
+      elvisJackAt = Date.now();
+      for (let k = out.length - 1; k >= 0; k--) if (out[k].seat === el) out.splice(k, 1);
+      out.unshift({ seat: el, text: JL[wj.suit] }); if (out.length > 3) out.length = 3;
     }
     return pace(out, 300);
   }
@@ -2210,11 +2218,11 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
   // Местная легенда с рынка Кирово: гудит, как электричка, бегает по рынку с тех пор, как пацаны были в школе.
   // Проходит мимо, заглядывает в карты и «подсказывает», у кого мать. Правда только наполовину.
   const BOMZH = {
-    say: ['ТУ-ТУУУ! Витя Гудок прибыл! {n}, у тебя мать, я с рынка видел!', '{n}! Мать у него! Отвечаю, как за рыбу на Кирово',
+    say: ['ТУУУ-ТУУУ! Витя Гудок прибыл! {n}, у тебя мать, я с рынка видел!', '{n}! Мать у него! Отвечаю, как за рыбу на Кирово',
       'Я по рынку бегал, всё видел: у {n} мать. ТУУУ!', 'Пацаны, я вас ещё со школы помню! {n} уже тогда с матерью сидел',
       '{n}, дай пятёрку, скажу, у кого мать. Ладно, бесплатно: у тебя', 'Би-би! Осторожно, мать на руках у {n}! Проезжаем, не задерживаемся',
       'Меня с Кирово гоняли, а я всё равно знаю: мать у {n}', 'Тётки с рынка просили передать: у {n} мать. И пирожок, но я его съел',
-      '<i>*гудит паровозом*</i> Ту-ту! Станция «{n}», мать на борту!', '{n}, я в картах как в семечках разбираюсь. Мать у тебя. Или семечки'],
+      '<i>*гудит паровозом*</i> Тууу-тууу! Станция «{n}», мать на борту!', '{n}, я в картах как в семечках разбираюсь. Мать у тебя. Или семечки'],
     gone: ['ТУУУ! Матери нет, уехала. Как электричка на Кирово', 'Мать вышла! Я сам видел, она на рынок пошла, за семечками',
       'Нету мамки, пацаны. Есть Витя Гудок. Налейте Гудку', 'Би-бип! Мать сыграна, поезд ушёл', 'Мать? Мать на рынке рыбу продаёт. Я спрашивал'],
     back: { def: ['Гудок, вали на рынок', 'Витя, не пали контору!', 'Не слушайте Гудка, он в прошлый раз про рыбу врал', 'Витя, иди погуди где-нибудь', 'Гудок, ты нас со школы палишь'],
@@ -2362,16 +2370,31 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     for (const s of all) { k -= s.w; if (k <= 0) { sp = s; break; } }
     return { n: sp.n, x: +(sp.x[0] + R() * (sp.x[1] - sp.x[0])).toFixed(1), y: +(sp.y[0] + R() * (sp.y[1] - sp.y[0])).toFixed(1) };
   }
-  // особая находка района падает и в обычной игре на месте этого района (примерно 1 находка из 12)
-  const LOC_ITEM = { cherem: 'pero', korolenko: 'blesna', stroy: 'kvit', centr: 'cennik', vodokanal: 'antracit' }, LOC_ITEM_P = .08;
+  // Находки прячутся по всему экрану (кроме мест под табло, аватаром и рукой); название места — ближайшая точка из SPOTS
+  function spotWide(loc, R) {
+    for (let k = 0; k < 40; k++) {
+      const x = 4 + R() * 92, y = 12 + R() * 76;
+      if (x < 18 && y < 52) continue;          // аватар и кнопки слева сверху
+      if (y < 14) continue;                    // табло и кнопки сверху
+      if (x > 36 && x < 86 && y > 76) continue; // рука
+      if (x > 90 && y > 84) continue;          // кнопка звука
+      const all = SPOTS[loc] || SPOTS.yard;
+      let best = all[0], bd = 1e9;
+      for (const sp of all) { const cx = (sp.x[0] + sp.x[1]) / 2, cy = (sp.y[0] + sp.y[1]) / 2, d = (cx - x) ** 2 + (cy - y) ** 2; if (d < bd) { bd = d; best = sp; } }
+      return { n: best.n, x: +x.toFixed(1), y: +y.toFixed(1) };
+    }
+    return spotOf(loc, R);
+  }
+  // особая находка района падает и в обычной игре на месте этого района (примерно 1 находка из 33)
+  const LOC_ITEM = { cherem: 'pero', korolenko: 'blesna', stroy: 'kvit', centr: 'cennik', vodokanal: 'antracit' }, LOC_ITEM_P = .03;
   const RAR_P = [.55, .26, .13, .048, .012];
   function rollFind(R, loc) {
     R = R || Math.random;
     const li = LOC_ITEM[String(loc || '').replace(/2$/, '')];
-    if (li && R() < LOC_ITEM_P) { const sp = spotOf(loc, R); return { rar: 3, item: li, qty: 1, x: sp.x, y: sp.y, at: sp.n, hint: R() < .5 }; }
+    if (li && R() < LOC_ITEM_P) { const sp = spotWide(loc, R); return { rar: 3, item: li, qty: 1, x: sp.x, y: sp.y, at: sp.n, hint: R() < .5 }; }
     const r = R(), rar = r < .55 ? 0 : r < .81 ? 1 : r < .94 ? 2 : r < .988 ? 3 : 4;
     const opt = FIND_TABLE[rar][Math.floor(R() * FIND_TABLE[rar].length)];
-    const sp = spotOf(loc, R);
+    const sp = spotWide(loc, R);
     return { rar, item: opt[0], qty: opt[1] + Math.floor(R() * (opt[2] - opt[1] + 1)), x: sp.x, y: sp.y, at: sp.n, hint: R() < .45 };
   }
   // Монета 1 грн падает на стол: кто первый тыкнул, того и монета
@@ -2773,7 +2796,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
   ];
 
   // Шансы на особую находку за раздачу на районе
-  const FIND_CHANCE = .65;
+  const FIND_CHANCE = .2; // особая находка района в бою: шанс за раздачу (было .65 — перья сыпались слишком часто)
 
   const api = { KLAD, MAP_FILE, BIL_PINS, DISTRICTS, ITEMS, RARE_CRAFT, SELL, CRAFT_BACK, STAKES, FIND_CHANCE };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -4107,10 +4130,18 @@ function craft(id) {
   return true;
 }
 function invHtml() { return '<div class="inv">' + Object.keys(RES).filter((r) => !RES[r].klad && !RES[r].gear && (!RES[r].camp || r === 'uah' || bal(r) > 0)).map((r) => '<span title="' + RES[r].n + '">' + RES[r].i + '<b>' + bal(r) + '</b></span>').join('') + '</div>'; }
+// Верстак по разделам: [ключ, значок, слоты, название]
+const CRAFT_CATS = [['f', '🖼', ['f'], 'Оправы'], ['b', '🧱', ['b'], 'Фон досье'], ['i', '🏷', ['i'], 'Значки'], ['c', '🂠', ['c'], 'Рубашки'], ['t', '🧺', ['t'], 'Скатерти'],
+  ['p', '🍺', ['p'], 'На стол'], ['fx', '🎆', ['w', 'g', 'r'], 'Эффекты'], ['tal', '🧿', null, 'Талисманы'], ['gear', '🎒', null, 'Снаряга'], ['rare', '🗝', null, 'Редкое и пропуска']];
+let craftCat = (() => { try { return localStorage.getItem('kozel-ccat') || 'f'; } catch (e) { return 'f'; } })();
 function renderCraft() {
   const eq = eqOf(STATS);
-  $('craftIn').innerHTML = stockHtml() + '<p class="note">Украшения качаются до ★3: каждая звезда — новый блеск. Лишнее можно разобрать, часть ресурсов вернётся.</p>' + Object.keys(SLOT).map((sl) => '<h3>' + SLOT[sl][1] + '</h3><div class="crg">' + CRAFT.filter((c) => c.slot === sl && (c.cost || owned(c.id) || c.drop || c.shop || c.album !== undefined)).map((c) => craftCard(c, eq)  ).join('') + '</div>').join('') +
-    talHtml() + gearHtml() + rareHtml() + passHtml() + '<div class="pvw">' + profileCard({ img: CHAR_IMG[myChar], name: Acct.nick || charById(myChar).name, xp: myXp, eq, sub: 'Так тебя видят пацаны' }) + '</div>';
+  const cat = CRAFT_CATS.find((x) => x[0] === craftCat) || CRAFT_CATS[0];
+  const slotHtml = (sl) => '<h3>' + SLOT[sl][1] + '</h3><div class="crg">' + CRAFT.filter((c) => c.slot === sl && (c.cost || owned(c.id) || c.drop || c.shop || c.album !== undefined)).map((c) => craftCard(c, eq)).join('') + '</div>';
+  const body = cat[0] === 'tal' ? talHtml() : cat[0] === 'gear' ? gearHtml() : cat[0] === 'rare' ? rareHtml() + passHtml() : cat[2].map(slotHtml).join('');
+  $('craftIn').innerHTML = stockHtml() + '<div class="crtabs">' + CRAFT_CATS.map(([k, ic, , n]) => '<button class="lbc" data-ccat="' + k + '" aria-pressed="' + (k === cat[0]) + '">' + ic + ' ' + n + '</button>').join('') + '</div>' +
+    (cat[2] ? '<p class="note">Украшения качаются до ★3: каждая звезда — новый блеск. Лишнее можно разобрать, часть ресурсов вернётся.</p>' : '') + body + '<div class="pvw">' + profileCard({ img: CHAR_IMG[myChar], name: Acct.nick || charById(myChar).name, xp: myXp, eq, sub: 'Так тебя видят пацаны' }) + '</div>';
+  $('craftIn').querySelectorAll('[data-ccat]').forEach((b) => { b.onclick = () => { craftCat = b.dataset.ccat; try { localStorage.setItem('kozel-ccat', craftCat); } catch (e) {} Snd.click(); renderCraft(); }; });
   $('craftIn').querySelectorAll('[data-up]').forEach((b) => { b.onclick = () => { upgrade(b.dataset.up); renderCraft(); }; });
   $('craftIn').querySelectorAll('[data-try]').forEach((b) => { b.onclick = () => tryFx(b.dataset.try); });
   $('craftIn').querySelectorAll('[data-dism]').forEach((b) => { b.onclick = () => { if (b.dataset.sure) { dismantle(b.dataset.dism); renderCraft(); renderPickers(); return; } const c = CRAFT.find((x) => x.id === b.dataset.dism); b.dataset.sure = 1; b.innerHTML = 'Точно? Вернётся: ' + Object.entries(dismantleGain(c)).filter(([, n]) => n > 0).map(([r, n]) => n + RES[r].i).join(' '); }; });
@@ -4207,7 +4238,7 @@ function showFind(f, local) {
   e.onclick = (ev) => { ev.stopPropagation(); if (!FINDS[f.id]) return; /* уже подняли: второй тык не считается */ if (local) foundFind(f.id, 0, f); else Net.send('grab', { id: f.id }); };
   stage.appendChild(e); FINDS[f.id] = { e, f };
   if (f.coin) { Snd.coin && Snd.coin(); e.animate([{ transform: 'translate(-50%,-50%) translateY(-38vh) rotate(0)', opacity: .3 }, { transform: 'translate(-50%,-50%) translateY(0) rotate(720deg)', opacity: 1, offset: .75 }, { transform: 'translate(-50%,-50%) translateY(-1.2em)', offset: .87 }, { transform: 'translate(-50%,-50%)' }], { duration: 900, easing: 'ease-in' }); }
-  if (f.hint && !f.coin) { const R = seeded(f.seed || f.id); setTimeout(() => { if (!FINDS[f.id]) return; const t = KozelLines.findHint(f.x, f.y, R, f.at); if ((LAY.yard || LAY.base || LAY.street) && !bomzhBusy) showBomzh(t, null, null); else { const n = document.createElement('div'); n.className = 'wxnote plate'; n.innerHTML = '🗣 <b>Витя Гудок из-за угла:</b> ' + t; stage.appendChild(n); setTimeout(() => n.remove(), 6000); } }, 1500); }
+  // Гудок больше не подсказывает, где находки (владелец): только у кого мать
   if (local) setTimeout(() => goneFind(f.id), (f.coin ? 14000 : 45000) * (1 + talB('finds'))); // заячья лапка: лежат дольше
   if (talB('finds')) e.classList.add('tbr'); // и блестят ярче
   $('seekBtn').classList.add('ping');
@@ -4398,12 +4429,12 @@ function dragonSvg(t) {
 }
 // Аватар в оправе своего уровня (досье, меню)
 // оправы уровня картинками владельца (лист frames): номер ступени TIERS → картинка. Нет в списке — рисуется кодом, как раньше
-const TIER_IMG = { 0: 'fr_wood', 1: 'fr_copper', 2: 'fr_steel', 3: 'fr_gold', 4: 'fr_amethyst', 5: 'fr_lava', 6: 'fr_dragon_green', 7: 'fr_dragon_red', 10: 'fr_royal' };
+const TIER_IMG = { 6: 'fr_dragon_green', 7: 'fr_dragon_red' }; // остальные оправы — старые, нарисованные кодом (владелец: картинки дублировали рамки редкости)
 function framedAvatar(src, lvl, cls, eq) {
   const t = tierOf(lvl);
   if (TIER_IMG[t] && ICONS[TIER_IMG[t]]) {
     const fm = eq && eq.f ? CRAFT.find((c) => c.id === eq.f) : null;
-    return '<div class="pfr imgfr t' + t + (cls ? ' ' + cls : '') + (fm ? ' m-' + fm.id + ' fst' + ((eq && eq.s && eq.s[fm.id]) || 0) : '') + '"><img alt="" src="' + src + '">' + IC(TIER_IMG[t], 'tfr') + (fm ? fm.deco || '' : '') + '<b class="plv">' + lvl + '</b></div>';
+    return '<div class="pfr imgfr t' + t + (cls ? ' ' + cls : '') + (fm ? ' m-' + fm.id + ' fst' + ((eq && eq.s && eq.s[fm.id]) || 0) : '') + '"><img alt="" src="' + src + '">' + IC(TIER_IMG[t], 'tfr') + (t >= 5 ? '<span class="crw">👑</span>' : '') + (fm ? fm.deco || '' : '') + '<b class="plv">' + lvl + '</b></div>';
   }
   let o = '';
   if (t >= 2) o += '<i class="rv r1"></i><i class="rv r2"></i><i class="rv r3"></i><i class="rv r4"></i>';
@@ -5122,7 +5153,7 @@ async function startRound() {
   const g = gen;
   const fresh = match.praise.slice();
   round = K.newRound(match);
-  round.bomzhAt = Math.random() < .75 ? 2 + Math.floor(Math.random() * 5) : -1;
+  round.bomzhAt = Math.random() < .3 ? 2 + Math.floor(Math.random() * 5) : -1; // Гудок заходит редко
   handOrder = [];
   voids = []; busy = true;
   if ($('nextBtn')) $('nextBtn').hidden = true;
@@ -5886,8 +5917,8 @@ const Snd = (() => {
     setMaster, get master() { return masterV; },
     get sfx() { return sfxOn; }, get amb() { return ambOn; }, get leaf() { return leafOn; }, get music() { return musicOn; },
     setTheme, TRACKS, ruVoices, bestVoice,
-    npcVoice(text, pitch, rate) { if (!sfxOn || !voiceOn || !window.speechSynthesis) return; const v = bestVoice(); if (!v) return;
-      const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]+>/g, '').replace(/\*[^*]*\*/g, '')); u.voice = v; u.lang = v.lang; u.pitch = pitch; u.rate = rate; u.volume = .9; speechSynthesis.cancel(); speechSynthesis.speak(u); },
+    npcVoice(text, pitch, rate, vol) { if (!sfxOn || !voiceOn || !window.speechSynthesis) return; const v = bestVoice(); if (!v) return;
+      const u = new SpeechSynthesisUtterance(String(text).replace(/<[^>]+>/g, '').replace(/\*[^*]*\*/g, '')); u.voice = v; u.lang = v.lang; u.pitch = pitch; u.rate = rate; u.volume = vol || .9; speechSynthesis.cancel(); speechSynthesis.speak(u); },
     get voiceOn() { return voiceOn; }, setVoiceOn(v) { voiceOn = v; try { localStorage.setItem('kozel-voice-on', v ? 'on' : 'off'); } catch (e) {} },
     setVoice(name) { voicePick = name; try { localStorage.setItem('kozel-voice', name); } catch (e) {} },
     get track() { return choice; }, get trackNow() { return theme; }, get vol() { return mVol; },
@@ -6344,7 +6375,7 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.85') { localStorage.setItem('kozel-seen-ver', '2.85'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.86') { localStorage.setItem('kozel-seen-ver', '2.86'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
 // Точка: при запуске, если пацан поработал больше 10 минут, забираем
 setTimeout(() => { try { if (farmIdx() < 0) { STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + 2; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); } else { const p = farmPending(); if (p && p.h >= 1 / 6) farmCollect(); } renderPickers(); } catch (e) {} }, 1500);
 $('tPlay').onclick = () => { Snd.init(); hide('title'); open('menu'); };
@@ -6708,7 +6739,7 @@ async function showBomzh(text, replySeat, reply) {
   const go = (x0, x1, ms) => b.animate([{ transform: 'translateX(' + x0 + 'px)' }, { transform: 'translateX(' + x1 + 'px)' }], { duration: ms, easing: 'linear', fill: 'forwards' }).finished.catch(() => {});
   if (!b.querySelector('img.gudok')) { const im = document.createElement('img'); im.className = 'gudok'; im.alt = ''; im.src = NPC_IMG.alkash1; b.appendChild(im); }
   b.classList.remove('rev'); b.classList.add('walk');
-  Snd.bottles(); Snd.npcVoice('Ту-ту-у-у!', .7, 1.1);
+  Snd.npcVoice('Ту-у-у-у-у... Ту-у-у-у-у!', .7, .75, .35); // Гудок тише и протяжнее
   await go(-W * .09, W * .21, 3600);
   b.classList.remove('walk'); b.classList.add('lean');
   $('bzSay').innerHTML = '<b>Витя Гудок</b>' + KozelLines.sho(text);
@@ -6718,7 +6749,7 @@ async function showBomzh(text, replySeat, reply) {
   if (reply !== undefined && reply !== null) talk(replySeat, reply);
   await sleep(900);
   b.classList.remove('lean'); b.classList.add('walk', 'rev');
-  Snd.bottles();
+  // уходит тихо
   await go(W * .21, -W * .09, 3300);
   b.classList.remove('walk', 'rev');
   bomzhBusy = false;
@@ -7854,7 +7885,7 @@ function dqClaim(j) {
   lootToast('Гудок доволен' + (bonus ? '!' : '')); if (bonus) setTimeout(() => feed('🚂' + bonus, 'mine'), 400);
   saveStats(); Snd.good(); checkAch();
 }
-const GUDOK_DQ = ['ТУ-ТУУУ! Шо, пацан, работа есть. Сделаешь — не обижу', 'Слышь, я тут списочек набросал. Шо сможешь — то и сделай', 'Гудок дело говорит: три задания, и ты в шоколаде. Ну, в семках', 'ТУУУ! Не подведи, а то я расстроюсь и буду гудеть всю ночь'];
+const GUDOK_DQ = ['ТУУУ-ТУУУ! Шо, пацан, работа есть. Сделаешь — не обижу', 'Слышь, я тут списочек набросал. Шо сможешь — то и сделай', 'Гудок дело говорит: три задания, и ты в шоколаде. Ну, в семках', 'ТУУУ! Не подведи, а то я расстроюсь и буду гудеть всю ночь'];
 function renderDaily() {
   const T = todayTasks(), str = streakNow();
   $('dailyIn').innerHTML = '<div class="gudok"><div class="gdk">🚂</div><p><b>Витя Гудок:</b> ' + KozelLines.sho(pickOne(GUDOK_DQ)) + '</p></div>' +
