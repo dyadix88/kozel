@@ -5338,7 +5338,8 @@ const Snd = (() => {
   function coin(got) { if (!ok()) return; const t = now(); if (got) { [1568, 2093].forEach((f, i) => tone(t + i * .06, 'sine', f, .22, .09)); return; } [0, .16, .27, .34].forEach((d, i) => { tone(t + d, 'sine', 2400 - i * 90, .12, .07 - i * .012); tone(t + d, 'triangle', 3600 - i * 120, .06, .03); }); }
   // бильярд: удар кием, шар о шар, борт, луза
   function bshot(p) { if (!ok()) return; const t = now(); noise(t, .05, 900, 1.2, .12 + p * .15); tone(t, 'sine', 240, .06, .08 + p * .1, 140); }
-  function bclick(v) { if (!ok()) return; const t = now(); tone(t, 'sine', 2600 + Math.random() * 500, .045, .03 + v * .13); tone(t, 'triangle', 1500, .03, .02 + v * .05); }
+  // шар о шар: мягкий костяной «тук» (раньше был высокий писк, резал слух)
+  function bclick(v) { if (!ok()) return; const t = now(), f = 1150 + Math.random() * 180; tone(t, 'sine', f, .06, .025 + v * .07, f * .72); noise(t, .018, 2600, .9, .01 + v * .035); }
   function brail(v) { if (!ok()) return; noise(now(), .07, 260, .9, .03 + v * .1); }
   function bpot(off) { if (!ok()) return; const t = now(); if (off) { tone(t, 'sine', 120, .3, .15, 60); noise(t + .25, .2, 500, .8, .12); return; } tone(t, 'sine', 180, .18, .16, 90); noise(t + .05, .25, 320, .7, .08); tone(t + .12, 'sine', 140, .2, .08, 80); }
   function fart() { if (!ok()) return; const t = now(); const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(95, t); o.frequency.linearRampToValueAtTime(70, t + .5); o.frequency.linearRampToValueAtTime(120, t + .62); o.frequency.linearRampToValueAtTime(60, t + .9); const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; const g = ctx.createGain(); g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(.22, t + .04); g.gain.setValueAtTime(.2, t + .7); g.gain.exponentialRampToValueAtTime(.0001, t + .95); o.connect(lp).connect(g).connect(master); o.start(t); o.stop(t + 1); noise(t, .9, 160, 1.4, .08); }
@@ -8421,10 +8422,11 @@ function renderJournal() {
   const findP = (id) => { const out = []; L.FIND_TABLE.forEach((row, r) => row.forEach(([it]) => { if (it === id) out.push({ r, p: L.RAR_P[r] / row.length * 100 }); })); return out; };
   const uses = (id) => {
     const u = [];
-    CRAFT.forEach((c) => { if (c.cost[id]) u.push(c.i + ' ' + c.n + ' (' + c.cost[id] + ')'); });
+    CRAFT.forEach((c) => { if (c.cost && c.cost[id]) u.push(c.i + ' ' + c.n + ' (' + c.cost[id] + ')'); }); // у вещей из кулька/ларька/альбома рецепта нет
+    if (typeof TALIS !== 'undefined' && TALIS) TALIS.forEach((t) => { if (t.cost && t.cost[id]) u.push((IC(t.ic) || t.e) + ' ' + t.n + ' (' + t.cost[id] + ')'); });
     Object.entries(CITEM).forEach(([k, v]) => { if (v.pass && v.cost[id]) u.push(v.i + ' ' + v.n + ' (' + v.cost[id] + ')'); });
     KozelCamp.RARE_CRAFT.forEach((rc) => { if (rc.cost[id]) u.push(RES[rc.id].i + ' ' + RES[rc.id].n + ' (' + rc.cost[id] + ')'); });
-    Object.values(AFK_UP).forEach((up) => { if (up.cost.some((c) => c[id])) u.push(up.i + ' ' + up.n + ' на Точке'); });
+    Object.values(AFK_UP).forEach((up) => { if (up.cost.some((c) => c && c[id])) u.push(up.i + ' ' + up.n + ' на Точке'); });
     return u;
   };
   const row = (id, where) => { const it = RES[id] || CITEM[id]; if (!it) return '';
@@ -8813,20 +8815,50 @@ const Bil = (() => {
     // прицел
     const cue = cueBall();
     if (aim && cue && aim.power > 0.01) drawAim(x, cue, f, r);
-    x.globalAlpha = .18; for (const b of fx2.trail) drawBall(x, b, f, r); x.globalAlpha = 1;
+    x.globalAlpha = .18; for (const b of fx2.trail) drawBall(x, b, f, r, true); x.globalAlpha = 1;
     for (const b of ballsNow()) if (!b.out) drawBall(x, b, f, r);
     drawFx(x, f, r);
     if (aim && cue && aim.power > 0.01) drawCue(x, cue, f, r);
   }
-  function drawBall(x, b, f, r) {
+  // шар катится: номер нарисован на сфере с двух сторон и проворачивается по ходу движения, уходит за край и прячется
+  const ROLL = {};
+  function rollOf(b) {
+    let o = ROLL[b.n];
+    if (!o) { const a = Math.random() * Math.PI * 2, z = Math.random() * 2 - 1, q = Math.sqrt(1 - z * z); o = ROLL[b.n] = { u: [q * Math.cos(a), q * Math.sin(a), z], x: b.x, y: b.y }; }
+    const dx = b.x - o.x, dy = b.y - o.y, d = Math.hypot(dx, dy);
+    if (d > 1e-4 && d < T.R * 6) { // ось вращения поперёк движения, угол = путь / радиус
+      const kx = -dy / d, ky = dx / d, ang = d / T.R, c = Math.cos(ang), sn = Math.sin(ang), [ux, uy, uz] = o.u;
+      const dot = kx * ux + ky * uy, cx = ky * uz, cy = -kx * uz, cz = kx * uy - ky * ux;
+      o.u = [ux * c + cx * sn + kx * dot * (1 - c), uy * c + cy * sn + ky * dot * (1 - c), uz * c + cz * sn];
+    }
+    o.x = b.x; o.y = b.y;
+    return o.u;
+  }
+  function decal(x, px, py, r, u, draw) {
+    if (u[2] <= .05) return; // на той стороне шара — не видно
+    const k = Math.min(1, u[2]), ang = Math.atan2(u[1], u[0]);
+    x.save(); x.translate(px + u[0] * r * .82, py + u[1] * r * .82); x.rotate(ang); x.scale(.35 + .65 * k, 1); x.rotate(-ang); x.globalAlpha *= Math.min(1, k * 1.6); draw(); x.restore();
+  }
+  function drawBall(x, b, f, r, ghost) {
     const [px, py] = toPx(b.x, b.y);
     x.fillStyle = 'rgba(0,0,0,.35)'; x.beginPath(); x.ellipse(px + r * .25, py + r * .35, r * 1.02, r * .9, 0, 0, Math.PI * 2); x.fill();
     const gr = x.createRadialGradient(px - r * .35, py - r * .4, r * .1, px, py, r * 1.05);
     if (b.n === 0) { gr.addColorStop(0, '#fffef6'); gr.addColorStop(.6, '#f3e2a6'); gr.addColorStop(1, '#b89a4e'); }
     else { gr.addColorStop(0, '#ffffff'); gr.addColorStop(.6, '#efe9dc'); gr.addColorStop(1, '#a89f8c'); }
     x.fillStyle = gr; x.beginPath(); x.arc(px, py, r, 0, Math.PI * 2); x.fill();
-    if (b.n === 0) { x.fillStyle = '#c0261c'; x.beginPath(); x.arc(px, py, r * .28, 0, Math.PI * 2); x.fill(); }
-    else { x.fillStyle = '#1d1a16'; x.font = '700 ' + Math.max(8, r * 1.05) + 'px "PT Sans",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(b.n), px, py + r * .05); }
+    if (!ghost) {
+      const u = rollOf(b);
+      x.save(); x.beginPath(); x.arc(px, py, r * .98, 0, Math.PI * 2); x.clip();
+      for (const v of [u, [-u[0], -u[1], -u[2]]]) decal(x, px, py, r, [v[0] * .75, v[1] * .75, v[2]], () => {
+        if (b.n === 0) { x.fillStyle = '#c0261c'; x.beginPath(); x.arc(0, 0, r * .24, 0, Math.PI * 2); x.fill(); }
+        else { x.fillStyle = 'rgba(29,26,22,.85)'; x.font = '700 ' + Math.max(6, r * .62) + 'px "PT Sans",sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(b.n), 0, r * .03); }
+      });
+      x.restore();
+    }
+    // блик сверху, шоб шар был объёмный
+    const hl = x.createRadialGradient(px - r * .38, py - r * .42, 0, px - r * .38, py - r * .42, r * .55);
+    hl.addColorStop(0, 'rgba(255,255,255,.85)'); hl.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = hl; x.beginPath(); x.arc(px, py, r, 0, Math.PI * 2); x.fill();
   }
   // луч прицела: до первого шара или борта; «призрачный шар» и куда пойдёт прицельный
   function ray(cue, dx, dy) {
