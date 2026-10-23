@@ -22,7 +22,7 @@ const AFTER_VERDICT = 5500;     // пауза на окно проверки
 const CLOSE_MS = 20000;         // окно «последней предъявы» после 9-й взятки
 const ROOM_TTL = 3 * 3600 * 1000;
 const CHARS = Object.fromEntries(Object.entries(KL.CHAR).map(([id, c]) => [id, c.name]));
-const charPick = (c) => (CHARS[c] && !KL.CHAR[c].boss ? c : 'oleg');
+const charPick = (c) => (CHARS[c] && !KL.CHAR[c].boss && !KL.CHAR[c].soon ? c : 'oleg');
 // Свои пацаны только для своих аккаунтов (KL.canUse), чужому даём свободного нейтрального
 const charOk = (c, acct, room) => {
   c = charPick(c);
@@ -69,7 +69,7 @@ const clean = (s) => String(s || '').replace(/[<>&"]/g, '').trim().slice(0, 14);
 function cleanCos(c) {
   const out = { s: {} }; if (!c || typeof c !== 'object') return out;
   for (const k of ['f', 'b', 'i', 'c', 't', 'p', 'w', 'g', 'r']) if (typeof c[k] === 'string' && /^[a-z0-9]{1,10}$/.test(c[k])) { out[k] = c[k]; const st = c.s && Number(c.s[c[k]]); out.s[c[k]] = st >= 0 && st <= 3 ? Math.floor(st) : 0; }
-  if (Array.isArray(c.m)) out.m = c.m.filter((x) => typeof x === 'string' && /^[a-z]{2,10}$/.test(x)).slice(0, 3); // талисманы (только показать)
+  if (Array.isArray(c.m)) out.m = c.m.filter((x) => typeof x === 'string' && /^[a-z]{2,10}$/.test(x)).slice(0, 4); // талисманы (только показать)
   return out;
 }
 // хватает ли у игрока на ставку (браузер сам сообщает баланс action 'bal')
@@ -142,7 +142,7 @@ function sceneLoop(room) {
       blast(room, [{ type: 'scene', kind, seed: Math.floor(Math.random() * 2 ** 31), seat: Math.floor(Math.random() * 4) }]);
     }
     sceneLoop(room);
-  }, 40000 + Math.random() * 35000);
+  }, 70000 + Math.random() * 50000); // 2.91: реже
 }
 
 // Находки на всех локациях: кто первый тыкнул, тот забрал. Боты тоже иногда подбирают.
@@ -200,7 +200,7 @@ function weatherLoop(room) {
 
 // ---------- Ход игры ----------
 function startMatch(room) {
-  const free = Object.keys(CHARS).filter((c) => !KL.CHAR[c].boss && !room.seats.some((s) => s && s.char === c)).sort(() => Math.random() - .5);
+  const free = Object.keys(CHARS).filter((c) => !KL.CHAR[c].boss && !KL.CHAR[c].soon && !room.seats.some((s) => s && s.char === c)).sort(() => Math.random() - .5);
   room.seats.forEach((s, i) => { if (!s) { const c = free.shift() || pick(Object.keys(CHARS)); room.seats[i] = { name: CHARS[c] + ' (бот)', char: c, xp: Math.floor(Math.random() * 4000), bot: true, conns: new Set() }; } });
   room.match = K.newMatch(room.mode === 'turbo' ? 6 : 12);
   startRound(room);
@@ -211,7 +211,7 @@ function startMatch(room) {
 }
 function startRound(room) {
   room.round = K.newRound(room.match); room.round.honest = !!room.honest;
-  room.bomzhAt = Math.random() < .3 ? 2 + Math.floor(Math.random() * 5) : -1; // Гудок заходит редко (примерно раз в три раздачи)
+  room.bomzhAt = Math.random() < .3 && !room.seats.some((x) => x && x.char === 'gudok') ? 2 + Math.floor(Math.random() * 5) : -1; // Гудок заходит редко (примерно раз в три раздачи)
   room.voids = [];
   room.phase = 'playing';
   const evs = [{ type: 'deal' }];
@@ -1111,7 +1111,7 @@ setInterval(() => {
     if (room.phase !== 'playing' || !room.round || room.round.over || room.paused) continue;
     if (!room.nextBanter) room.nextBanter = now + 40000 + Math.random() * 30000;
     if (now < room.nextBanter) continue;
-    room.nextBanter = now + 50000 + Math.random() * 35000;
+    room.nextBanter = now + 80000 + Math.random() * 50000; // 2.91: реже
     const ctx = { pen: room.match.penalties, limit: room.match.limit };
     const wk = room.weather && room.weather.kind, wl = wk && wk !== 'clear' && Math.random() < .4 ? KL.wxLine(wk, seatsInfo(room)) : null;
     const evs = wl ? [{ type: 'talk', seat: wl.seat, text: wl.text }] : KL.banter(seatsInfo(room), ctx).map((c) => ({ type: 'talk', seat: c.seat, text: c.text, delay: c.delay || 0 }));
