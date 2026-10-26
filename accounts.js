@@ -156,15 +156,26 @@ async function me(body) {
   if (!u) throw new Error('Нужно войти заново');
   return { profile: publicProfile(u) };
 }
-const lastWrite = new Map();
+// 2.94: в базу пишем пачкой раз в 30 секунд (раньше — почти на каждое сохранение, и бесплатная база упиралась в лимит запросов,
+// после перезапуска сервера прогресс откатывался). Кто изменился — в списке dirtyU. Не записалось — пробуем снова в следующий раз.
+const dirtyU = new Set();
+const dbState = { lastOk: 0, lastErr: '', errAt: 0 };
+async function flush() {
+  const keys = [...dirtyU]; dirtyU.clear();
+  for (const key of keys) {
+    const u = users.get(key); if (!u) continue;
+    try { await store.set('user:' + key, u); dbState.lastOk = Date.now(); }
+    catch (e) { dirtyU.add(key); dbState.lastErr = String(e.message || e).slice(0, 200); dbState.errAt = Date.now(); console.error('[acct] не записалось в базу:', key, dbState.lastErr); }
+  }
+}
+setInterval(() => { flush().catch(() => {}); }, 30000).unref();
+// сервер выключают (перезаливка, сон Render) — сначала дописываем всё в базу
+for (const sig of ['SIGTERM', 'SIGINT']) process.once(sig, () => { flush().catch(() => {}).finally(() => process.exit(0)); setTimeout(() => process.exit(0), 8000).unref(); });
 async function save(body) {
   const u = await userByToken(body.token);
   if (!u) throw new Error('Нужно войти заново');
   Object.assign(u, merge(u, cleanProgress(body.progress)));
-  const key = keyOf(u.nick), now = Date.now();
-  // в базу пишем не чаще раза в 5 секунд на человека
-  if (now - (lastWrite.get(key) || 0) > 5000) { lastWrite.set(key, now); await store.set('user:' + key, u); }
-  else setTimeout(() => store.set('user:' + key, u).catch(() => {}), 5200);
+  dirtyU.add(keyOf(u.nick));
   return { profile: publicProfile(u) };
 }
 async function logout(body) {
@@ -224,7 +235,7 @@ async function adminState(body) {
   const now = Date.now();
   const list = [...users.entries()].map(([k, x]) => { const sn = seen.get(k); return { nick: x.nick, key: k, char: x.char, xp: x.xp || 0, created: x.created || 0, seenAgo: sn ? Math.round((now - sn.at) / 1000) : null }; })
     .sort((a, b) => (a.seenAgo === null) - (b.seenAgo === null) || (a.seenAgo || 0) - (b.seenAgo || 0));
-  return { users: list, cfg: await getCfg() };
+  return { users: list, cfg: await getCfg(), db: { kind: store.kind, lastOk: dbState.lastOk, lastErr: dbState.lastErr, errAt: dbState.errAt, waiting: dirtyU.size } };
 }
 async function adminOwners(body) {
   await admin(body);
@@ -245,4 +256,4 @@ async function adminPin(body) {
   return { ok: true };
 }
 
-module.exports = { store, register, login, me, save, logout, yard, invite, userByToken, keyOf, load, getCfg, admin, adminState, adminOwners, adminPin };
+module.exports = { store, flush, register, login, me, save, logout, yard, invite, userByToken, keyOf, load, getCfg, admin, adminState, adminOwners, adminPin };

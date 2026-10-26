@@ -984,6 +984,7 @@ details.sets summary::-webkit-details-marker{display:none}
 .pfr.m-cimm>img{border-color:#fff;animation:immfr 3s linear infinite}
 @keyframes immfr{0%{box-shadow:0 0 0 .14em #ff3cac,0 0 1.2em #ff3cac;filter:hue-rotate(0)}50%{box-shadow:0 0 0 .14em #ffd45a,0 0 1.6em #4facfe}100%{box-shadow:0 0 0 .14em #ff3cac,0 0 1.2em #ff3cac}}
 .pc.bg-bimm,.eqb.bg-bimm{background:radial-gradient(ellipse 60% 30% at 30% 20%,rgba(71,224,160,.55),transparent 70%),radial-gradient(ellipse 50% 25% at 70% 15%,rgba(196,113,245,.5),transparent 70%),radial-gradient(1px 1px at 20% 60%,#fff,transparent),radial-gradient(1.5px 1.5px at 80% 50%,#fff,transparent),linear-gradient(180deg,#0b1030,#1b2a6b 60%,#2a1a10 61%,#1a120c);animation:aurora 8s ease-in-out infinite alternate}
+.pc.bg-bterr,.eqb.bg-bterr{background:radial-gradient(ellipse 60% 30% at 30% 100%,#1a1110 0 60%,transparent 61%),radial-gradient(ellipse 45% 38% at 78% 100%,#241614 0 60%,transparent 61%),radial-gradient(circle at 55% 62%,#ffe08a 0 .9em,rgba(255,170,60,.6) 1.4em,transparent 3em),linear-gradient(#2b1d4a,#a8442f 55%,#f39a3d 75%,#3a1d16);color:#fff0dc}
 .pc.bg-bimm,.eqb.bg-bimm{color:#f2eaff}.eqb:is(.bg-bimm,.bg-bstars) :is(.eqc small,.pnm,.prk,.psub),.pc:is(.bg-bimm,.bg-bstars) :is(.pnm,.prk,.ptier,small){color:#f2eaff!important;text-shadow:0 1px 3px #000}
 @keyframes aurora{from{background-position:0 0,0 0,0 0,0 0,0 0}to{background-position:40px 6px,-40px 4px,0 0,0 0,0 0}}
 .pfr.setL{filter:drop-shadow(0 0 .5em rgba(255,154,31,.95)) drop-shadow(0 0 1.2em rgba(255,212,90,.6))}
@@ -1225,12 +1226,12 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       <button class="btn" id="tBack" hidden></button>
       <div class="tplayrow"><button class="btn tplay" id="tPlay">ИГРАТЬ</button><button class="btn tplay tmap" id="tMap" hidden>🗺 РАЙОН</button><button class="btn tplay tbil" id="tBil" hidden>🎱 БИЛЬЯРДНАЯ</button></div>
       <div class="trow"><button class="btn alt" id="tProf">👤 Мой профиль</button><button class="btn alt" data-open="news">📰 Что нового</button><button class="btn alt" data-open="rules">📖 Правила</button></div>
-      <small class="tver">версия 2.93</small>
+      <small class="tver">версия 2.94</small>
     </div>
   </div>
   <div class="ov" id="menu">
     <div class="box plate mm">
-      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.93</button></div>
+      <div class="head"><h1 class="ty">KOZEL</h1><p>— Трояк есть? — А если найду?</p><button class="vbtn" data-open="news" title="Что нового: список обновлений">📰 Обновления · версия 2.94</button></div>
       <div class="in">
         <div class="acctbar" data-acctbar hidden></div>
         <div class="mmgrid">
@@ -1344,7 +1345,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     <div class="box plate" style="width:44em">
       <div class="head"><h1 style="font-size:2.6em">ЧТО НОВОГО</h1></div>
       <div class="in rules news">
-        <h3>Версия 2.93 · Сегодня</h3><ul><li>🌇 Новый Двор: осенний закат, качели, горка и стол с подсветкой — садись, раздавай</li></ul>
+        <h3>Версия 2.94 · Сегодня</h3><ul><li>♻️ Металлолом! Лишние гаражи Жора принимает на металл: медяки по редкости гаража и шанс на обломок ключа. Кнопка в «Кладах»</li><li>🪙 Медяки теперь падают и в обычных сундуках</li><li>🔥 Новые легенды на Верстаке: рубашка «Чермет», клеёнка Кузьмича, фон «Закат над терриконом» и магнитофон «Весна» на стол</li><li>🧿 Три новых талисмана: шахтёрская лампа, счастливый трамвайный билет и легендарный золотой зуб деда — его можно скрафтить</li><li>🏅 Новые ачивки: за металлолом, за ★3 на талисмане и за дедов зуб</li><li>📝 На Отшиб теперь тоже по пропуску: записка от Кузьмича, крафтится на Верстаке. Кто там уже бился — пускают и так</li><li>🎒 Кнопка «Шмот» на карте, на карточке района и после боя — сразу к вещам и талисманам</li><li>🔧 Ачивка «Три звезды» теперь даётся и за талисман на ★3</li><li>🔄 Прогресс с телефона и компа теперь сам подтягивается, пока игра открыта, а в «Дворе» видно свежие уровни и шмот</li><li>🎁 Всем подарок к обнове: ключи и медяки</li></ul><h3>Версия 2.93</h3><ul><li>🌇 Новый Двор: осенний закат, качели, горка и стол с подсветкой — садись, раздавай</li></ul>
         <h3>Версия 2.92</h3><ul><li>🎨 У новых соперников появились лица: Люда, Галя, Отец Василий, механик Захар, Борисыч, Валик, а ещё Доминошник Кузьмич, Гоша Котлы и сам Витя Гудок — теперь за ними можно и поиграть</li><li>🗺 На БАЗЕ новые хозяева стола, а за ними — тайный главный стол. Кто там сидит — узнаешь сам</li><li>🔓 Все места для игры открыты всем сразу</li><li>Отшиб: новые местные</li></ul>
         <h3>Версия 2.91</h3><ul><li>🗺 Открыты все районы: Строитель, Водоканал, БАЗА и Отшиб, по два боя в каждом. На БАЗЕ — новые хозяева стола</li><li>🆕 Восемь новых соперников: Люда из ларька, почтальонша Галя, Отец Василий, механик Захар, инструктор Борисыч, катала Лёва, Ника «Искра» и гопник Валик (картинки скоро)</li><li>🎱 Открыты бильярдные «Супер-баня» и «Местный бар»</li><li>🧿 Талисманы можно разбирать. Пройдёшь все районы — откроется 4-я ячейка талисмана</li><li>💠 Новая редкость Immortal: выше легенды, супер-редкая. Осколки бессмертия — в легендарных сундуках и кульках. Плюс новые легендарные рубашка, скатерть, эффект и след</li><li>🔥 Сеты: всё в легендах или всё в Immortal — сияние у оправы и ачивки</li><li>🗝 Клады: гаражи падают реже, сундуки чаще. Обломки ключа теперь дают и за победы</li><li>🤫 Пацаны болтают реже, шоб не мешали играть</li><li>Козырь в итогах раздачи больше не закрывает надпись</li></ul>
         <h3>Версия 2.90</h3><ul><li>🎁 Всем подарок на разгон: ключи от гаража и от сундука, карты клада и пара гаражей</li><li>Игра стала легче и быстрее грузится</li></ul>
@@ -1400,7 +1401,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
   <div class="ov" id="farm"><div class="box plate" style="width:40em"><button class="xclose" data-close="farm" title="Закрыть">✕</button><div class="head"><h1 style="font-size:2.4em">🏚 ТОЧКА</h1><p>Чем занят твой пацан, пока тебя нет</p></div><div class="in"><div id="farmIn"></div><button class="btn wide" data-close="farm" style="margin-top:.8em">Закрыть</button></div></div></div>
   <div class="ov mapov" id="mapov">
     <div class="mapwrap"><img id="mapImg" alt="Карта города"><svg id="mapSvg" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><filter id="fog" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="3" seed="4"/><feColorMatrix values="0 0 0 0 .86  0 0 0 0 .85  0 0 0 0 .82  0 0 0 1.4 -.25"/><feComposite in2="SourceGraphic" operator="in"/><feGaussianBlur stdDeviation=".35"/></filter></defs></svg><div id="mapPins"></div></div>
-    <div class="maphead plate"><b>🗺 РАЙОН</b><span class="muah" id="mapUah"></span><button class="btn alt" id="mapCraft">🧰 Верстак</button><button class="btn alt" id="mapSell">💰 Барыга</button><button class="btn alt" id="mapJour">📖 Журнал</button><button class="btn alt" id="mapKlad">🧭 Клады</button><button class="btn" id="mapClose" title="Закрыть">✕</button></div>
+    <div class="maphead plate"><b>🗺 РАЙОН</b><span class="muah" id="mapUah"></span><button class="btn alt" id="mapCraft">🧰 Верстак</button><button class="btn alt" id="mapSell">💰 Барыга</button><button class="btn alt" id="mapJour">📖 Журнал</button><button class="btn alt" id="mapKlad">🧭 Клады</button><button class="btn alt" id="mapInv">🎒 Шмот</button><button class="btn" id="mapClose" title="Закрыть">✕</button></div>
     <div class="dcard plate" id="dCard" hidden></div>
   </div>
   <div class="ov" id="admin" style="z-index:9"><div class="box plate" style="width:48em"><button class="xclose" id="admClose" title="Закрыть">✕</button><div class="head"><h1 style="font-size:2.4em">🛠 АДМИНКА</h1><p>Только для Олега. Пацаны её не видят</p></div><div class="in" id="admIn"></div></div></div>
@@ -2945,7 +2946,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       need: 'podval', find: null, reward: { uah: 1000, xp: 2000 }, bil: 'bar', beta: false,
     },
     {
-      id: 'otshib', name: 'Отшиб', level: 2, loc: 'yard', after: 4, // открывается сам после Водоканала, без пропуска
+      id: 'otshib', name: 'Отшиб', level: 2, loc: 'yard', after: 4, // после Водоканала, по пропуску «Записка от Кузьмича» (2.94)
       area: [[68, 21], [76, 25], [88, 27], [89, 34], [80, 40], [69, 40], [67, 31]], pin: [77, 32],
       fights: [
         { name: 'Доминошники', chars: ['kuzmich', 'rybak'], level: 2,
@@ -2959,7 +2960,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
           win: ['Чётко!', 'ТУ-ТУУ! Приехали!'],
           lose: ['Да я поддавался, отвечаю', 'Стоп-кран...'] },
       ],
-      need: null, find: null, reward: { uah: 600, xp: 1200 }, bil: null, beta: false,
+      need: 'kuzmich', find: null, reward: { uah: 600, xp: 1200 }, bil: null, beta: false,
     }
   ];
 
@@ -2978,6 +2979,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     propusk: { i: '🪪', n: 'Пропуск на рынок', pass: true, cost: { blesna: 4, pirog: 3, medyak: 20, uah: 160 } }, // Центр идёт сразу после Короленко
     shahta: { i: '📜', n: 'Справка с шахты', pass: true, cost: { cennik: 4, zub: 5, medyak: 30, uah: 260 } },
     podval: { i: '🗝️', n: 'Ключ от подвала БАЗЫ', pass: true, cost: { antracit: 5, fiksa: 2, klyuch: 1, vkladysh: 1, uah: 600 } },
+    kuzmich: { i: '📝', n: 'Записка от Кузьмича', pass: true, cost: { antracit: 3, pirog: 4, medyak: 30, uah: 350 } }, // 2.94: на Отшиб тоже по пропуску
   };
 
   // Редкое, шо можно скрафтить на Верстаке (сколько хочешь раз): даёт 1 штуку
@@ -3005,7 +3007,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     ],
     // шо внутри: всегда гривны + 2-4 вещи из списка своей редкости (у гаража свой список)
     chest: [
-      { uah: [3, 6], pick: [2, 2], items: [['semki', 30, 60], ['kryshki', 5, 10], ['pirog', 1, 1], ['mel', 1, 2]] },
+      { uah: [3, 6], pick: [2, 2], items: [['semki', 30, 60], ['kryshki', 5, 10], ['pirog', 1, 1], ['mel', 1, 2], ['medyak', 2, 4]] }, // 2.94: медяки и в обычных
       { uah: [8, 15], pick: [2, 3], items: [['medyak', 4, 8], ['pirog', 1, 2], ['mel', 1, 3], ['semki', 60, 100], ['skey', 1, 1]] },
       { uah: [20, 35], pick: [3, 3], items: [['zub', 2, 4], ['zheton', 1, 1], ['vkladysh', 1, 1], ['karta', 1, 1], ['pero', 1, 2]] },
       { uah: [50, 80], pick: [3, 4], items: [['fiksa', 1, 1], ['vkladysh', 1, 2], ['perch', 1, 1], ['kvit', 1, 2], ['cennik', 1, 2], ['karta', 1, 1], ['oblom', 1, 2]] },
@@ -3018,6 +3020,8 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
       { uah: [40, 70], pick: [3, 4], items: [['fiksa', 1, 1], ['klyuch', 1, 1], ['antracit', 1, 2], ['zub', 5, 8], ['karta', 1, 1]] },
       { uah: [100, 180], pick: [4, 4], items: [['klyuch', 2, 2], ['fiksa', 2, 3], ['shar', 1, 1], ['antracit', 2, 3], ['perch', 1, 1]] },
     ],
+    // 2.94: металлолом — лишний гараж сдаёшь Жоре на металл: медяки по редкости гаража и шанс на обломок ключа
+    scrap: { medyak: [15, 25, 40, 70, 120], oblom: [.1, .2, .35, .6, 1] },
     buy: { karta: 30, skey: 12 },                   // почём Барыга Жора продаёт (₴)
     win: { net: .25, bots: .13, bil: .2 },          // шанс получить карту за победу (2.91: чуть чаще, сундуков больше)
   };
@@ -3027,7 +3031,7 @@ em.tbot{font-style:normal;font-size:.85em;color:#2f6db3;white-space:nowrap}em.tc
     pero: 4, blesna: 6, kvit: 9, cennik: 12, antracit: 16,
     mel: .5, zheton: 6, perch: 20, shar: 60, karta: 10, skey: 4,
     sukno: 1, naklejka: 3, izolenta: .5, provoloka: .3, batareyka: 3, // бильярдный лут, клады
-    amnit: 8, amkry: 8, ampodk: 15, ammon: 15, amlapa: 30, amchet: 30, amtuz: 60, amcep: 60, amkoz: 150,
+    amnit: 8, amkry: 8, ampodk: 15, ammon: 15, amlapa: 30, amchet: 30, amtuz: 60, amcep: 60, amkoz: 150, amlamp: 30, ambilet: 60, amzub: 150,
     oskolok: 250 }; // 2.91: осколок бессмертия — очень дорогой // талисманы (Жора скупает лишние)
   // Скрафченные украшения Тётя Валя с рынка берёт за половину того, шо на них ушло (в гривнах)
   const CRAFT_BACK = .5;
@@ -6634,7 +6638,7 @@ $('backNet').onclick = () => { const x = Net.lastNet(); if (!x) return; Snd.init
 setInterval(syncBackNet, 2000); syncBackNet();
 // Новая версия: один раз показываем, что поменялось
 $('newsRules').onclick = () => { hide('news'); open('rules'); };
-try { if (localStorage.getItem('kozel-seen-ver') !== '2.93') { localStorage.setItem('kozel-seen-ver', '2.93'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
+try { if (localStorage.getItem('kozel-seen-ver') !== '2.94') { localStorage.setItem('kozel-seen-ver', '2.94'); setTimeout(() => { if ($('menu').classList.contains('open') || $('title').classList.contains('open')) open('news'); }, 900); } } catch (e) {}
 // Точка: при запуске, если пацан поработал больше 10 минут, забираем
 setTimeout(() => { try { if (farmIdx() < 0) { STATS.farmSel = Math.floor(Date.now() / 1000) * 10 + 2; STATS.farmAt = Math.floor(Date.now() / 1000); saveStats(); } else { const p = farmPending(); if (p && p.h >= 1 / 6) farmCollect(); } renderPickers(); } catch (e) {} }, 1500);
 $('tPlay').onclick = () => { Snd.init(); hide('title'); open('menu'); };
@@ -7121,7 +7125,7 @@ const ACH = [
   { id: 'gear1', i: '🎒', n: 'Запасливый', d: 'Скрафтить первую снарягу', xp: 80, ok: (s) => s.gearMade >= 1 },
   { id: 'gear10', i: '🧰', n: 'Мастер на все руки', d: 'Скрафтить 10 снаряг', xp: 400, ok: (s) => s.gearMade >= 10 },
   { id: 'up1', i: '⭐', n: 'Блестяшка', d: 'Улучшить украшение', xp: 80, ok: (s) => s.upCnt >= 1 },
-  { id: 'up3', i: '🌟', n: 'Три звезды', d: 'Улучшить шо-нибудь до ★3', xp: 400, ok: (s) => CRAFT.some((c) => starsOf(s, c.id) >= 3) },
+  { id: 'up3', i: '🌟', n: 'Три звезды', d: 'Улучшить шо-нибудь до ★3', xp: 400, ok: (s) => CRAFT.some((c) => starsOf(s, c.id) >= 3) || (typeof TALIS !== 'undefined' && TALIS.some((t) => starsOf(s, t.id) >= 3)) }, // 2.94: и талисманы тоже
   { id: 'dism1', i: '🔧', n: 'Разборщик', d: 'Разобрать украшение', xp: 50, ok: (s) => s.dismCnt >= 1 },
   { id: 'kul1', i: '🛍️', n: 'С рынка', d: 'Открыть кулёк', xp: 50, ok: (s) => s.kulekOpen >= 1 },
   { id: 'kul20', i: '🧺', n: 'Постоянный покупатель', d: 'Открыть 20 кульков', xp: 500, ok: (s) => s.kulekOpen >= 20 },
@@ -7149,6 +7153,12 @@ const ACH = [
   { id: 'garcop', i: '🚨', n: 'Шуганули', d: 'Попасться сторожу в гараже', xp: 60, ok: (s) => s.garCaught >= 1 },
   { id: 'klad10', i: '📦', n: 'Чёрный копатель', d: 'Открыть 10 кладов', xp: 500, ok: (s) => s.kladOpen >= 10 },
   { id: 'kladleg', i: '🏆', n: 'Легенда кладов', d: 'Открыть легендарный сундук или гараж', xp: 1000, ok: (s) => s.kladLeg >= 1 },
+  // 2.94: металлолом и талисманы
+  { id: 'scrap1', i: '♻️', n: 'Металлист', d: 'Сдать гараж на металлолом', xp: 80, ok: (s) => s.scrapCnt >= 1 },
+  { id: 'scrap10', i: '🏭', n: 'Чермет', d: 'Сдать 10 гаражей на металлолом', xp: 400, ok: (s) => s.scrapCnt >= 10 },
+  { id: 'scraplg', i: '🚛', n: 'Камаз металла', d: 'Сдать на металлолом легендарный гараж. Жора аж присел', xp: 600, ok: (s) => s.scrapLeg >= 1 },
+  { id: 'tal3', i: '🧿', n: 'Заряженный', d: 'Улучшить талисман до ★3', xp: 400, ok: (s) => typeof TALIS !== 'undefined' && TALIS.some((t) => starsOf(s, t.id) >= 3) },
+  { id: 'talleg', i: '🦷', n: 'Дедово наследство', d: 'Заполучить легендарный талисман «Золотой зуб деда»', xp: 800, ok: (s) => (s.eAmzub || 0) >= 1 },
   { id: 'bilysy', i: '🧑‍🦲', n: 'Лысый одобряет', d: 'Собрать 12 бильярдных ачивок. Лысый их любит больше, чем пиво', xp: 1000, ok: () => Object.keys(ACHS).filter((k) => /^bil/.test(k) && k !== 'bilysy').length >= 12 },
   { id: 'tour', i: '🧳', n: 'Турист', d: 'Сыграть во всех четырёх локациях', xp: 300, ok: (s) => s.locBaza && s.locYard && s.locOffice && s.locSpace },
   { id: 'g20', i: '🤌', n: 'Жестикулятор', d: 'Показать 20 жестов', xp: 60, ok: (s) => s.gest >= 20 },
@@ -7297,7 +7307,7 @@ $('emoQuick').onclick = (e) => { e.stopPropagation(); if (signalsLocked()) { emo
 
 // ---------- Свои: аккаунт по нику и PIN, прогресс в облаке, «Двор» ----------
 const Acct = (() => {
-  let token = null, nick = null, enabled = false, saveT = null, pollT = null, last = { list: [] };
+  let token = null, nick = null, enabled = false, saveT = null, pollT = null, last = { list: [] }, pullN = 0, pullNow = true;
   try { token = localStorage.getItem('kozel-acct'); nick = localStorage.getItem('kozel-acct-nick'); } catch (e) {}
   async function api(name, body) {
     const r = await fetch('/api/acct/' + name, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -7307,7 +7317,20 @@ const Acct = (() => {
   }
   const progress = () => { rosterSave(); return { xp: myXp, stats: STATS, ach: ACHS, char: myChar, roster: ROSTER, del: PENDING_DEL.slice() }; };
   // Облачный прогресс + то, что на этом устройстве: берём лучшее
-  function apply(p) {
+  // 2.94: есть ли в облаке шо-то новее, чем на этом устройстве (с другого телефона/компа)
+  function newer(p) {
+    if (!p || !p.roster) return false;
+    rosterSave();
+    return Object.entries(p.roster).some(([id, d]) => {
+      const m = ROSTER[id]; if (!m) return (d.xp || 0) > 0 || Object.keys(d.stats || {}).length > 0;
+      if ((d.xp || 0) > (m.xp || 0)) return true;
+      for (const [k, v] of Object.entries(d.stats || {})) if (v > ((m.stats || {})[k] || 0)) return true;
+      for (const k of Object.keys(d.ach || {})) if (!(m.ach || {})[k]) return true;
+      return false;
+    });
+  }
+  // keep — не переключать пацана (подтягиваем фоном, пока играешь за своего)
+  function apply(p, keep) {
     if (!p) return;
     if (p.roster) { // объединяем по каждому пацану отдельно, ничего не перемешивая
       rosterSave(); // то, что на этом устройстве, остаётся у своего персонажа
@@ -7318,7 +7341,7 @@ const Acct = (() => {
         for (const [k, v] of Object.entries(d.stats || {})) m.stats[k] = Math.max(m.stats[k] || 0, v);
         for (const [k, v] of Object.entries(d.ach || {})) if (!m.ach[k]) m.ach[k] = v;
       }
-      const act = p.char && ROSTER[p.char] ? p.char : ROSTER[myChar] ? myChar : Object.keys(ROSTER)[0];
+      const act = !keep && p.char && ROSTER[p.char] ? p.char : ROSTER[myChar] ? myChar : Object.keys(ROSTER)[0];
       if (act) { myChar = act; loadChar(act); }
       try { localStorage.setItem('kozel-char', myChar); localStorage.setItem('kozel-roster', JSON.stringify(ROSTER)); } catch (e) {}
       applyPerks(); renderPickers(); setTimeout(giftCheck, 800); return;
@@ -7326,7 +7349,7 @@ const Acct = (() => {
     myXp = Math.max(myXp, p.xp || 0);
     for (const [k, v] of Object.entries(p.stats || {})) STATS[k] = Math.max(STATS[k] || 0, v);
     for (const [k, v] of Object.entries(p.ach || {})) if (!ACHS[k]) ACHS[k] = v;
-    if (p.char) myChar = p.char;
+    if (p.char && !keep) myChar = p.char;
     try { localStorage.setItem('kozel-xp', myXp); localStorage.setItem('kozel-stats', JSON.stringify(STATS)); localStorage.setItem('kozel-ach', JSON.stringify(ACHS)); localStorage.setItem('kozel-char', myChar); } catch (e) {}
     applyPerks(); renderPickers();
   }
@@ -7351,7 +7374,7 @@ const Acct = (() => {
     try { if (ROSTER) rosterSave(); } catch (e) {}
     if (!token) return;
     clearTimeout(saveT);
-    saveT = setTimeout(() => { const pr = progress(); api('save', { token, progress: pr }).then(() => { PENDING_DEL = PENDING_DEL.filter((x) => !pr.del.includes(x)); saveDel(); }).catch(onErr); }, 3000);
+    saveT = setTimeout(() => { const pr = progress(); api('save', { token, progress: pr }).then((j) => { PENDING_DEL = PENDING_DEL.filter((x) => !pr.del.includes(x)); saveDel(); if (j && newer(j.profile)) apply(j.profile, true); }).catch(onErr); }, 3000); // 2.94: облако ответило новее — берём
   }
   function onErr(e) { if (/войти заново/.test(e.message)) { setSession(null, null); } }
   function bar() {
@@ -7372,6 +7395,7 @@ const Acct = (() => {
     clearTimeout(pollT);
     if (!token) { last = { list: [] }; return; }
     try {
+      if (pullNow || ++pullN % 3 === 0) { pullNow = false; api('me', { token }).then((j) => { if (j && newer(j.profile)) { apply(j.profile, true); if ($('yard').classList.contains('open')) renderYard(); } }).catch(() => {}); } // 2.94: раз в ~30 сек подтягиваем облако
       last = await api('yard', { token });
       last.invites.forEach(showInvite);
       bar();
@@ -7379,6 +7403,8 @@ const Acct = (() => {
     } catch (e) { onErr(e); }
     pollT = setTimeout(poll, document.hidden ? 30000 : 10000);
   }
+  // 2.94: вернулся в игру (с другого приложения, разблокировал телефон) — сразу подтягиваем облако
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && token) { pullNow = true; poll(); } });
   const STATUS = { yard: 'во дворе', lobby: 'за столом, ждут игру', playing: 'играет', off: 'не в сети' };
   const ago = (s) => (s === null ? 'давно не был' : s < 120 ? 'был только что' : s < 3600 ? 'был ' + Math.round(s / 60) + ' мин назад' : s < 86400 ? 'был ' + Math.round(s / 3600) + ' ч назад' : 'был ' + Math.round(s / 86400) + ' дн назад');
   let openYS = null;
@@ -7579,7 +7605,7 @@ const dKey = (t, i) => t + 'ABCDEFG'[i];
 const dFights = (d) => d.fights || [Object.assign({ level: d.level }, d.pair)];
 const dStage = (i) => (dWon(i) ? dFights(CAMPD[i]).length : Math.min(dFights(CAMPD[i]).length - 1, STATS[dKey('cs', i)] || 0));
 const dWon = (i) => i >= 0 && (STATS[dKey('cw', i)] || 0) > 0;
-const dOpen = (i) => i === 0 || (STATS[dKey('co', i)] || 0) > 0 || (!CAMPD[i].need && dWon(dPrev(i))); // район без пропуска открывается сам
+const dOpen = (i) => i === 0 || (STATS[dKey('co', i)] || 0) > 0 || (!CAMPD[i].need && dWon(dPrev(i))) || dWon(i) || (STATS[dKey('cs', i)] || 0) > 0; // район без пропуска открывается сам; 2.94: кто уже бился там (Отшиб был без пропуска) — остаётся открытым
 // beta: район виден, но закрыт табличкой «скоро» (админу открыт для проверки)
 const dBeta = (i) => !!CAMPD[i].beta && !isAdmin();
 const dState = (i) => (dBeta(i) && !dWon(i) ? 'beta' : dWon(i) ? 'done' : dOpen(i) ? 'open' : 'lock');
@@ -7720,7 +7746,9 @@ function showDCard(i) {
     '<p class="dst ' + st + '">' + (st === 'done' ? '🚩 Пройден' + ((STATS[dKey('cw', i)] || 0) > 1 ? ', побед: ' + STATS[dKey('cw', i)] : '') : st === 'open' ? 'Открыт, местные ждут' + (F.length > 1 ? ' · бой ' + (stage + 1) + ' из ' + F.length : '') : st === 'beta' ? '🚧 Бета: скоро откроем' : '🔒 Под туманом') + '</p>' +
     '<h4>' + (F.length > 1 ? 'Бои (каждый следующий сильнее)' : 'Местные') + '</h4><div class="dfights">' + fights + '</div>' + (playable ? questHtml(i) : '') +
     '<h4>Шо нужно, шоб пройти</h4><ul class="dconds">' + conds.join('') + '</ul><h4>Награда за район</h4><p class="drew">' + rew + (F.length > 1 ? '<br><small>За каждый бой по пути: треть гривен и опыта</small>' : '') + (st === 'done' ? '<br><small>Повторно: треть гривен и опыта, находка как обычно</small>' : '') + '</p>' + btn;
+  card.insertAdjacentHTML('beforeend', '<button class="btn wide alt" data-dinv>🎒 Шмот и талисманы</button>'); // 2.94: переход в инвентарь
   card.hidden = false;
+  card.querySelector('[data-dinv]').onclick = () => { hide('mapov'); showProfile(); };
   card.querySelectorAll('[data-dplay]').forEach((b) => { b.onclick = () => campPlay(+b.dataset.dplay, +b.dataset.df); });
   card.querySelectorAll('[data-denter]').forEach((b) => { b.onclick = () => enterDistrict(+b.dataset.denter); });
   card.querySelectorAll('[data-qdone]').forEach((b) => { b.onclick = () => qComplete(+b.dataset.qdone); });
@@ -7754,8 +7782,9 @@ function campFinish(loser) {
     : next && !next.side && next.beta ? 'Район твой! Дальше ' + next.name + ', но там пока бета: скоро откроем.'
     : next && !next.side && !dOpen(nj) && next.need ? 'Дальше ' + next.name + '. Нужен пропуск ' + CITEM[next.need].i + ' ' + CITEM[next.need].n + ': крафтится на Верстаке.' : 'Район твой.';
   showPause('<h2>' + (won ? (d.boss && !nextFight ? 'БАЗА твоя!' : nextFight ? '«' + CAMP.pair.name + '» побеждены' : d.name + ' пройден') : 'Продули «' + CAMP.pair.name + '»') + '</h2><p>Счёт ' + match.penalties[0] + ' : ' + match.penalties[1] + '</p><p>' + tip + '</p>' + matchTable() +
-    (nextFight ? '<button class="btn wide" id="cNext">⚔️ Следующий бой</button>' : '') + '<button class="btn wide' + (nextFight ? ' alt' : '') + '" id="cMap">🗺 На карту</button><button class="btn wide alt" id="cAgain">' + (won ? 'Ещё раз с ними' : 'Реванш') + '</button><button class="btn wide alt" id="toMenu">В меню</button>', won ? (d.boss && !nextFight ? 'ЛЕГЕНДА РАЙОНА' : nextFight ? 'КРАСАВЦЫ' : 'РАЙОН ТВОЙ') : 'ТЫ KOZEL');
+    (nextFight ? '<button class="btn wide" id="cNext">⚔️ Следующий бой</button>' : '') + '<button class="btn wide' + (nextFight ? ' alt' : '') + '" id="cMap">🗺 На карту</button><button class="btn wide alt" id="cInv">🎒 Шмот и талисманы</button><button class="btn wide alt" id="cAgain">' + (won ? 'Ещё раз с ними' : 'Реванш') + '</button><button class="btn wide alt" id="toMenu">В меню</button>', won ? (d.boss && !nextFight ? 'ЛЕГЕНДА РАЙОНА' : nextFight ? 'КРАСАВЦЫ' : 'РАЙОН ТВОЙ') : 'ТЫ KOZEL');
   $('cMap').onclick = () => { hide('pause'); round = null; clearTable(); campEnd(); openMap(); };
+  $('cInv').onclick = () => { hide('pause'); round = null; clearTable(); campEnd(); openMap(); hide('mapov'); showProfile(); }; // 2.94: из профиля кнопка «Карта» вернёт назад
   $('cAgain').onclick = () => { hide('pause'); campPlay(i, f); };
   if ($('cNext')) $('cNext').onclick = () => { hide('pause'); campPlay(i, f + 1); };
   $('toMenu').onclick = () => { hide('pause'); round = null; clearTable(); goHome(); };
@@ -7968,6 +7997,15 @@ const CLOTHS = {
   tpers: 'radial-gradient(circle at 50% 50%,#ffd45a 0 .6em,#8e1f17 .65em 1.3em,transparent 1.35em) 0 0/4em 4em,repeating-linear-gradient(90deg,#1b2a6b 0 .3em,#8e1f17 .3em 2.4em,#1b2a6b 2.4em 2.7em),#8e1f17',
   timm: 'radial-gradient(circle at 50% 50%,rgba(255,255,255,.9) 0 .15em,transparent .2em) 0 0/1.4em 1.4em,radial-gradient(ellipse at 50% 50%,rgba(255,212,90,.55),transparent 70%),conic-gradient(from 45deg,#5a1a7a,#1b2a6b,#0d5a36,#7a5a12,#5a1a7a)',
 };
+// 2.94: новые легенды (только в конец CRAFT!)
+CRAFT.push(
+  { id: 'kmetal', slot: 'c', n: 'Чермет', i: '🔩', rar: 4, cost: { medyak: 90, klyuch: 1, fiksa: 2, uah: 160 } },
+  { id: 'tdomino', slot: 't', n: 'Клеёнка Кузьмича', i: '🁫', rar: 4, cost: { antracit: 2, pirog: 6, medyak: 70, uah: 150 } },
+  { id: 'bterr', slot: 'b', n: 'Закат над терриконом', i: '🌄', rar: 4, cost: { antracit: 3, vkladysh: 2, medyak: 60, uah: 160 } },
+  { id: 'pmag', slot: 'p', n: 'Магнитофон «Весна»', i: '📼', rar: 4, cost: { batareyka: 6, provoloka: 10, medyak: 80, uah: 170 } },
+);
+BACKS.kmetal = 'radial-gradient(circle at 50% 50%,#e9edf0 0 .09em,#7d858c .1em .15em,transparent .17em) 0 0/1.2em 1.2em,repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 .06em,transparent .06em 1.2em),repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 .06em,transparent .06em 1.2em),linear-gradient(135deg,#9a5a2a,#c98a4b 30%,#6d7680 55%,#a9b2b9 75%,#7a3f1c)';
+CLOTHS.tdomino = 'radial-gradient(circle,#fff 0 .14em,transparent .17em) .35em .35em/1.2em 1.2em,radial-gradient(circle,#fff 0 .14em,transparent .17em) .95em .95em/1.2em 1.2em,repeating-linear-gradient(90deg,transparent 0 2.3em,rgba(255,255,255,.35) 2.3em 2.4em),linear-gradient(#11402a,#0b2e1e)';
 // ---------- звёзды и разбор ----------
 const starsOf = (st, id) => Math.max(0, Math.min(3, ((st && st['u' + id]) || 0) - ((st && st['z' + id]) || 0)));
 const STAR_K = [.6, 1.2, 2.1], STAR_UAH = [10, 30, 80];
@@ -8356,6 +8394,10 @@ var TALIS = [
   { id: 'amtuz', ic: 'am_tuz', e: '🂡', n: 'Туз на шнурке', rar: 3, b: { second: 1, xp: .05 }, cost: { vkladysh: 2, fiksa: 1, medyak: 40, uah: 60 }, d: 'Раз за матч зря предъявил — штраф не засчитан. Только с ботами и на районе.' },
   { id: 'amcep', ic: 'am_cep', e: '⛓️', n: 'Цепочка с тузом', rar: 3, b: { xp: .12, loot: .08 }, cost: { fiksa: 2, kryshki: 80, medyak: 50, uah: 80 }, d: 'Серьёзная вещь. Сразу видно: человек играет.' },
   { id: 'amkoz', ic: 'am_koz', e: '🐐', n: 'Козлик с колокольчиком', rar: 4, b: { rat: .5, kulek: .3, xp: .1, loot: .1 }, cost: null, drop: 1, d: 'Легенда. Только из кулька, кладов, редких находок или у Жоры «только сегодня».' },
+  // 2.94: новые (только в конец: номер в списке хранится в профиле)
+  { id: 'amlamp', e: '🔦', n: 'Шахтёрская лампа', rar: 2, b: { finds: .3, farm: .1 }, cost: { batareyka: 3, provoloka: 6, medyak: 35 }, d: 'Дед с ней в забой ходил. Находки во дворе видно издалека, точка пашет бодрее.' },
+  { id: 'ambilet', e: '🎫', n: 'Счастливый трамвайный билет', rar: 3, b: { xp: .08, kulek: .15, disc: .05 }, cost: { vkladysh: 1, kryshki: 60, medyak: 40, uah: 70 }, d: 'Сумма цифр слева равна сумме справа. Съесть не дали — носишь на удачу.' },
+  { id: 'amzub', e: '🦷', n: 'Золотой зуб деда', rar: 4, b: { loot: .12, xp: .08, farm: .15, disc: .08 }, cost: { fiksa: 4, antracit: 2, medyak: 120, uah: 300 }, d: 'Легенда, которую можно скрафтить. Дед улыбался — и весь район давал скидку.' },
 ];
 // потолок суммы бонусов (сколько ни надень)
 const TAL_CAP = { xp: .3, loot: .3, farm: .3, farmH: 4, finds: .6, kulek: .4, disc: .2, gudok: .35, second: 1, rat: .5 };
@@ -9040,7 +9082,7 @@ const Kat = (() => {
 const JSRC = {
   semki: ['Каждая раздача: +3, и +1 за каждые 30 своих очков', 'Точка: «Семки на Кирово» 14/ч, бутылки 5/ч, пирожки 4/ч', 'Игра на семки'],
   kryshki: ['Взятка на 20+ очков: +1', 'Точка: «Бутылки у ларька» 4/ч'],
-  medyak: ['Победа в матче: +3', 'Точка: «Гаражи у дяди Вити» 2/ч, «Семки на Кирово» 0,2/ч'],
+  medyak: ['Победа в матче: +3', 'Точка: «Гаражи у дяди Вити» 2/ч, «Семки на Кирово» 0,2/ч', 'Металлолом: лишний гараж сдать Жоре (в «Кладах»)', 'Обычные и необычные сундуки'],
   pirog: ['Взятка матерью (шестёркой козыря): +1', 'Точка: «Пирожки у бабы Зои» 0,5/ч'],
   zub: ['Спалил крысу: +1', 'Точка: «Гаражи у дяди Вити» 0,25/ч'],
   fiksa: ['Повесил люсю: +1', 'Верстак: из зубов, медяков и гривен'],
@@ -9154,15 +9196,31 @@ function kladShow(html) {
   $('klad').appendChild(o); o.querySelector('button').onclick = () => { o.remove(); renderKlad(); renderPickers(); };
 }
 function renderKlad() {
-  const row = (t) => KL_T.map((tier, k) => { const n = bal(kladId(t, k)), key = t === 'ch' ? 'skey' : 'klyuch'; if (!n) return ''; return '<div class="crc" style="--rc:' + RAR[k].c + '"><i class="kli">' + klIc(t, k) + '</i><b>' + KL_N[t] + '</b><small class="rr">' + tier.n + ' · ×' + n + '</small><button class="btn" data-kopen="' + t + k + '"' + (bal(key) ? '' : ' disabled') + '>' + (bal(key) ? 'Открыть ' + RES[key].i : 'Нет ключа ' + RES[key].i) + '</button></div>'; }).join('');
+  const row = (t) => KL_T.map((tier, k) => { const n = bal(kladId(t, k)), key = t === 'ch' ? 'skey' : 'klyuch'; if (!n) return ''; return '<div class="crc" style="--rc:' + RAR[k].c + '"><i class="kli">' + klIc(t, k) + '</i><b>' + KL_N[t] + '</b><small class="rr">' + tier.n + ' · ×' + n + '</small><button class="btn" data-kopen="' + t + k + '"' + (bal(key) ? '' : ' disabled') + '>' + (bal(key) ? 'Открыть ' + RES[key].i : 'Нет ключа ' + RES[key].i) + '</button>' +
+    (t === 'ga' ? '<button class="btn alt" data-kscrap="' + k + '" title="Жора принимает металл">♻️ На металл +' + SCRAP.medyak[k] + ' ' + RES.medyak.i + '</button>' : '') + '</div>'; }).join('');
   const list = row('ch') + row('ga');
   $('kladIn').innerHTML = '<div class="klhead"><span>🗺️ Карт: <b>' + bal('karta') + '</b></span><span>' + RES.skey.i + ' Ключей от сундука: <b>' + bal('skey') + '</b></span><span>' + RES.klyuch.i + ' Ключей от гаража: <b>' + bal('klyuch') + '</b></span></div>' +
     '<button class="btn wide big" id="klUnfold"' + (bal('karta') ? '' : ' disabled') + '>🗺️ Развернуть карту клада</button>' +
-    '<p class="note">По карте попадается сундук (чаще) или гараж (если 4 карты подряд были без гаража — пятая точно гараж). Какой редкости — как повезёт: обычный, необычный, редкий, эпический или легендарный. Чем реже, тем жирнее лут. В гараже 5 сундуков без ключей, но шуметь опасно: может прийти сторож.</p>' +
+    '<p class="note">По карте попадается сундук (чаще) или гараж (если ' + KozelCamp.KLAD.garagePity + ' карт подряд без гаража — следующая точно гараж). Какой редкости — как повезёт: обычный, необычный, редкий, эпический или легендарный. Чем реже, тем жирнее лут. В гараже 5 сундуков без ключей, но шуметь опасно: может прийти сторож. Лишний гараж можно сдать Жоре на металлолом: медяки по редкости гаража и шанс на обломок ключа.</p>' +
     '<h3>Найденные клады</h3>' + (list ? '<div class="crg">' + list + '</div>' : '<p class="note">Пока пусто. Разверни карту.</p>') +
     '<h3>Где брать</h3><ul class="klw"><li>🗺️ Карта: ' + JSRC.karta.join('; ').toLowerCase() + '</li><li>' + RES.skey.i + ' Ключ от сундука: ' + JSRC.skey.join('; ').toLowerCase() + '</li><li>' + RES.klyuch.i + ' Ключ от гаража: ' + JSRC.klyuch.join('; ').toLowerCase() + '</li><li>' + RES.oblom.i + ' Обломок ключа: ' + JSRC.oblom.join('; ').toLowerCase() + '</li></ul>';
   if ($('klUnfold')) $('klUnfold').onclick = unfoldMap;
+  $('kladIn').querySelectorAll('[data-kscrap]').forEach((b) => { b.onclick = () => scrapGarage(+b.dataset.kscrap); });
   $('kladIn').querySelectorAll('[data-kopen]').forEach((b) => { b.onclick = () => { const t = b.dataset.kopen.slice(0, 2), k = +b.dataset.kopen.slice(2); if (t === 'ga') openGarage(k); else openKlad(t, k); }; });
+}
+// 2.94: ♻️ металлолом — лишний гараж сдаёшь Жоре на металл (KozelCamp.KLAD.scrap)
+const SCRAP = KozelCamp.KLAD.scrap || { medyak: [15, 25, 40, 70, 120], oblom: [.1, .2, .35, .6, 1] };
+const SCRAP_SAY = ['Жора постучал по воротам: «Шо, железо хорошее, беру»', 'Жора: «Петли ржавые, но медь в проводке живая»', 'Жора: «За такие ворота в девяностые машину давали»', 'Жора пересчитал медяки два раза. Не обманул. Почти'];
+function scrapGarage(k) {
+  const id = kladId('ga', k); if (bal(id) < 1) return;
+  STATS[rk('s', id)] = (STATS[rk('s', id)] || 0) + 1;
+  const got = { medyak: SCRAP.medyak[k] }; if (Math.random() < SCRAP.oblom[k]) got.oblom = k >= 4 ? 2 : 1;
+  Object.entries(got).forEach(([r, n]) => gain(r, n));
+  lootRound = {}; STATS.scrapCnt = (STATS.scrapCnt || 0) + 1; if (k >= 4) STATS.scrapLeg = (STATS.scrapLeg || 0) + 1; saveStats();
+  kladShow('<div class="klbox t' + k + ' shake" style="--rc:' + RAR[k].c + '">♻️</div><h3 style="color:' + RAR[k].c + '">Гараж (' + KL_T[k].n.toLowerCase() + ') — на металл</h3><p class="note">' + KozelLines.sho(pickOne(SCRAP_SAY)) + '</p><div class="klloot">' +
+    Object.entries(got).map(([r, n], i) => '<span style="animation-delay:' + (.6 + i * .25) + 's"><i>' + RES[r].i + '</i><b>+' + n + '</b><small>' + RES[r].n + '</small></span>').join('') + '</div>');
+  Snd.creak && Snd.creak(); setTimeout(() => { Snd.coin && Snd.coin(k >= 3); }, 700);
+  checkAch();
 }
 function openKlad0() { renderKlad(); open('klad'); }
 // ---------- 🏚 Гараж: ксерокопией ключа открываешь ворота, внутри 5 сундуков под брезентом ----------
@@ -9244,21 +9302,28 @@ function garClose() { hide('garage'); GAR = null; renderKlad(); renderPickers();
 // Дописывать новые в конец с новой буквой id. garages — сколько гаражей (редкость как по карте), остальное — ресурсы
 const GIFTS = [
   { id: 'a', from: 'Олег', text: 'Пацаны, гаражи открылись! Держите на разгон: ключи, карты и пару гаражей. Не попадитесь сторожу.', items: { klyuch: 2, skey: 2, karta: 2 }, garages: 2 },
+  { id: 'b', from: 'Олег', text: 'Обнова 2.94! Жора принимает гаражи на металлолом, новые легенды и талисманы на Верстаке. Держите на разгон медяков и ключей.', items: { klyuch: 1, skey: 2, medyak: 40 } },
+  // to — только этому нику (в нижнем регистре), char — только за этого пацана; stats — сколько добавить в статистику, ach — какую ачивку выдать
+  { id: 'c', to: 'лысый', char: 'lysy', from: 'Олег', text: 'Влад, нашли твою люсю, шо потерялась. Засчитали по-честному, носи с гордостью.', items: {}, stats: { lusya: 1 }, ach: 'lusya', show: [['🙈', '+1', 'Люся в статистику']] },
 ];
 function giftCheck() {
   if (typeof GIFTS === 'undefined' || !STATS) return;
-  const g = GIFTS.find((x) => !STATS['gf' + x.id]); if (!g) return;
+  const me = String((typeof Acct !== 'undefined' && Acct.nick) || '').trim().toLowerCase();
+  const g = GIFTS.find((x) => !STATS['gf' + x.id] && (!x.to || x.to === me) && (!x.char || x.char === myChar)); if (!g) return;
   if (document.querySelector('.giftpop')) return;
   STATS['gf' + g.id] = 1;
   const got = Object.assign({}, g.items);
   Object.entries(g.items).forEach(([r, n]) => gain(r, n));
+  Object.entries(g.stats || {}).forEach(([k, n]) => { STATS[k] = (STATS[k] || 0) + n; });
   const gar = [];
   for (let k = 0; k < (g.garages || 0); k++) { let r = Math.random(), t = 0; for (; t < KL_T.length - 1; t++) { if (r < KL_T[t].p) break; r -= KL_T[t].p; } gain(kladId('ga', t), 1); gar.push(t); }
   lootRound = {}; saveStats(); renderPickers();
+  if (g.ach) setTimeout(() => { unlock(g.ach); checkAch(); }, 1200); else checkAch();
   const o = document.createElement('div'); o.className = 'giftpop';
   o.innerHTML = '<div class="plate"><div class="gift-i">' + icOr('box_gift', '🎁') + '</div><h2>Тебе подарок!</h2><p class="gfrom">от <b>' + g.from + '</b></p><p>' + KozelLines.sho(g.text) + '</p><div class="gpl">' +
     Object.entries(got).map(([r, n]) => '<span><i>' + RES[r].i + '</i><b>+' + n + '</b><small>' + RES[r].n + '</small></span>').join('') +
     gar.map((t) => '<span><i>' + klIc('ga', t) + '</i><b>+1</b><small>Гараж (' + KL_T[t].n.toLowerCase() + ')</small></span>').join('') +
+    (g.show || []).map(([i, b, s]) => '<span><i>' + i + '</i><b>' + b + '</b><small>' + s + '</small></span>').join('') +
     '</div><p class="note">Всё уже в «🧭 Кладах»</p><div class="row2"><button class="btn" data-gk>🧭 В Клады</button><button class="btn alt" data-gx>Забрать</button></div></div>';
   document.body.appendChild(o); Snd.good && Snd.good();
   o.querySelector('[data-gx]').onclick = () => { o.remove(); setTimeout(giftCheck, 300); };
@@ -9287,6 +9352,7 @@ $('mapCraft').onclick = () => { renderCraft(); open('craft'); };
 $('mapSell').onclick = () => { renderSell(); open('sell'); };
 $('mapJour').onclick = openJournal;
 $('mapKlad').onclick = openKlad0;
+$('mapInv').onclick = () => { hide('mapov'); showProfile(); }; // 2.94: инвентарь прямо с карты
 
 
 // ======================= Админка (только для аккаунта админа) =======================
@@ -9330,7 +9396,9 @@ function renderAdmin() {
   const opt = (sel) => '<option value="">никто</option>' + users.map((u) => '<option value="' + u.key + '"' + (u.key === sel ? ' selected' : '') + '>' + u.nick + '</option>').join('');
   const ago = (s) => (s === null ? 'давно' : s < 25 ? '🟢 в сети' : s < 3600 ? Math.round(s / 60) + ' мин назад' : s < 86400 ? Math.round(s / 3600) + ' ч назад' : Math.round(s / 86400) + ' дн назад');
   const online = users.filter((u) => u.table && u.key !== KozelLines.ADMIN);
+  const db = ADM.db || {}, dbAgo = (t) => (t ? Math.round((Date.now() - t) / 60000) + ' мин назад' : 'ещё не было');
   $('admIn').innerHTML =
+    '<p class="note">💾 База прогресса: ' + (db.kind === 'upstash' ? 'облако' : db.kind === 'file' ? 'файл (локально)' : '?') + ' · последняя запись ' + dbAgo(db.lastOk) + (db.waiting ? ' · ждут записи: ' + db.waiting : '') + (db.lastErr ? '<br>⚠️ Ошибка ' + dbAgo(db.errAt) + ': ' + db.lastErr : ' · ошибок нет') + '</p>' +
     '<h3>😈 Приколы над пацанами</h3>' +
     (online.length ? '<div class="admrow"><label>Кого: <select id="prTo">' + online.map((u) => '<option value="' + u.nick + '">' + u.nick + ' (стол ' + u.table.code + ')</option>').join('') + '</select></label>' +
       '<input id="prText" maxlength="140" placeholder="Текст для «сказать», бабки и Гудка"></div><div class="crg admpr">' +

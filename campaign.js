@@ -145,7 +145,7 @@
       need: 'podval', find: null, reward: { uah: 1000, xp: 2000 }, bil: 'bar', beta: false,
     },
     {
-      id: 'otshib', name: 'Отшиб', level: 2, loc: 'yard', after: 4, // открывается сам после Водоканала, без пропуска
+      id: 'otshib', name: 'Отшиб', level: 2, loc: 'yard', after: 4, // после Водоканала, по пропуску «Записка от Кузьмича» (2.94)
       area: [[68, 21], [76, 25], [88, 27], [89, 34], [80, 40], [69, 40], [67, 31]], pin: [77, 32],
       fights: [
         { name: 'Доминошники', chars: ['kuzmich', 'rybak'], level: 2,
@@ -159,7 +159,7 @@
           win: ['Чётко!', 'ТУ-ТУУ! Приехали!'],
           lose: ['Да я поддавался, отвечаю', 'Стоп-кран...'] },
       ],
-      need: null, find: null, reward: { uah: 600, xp: 1200 }, bil: null, beta: false,
+      need: 'kuzmich', find: null, reward: { uah: 600, xp: 1200 }, bil: null, beta: false,
     }
   ];
 
@@ -178,6 +178,7 @@
     propusk: { i: '🪪', n: 'Пропуск на рынок', pass: true, cost: { blesna: 4, pirog: 3, medyak: 20, uah: 160 } }, // Центр идёт сразу после Короленко
     shahta: { i: '📜', n: 'Справка с шахты', pass: true, cost: { cennik: 4, zub: 5, medyak: 30, uah: 260 } },
     podval: { i: '🗝️', n: 'Ключ от подвала БАЗЫ', pass: true, cost: { antracit: 5, fiksa: 2, klyuch: 1, vkladysh: 1, uah: 600 } },
+    kuzmich: { i: '📝', n: 'Записка от Кузьмича', pass: true, cost: { antracit: 3, pirog: 4, medyak: 30, uah: 350 } }, // 2.94: на Отшиб тоже по пропуску
   };
 
   // Редкое, шо можно скрафтить на Верстаке (сколько хочешь раз): даёт 1 штуку
@@ -205,7 +206,7 @@
     ],
     // шо внутри: всегда гривны + 2-4 вещи из списка своей редкости (у гаража свой список)
     chest: [
-      { uah: [3, 6], pick: [2, 2], items: [['semki', 30, 60], ['kryshki', 5, 10], ['pirog', 1, 1], ['mel', 1, 2]] },
+      { uah: [3, 6], pick: [2, 2], items: [['semki', 30, 60], ['kryshki', 5, 10], ['pirog', 1, 1], ['mel', 1, 2], ['medyak', 2, 4]] }, // 2.94: медяки и в обычных
       { uah: [8, 15], pick: [2, 3], items: [['medyak', 4, 8], ['pirog', 1, 2], ['mel', 1, 3], ['semki', 60, 100], ['skey', 1, 1]] },
       { uah: [20, 35], pick: [3, 3], items: [['zub', 2, 4], ['zheton', 1, 1], ['vkladysh', 1, 1], ['karta', 1, 1], ['pero', 1, 2]] },
       { uah: [50, 80], pick: [3, 4], items: [['fiksa', 1, 1], ['vkladysh', 1, 2], ['perch', 1, 1], ['kvit', 1, 2], ['cennik', 1, 2], ['karta', 1, 1], ['oblom', 1, 2]] },
@@ -218,6 +219,8 @@
       { uah: [40, 70], pick: [3, 4], items: [['fiksa', 1, 1], ['klyuch', 1, 1], ['antracit', 1, 2], ['zub', 5, 8], ['karta', 1, 1]] },
       { uah: [100, 180], pick: [4, 4], items: [['klyuch', 2, 2], ['fiksa', 2, 3], ['shar', 1, 1], ['antracit', 2, 3], ['perch', 1, 1]] },
     ],
+    // 2.94: металлолом — лишний гараж сдаёшь Жоре на металл: медяки по редкости гаража и шанс на обломок ключа
+    scrap: { medyak: [15, 25, 40, 70, 120], oblom: [.1, .2, .35, .6, 1] },
     buy: { karta: 30, skey: 12 },                   // почём Барыга Жора продаёт (₴)
     win: { net: .25, bots: .13, bil: .2 },          // шанс получить карту за победу (2.91: чуть чаще, сундуков больше)
   };
@@ -227,7 +230,7 @@
     pero: 4, blesna: 6, kvit: 9, cennik: 12, antracit: 16,
     mel: .5, zheton: 6, perch: 20, shar: 60, karta: 10, skey: 4,
     sukno: 1, naklejka: 3, izolenta: .5, provoloka: .3, batareyka: 3, // бильярдный лут, клады
-    amnit: 8, amkry: 8, ampodk: 15, ammon: 15, amlapa: 30, amchet: 30, amtuz: 60, amcep: 60, amkoz: 150,
+    amnit: 8, amkry: 8, ampodk: 15, ammon: 15, amlapa: 30, amchet: 30, amtuz: 60, amcep: 60, amkoz: 150, amlamp: 30, ambilet: 60, amzub: 150,
     oskolok: 250 }; // 2.91: осколок бессмертия — очень дорогой // талисманы (Жора скупает лишние)
   // Скрафченные украшения Тётя Валя с рынка берёт за половину того, шо на них ушло (в гривнах)
   const CRAFT_BACK = .5;
